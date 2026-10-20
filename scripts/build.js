@@ -23,6 +23,6 @@ const scripts=sources.map(file=>`\n/* ${file} */\n${fs.readFileSync(path.join(ro
 if(!template.includes('__INLINE_STYLES__')||!template.includes('__INLINE_SCRIPTS__'))throw new Error('build placeholders missing');
 const html=template.replace('__INLINE_STYLES__',styles).replace('__INLINE_SCRIPTS__',scripts);
 if(/__INLINE_(?:STYLES|SCRIPTS)__/.test(html))throw new Error('unresolved build placeholder');
-const out=path.join(root,'Hex_Router_Designer.html');
+const out=path.join(root,'index.html');
 fs.writeFileSync(out,html,'utf8');
 console.log(`Built ${out} (${Buffer.byteLength(html)} bytes)`);
