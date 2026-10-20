@@ -13,11 +13,11 @@
   --canvas:#fbfcff;--corridor:#d4d9e3;--hex:#667085;--target:#c7d2fe;--diag:#a855f7;
 }
 @media (prefers-color-scheme:dark){:root{--bg:#0d1117;--panel:#141a22;--panel-2:#19212c;--text:#edf2f7;--muted:#a7b0bf;--border:#2c3747;--accent:#8aa3ff;--accent-weak:#26345f;--canvas:#0f151d;--corridor:#394555;--hex:#9aa6b7;--target:#41528a;}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}button,input,select{font:inherit;color:inherit}button,select,input[type="number"]{min-height:44px}button{border:1px solid var(--border);background:var(--panel);border-radius:10px;padding:8px 12px;cursor:pointer}button:hover{border-color:var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--accent);color:white;border-color:transparent}.danger{color:var(--danger)}input[type="number"],select{width:100%;border:1px solid var(--border);background:var(--panel);border-radius:9px;padding:8px 10px}.app-shell{max-width:1500px;margin:0 auto;padding:18px}.app-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.app-title{font-size:1.35rem;font-weight:760}.subtle{color:var(--muted);font-size:.9rem}.status-pill{white-space:nowrap;border:1px solid var(--border);background:var(--panel);padding:7px 10px;border-radius:999px;font-size:.84rem}.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}.workspace,.sidebar-section{background:var(--panel);border:1px solid var(--border);border-radius:15px}.workspace{overflow:hidden}.toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center}.toolbar .spacer{flex:1}.canvas-wrap{position:relative;background:var(--canvas);min-height:520px}.canvas-help{position:absolute;left:14px;top:12px;z-index:2;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:.82rem;color:var(--muted);pointer-events:none}.hex-canvas{display:block;width:100%;height:560px;touch-action:none;user-select:none}.route-controls{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:8px;align-items:center;padding:10px;border-top:1px solid var(--border)}.route-controls input[type="range"]{width:100%}.sidebar{display:grid;gap:12px}.sidebar-section{padding:13px}.sidebar-section h2{font-size:.98rem;margin:0 0 10px}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{display:grid;gap:4px;margin-bottom:9px}.field label{font-size:.8rem;color:var(--muted)}.check{display:flex;align-items:center;gap:8px;min-height:40px}.check input{width:18px;height:18px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}.metric{background:var(--panel-2);border-radius:9px;padding:8px;min-width:0}.metric span{display:block;font-size:.74rem;color:var(--muted)}.metric strong{display:block;margin-top:2px;font-size:.95rem;overflow-wrap:anywhere}.file-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.file-label{display:flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--panel)}.file-label input{display:none}.warning-box{margin-top:10px;border-left:3px solid var(--repeat);background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:.82rem}.electrical-note{font-size:.8rem;line-height:1.45;color:var(--muted)}.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;color:var(--muted);padding:0 10px 10px}.swatch{display:inline-block;width:22px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}.kbd{font-family:ui-monospace,monospace;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 4px;font-size:.74rem}.pick-active{outline:2px solid var(--accent);outline-offset:1px}.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:8px 11px;font-size:.82rem;z-index:3;max-width:90%;text-align:center}.hidden{display:none!important}
-@media (max-width:960px){.layout{grid-template-columns:minmax(0,1fr) 290px}.app-shell{padding:12px}.hex-canvas{height:500px}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}button,input,select{font:inherit;color:inherit}button,select,input[type="number"]{min-height:44px}button{border:1px solid var(--border);background:var(--panel);border-radius:10px;padding:8px 12px;cursor:pointer}button:hover{border-color:var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--accent);color:white;border-color:transparent}.danger{color:var(--danger)}input[type="number"],select{width:100%;border:1px solid var(--border);background:var(--panel);border-radius:9px;padding:8px 10px}input[readonly]{background:var(--panel-2);color:var(--muted);cursor:default}.app-shell{max-width:1500px;margin:0 auto;padding:18px}.app-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.app-title{font-size:1.35rem;font-weight:760}.subtle{color:var(--muted);font-size:.9rem}.status-pill{white-space:nowrap;border:1px solid var(--border);background:var(--panel);padding:7px 10px;border-radius:999px;font-size:.84rem}.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}.workspace,.sidebar-section{background:var(--panel);border:1px solid var(--border);border-radius:15px}.workspace{overflow:hidden}.toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center}.toolbar .spacer{flex:1}.canvas-wrap{position:relative;background:var(--canvas);min-height:520px}.canvas-help{position:absolute;left:14px;top:12px;z-index:2;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:.82rem;color:var(--muted);pointer-events:none}.hex-canvas{display:block;width:100%;height:560px;touch-action:none;user-select:none}.route-controls{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:8px;align-items:center;padding:10px;border-top:1px solid var(--border)}.route-controls input[type="range"]{width:100%}.sidebar{display:grid;gap:12px}.sidebar-section{padding:13px}.sidebar-section h2{font-size:.98rem;margin:0 0 10px}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{display:grid;gap:4px;margin-bottom:9px}.field label{font-size:.8rem;color:var(--muted)}.check{display:flex;align-items:center;gap:8px;min-height:40px}.check input{width:18px;height:18px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}.metric{background:var(--panel-2);border-radius:9px;padding:8px;min-width:0}.metric span{display:block;font-size:.74rem;color:var(--muted)}.metric strong{display:block;margin-top:2px;font-size:.95rem;overflow-wrap:anywhere}.file-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.file-label{display:flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--panel)}.file-label input{display:none}.warning-box{margin-top:10px;border-left:3px solid var(--repeat);background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:.82rem}.electrical-note{font-size:.8rem;line-height:1.45;color:var(--muted)}.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;color:var(--muted);padding:0 10px 10px}.swatch{display:inline-block;width:22px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}.kbd{font-family:ui-monospace,monospace;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 4px;font-size:.74rem}.pick-active{outline:2px solid var(--accent);outline-offset:1px}.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:8px 11px;font-size:.82rem;z-index:3;max-width:90%;text-align:center}.hidden{display:none!important}
+.orientation-switch{display:flex;align-items:center;gap:7px;min-height:44px;padding:5px 9px;border:1px solid var(--border);border-radius:10px;background:var(--panel);font-size:.8rem;color:var(--muted);cursor:pointer;user-select:none}.orientation-switch input{position:absolute;opacity:0;pointer-events:none}.switch-track{position:relative;width:42px;height:24px;border-radius:999px;background:var(--border);transition:background .15s ease;flex:0 0 auto}.switch-knob{position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s ease}.orientation-switch input:checked+.switch-track{background:var(--accent)}.orientation-switch input:checked+.switch-track .switch-knob{transform:translateX(18px)}.orientation-switch:focus-within{outline:2px solid var(--accent);outline-offset:1px}.delete-mode polygon[data-cell-key]{cursor:crosshair;stroke:var(--danger);stroke-width:2.6}.diagram-label text,.module-label text,.route-label text,.endpoint-label text{paint-order:stroke;stroke:var(--panel);stroke-width:1.5px;stroke-linejoin:round}
+@media (max-width:960px){.layout{grid-template-columns:minmax(0,1fr) 290px}.app-shell{padding:12px}.hex-canvas{height:500px}.orientation-switch{flex:1 1 auto}}
 @media (max-width:760px){.layout{grid-template-columns:1fr}.app-shell{padding:8px}.app-head{flex-direction:column}.status-pill{white-space:normal}.canvas-wrap{min-height:390px}.hex-canvas{height:420px}.route-controls{grid-template-columns:auto auto 1fr}.route-controls #route-animate-btn,.route-controls #route-pause-btn{grid-row:2}.sidebar{grid-template-columns:1fr}.toolbar button{flex:1 1 auto}.toolbar .spacer{display:none}.control-grid,.file-actions{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}}
 @media (max-width:380px){.control-grid,.file-actions,.metrics{grid-template-columns:1fr}.route-controls{grid-template-columns:auto auto}.route-controls input[type="range"]{grid-column:1/-1;grid-row:2}.route-controls #route-animate-btn,.route-controls #route-pause-btn{grid-row:3}.app-title{font-size:1.15rem}}
-
 .add-face{cursor:pointer;outline:none}.add-face .add-face-hit{transition:fill-opacity .12s ease,stroke-width .12s ease,transform .12s ease;transform-box:fill-box;transform-origin:center}.add-face:focus .add-face-hit{stroke-width:4}.add-face:focus-visible .add-face-hit{stroke-width:4}@media (hover:hover) and (pointer:fine){.add-face:hover .add-face-hit{fill:var(--start);fill-opacity:1;stroke-width:3;transform:scale(1.08)}}
 </style>
 </head>
@@ -159,6 +159,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
   const OFFSETS = [[0,-2],[1,-1],[1,1],[0,2],[-1,1],[-1,-1]];
+  const ORIENTATIONS = new Set(['pointy','flat']);
   const vKey = (gx,gy) => `${gx},${gy}`;
   const eKey = (a,b) => a < b ? `${a}|${b}` : `${b}|${a}`;
 
@@ -205,14 +206,33 @@
     return {vertices,edges,modules};
   }
 
-  function toWorld(vertex, sideLength) {
-    return {
+  function normalizeOrientation(orientation) {
+    return ORIENTATIONS.has(orientation) ? orientation : 'pointy';
+  }
+
+  function rotatePoint(point, orientation='pointy') {
+    if (normalizeOrientation(orientation) === 'flat') return {x:-point.y,y:point.x};
+    return {x:point.x,y:point.y};
+  }
+
+  function toWorld(vertex, sideLength, orientation='pointy') {
+    const point = {
       x: vertex.gx * (Math.sqrt(3)/2) * sideLength,
       y: vertex.gy * 0.5 * sideLength
     };
+    return rotatePoint(point,orientation);
   }
 
-  return { build, toWorld, OFFSETS };
+  function worldBounds(graph, sideLength, orientation='pointy') {
+    const vertices=graph&&Array.isArray(graph.vertices)?graph.vertices:[];
+    if(!vertices.length) return {minX:0,maxX:0,minY:0,maxY:0,width:0,height:0};
+    const points=vertices.map(v=>toWorld(v,sideLength,orientation));
+    const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
+    const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+    return {minX,maxX,minY,maxY,width:maxX-minX,height:maxY-minY};
+  }
+
+  return { build, toWorld, worldBounds, rotatePoint, normalizeOrientation, OFFSETS };
 });
 
 
@@ -224,7 +244,17 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
 
-  function analyze(graph) {
+  function orientationName(value) {
+    return value === 'flat' ? 'flat' : 'pointy';
+  }
+
+  function visualCoords(vertex, orientation='pointy') {
+    if (orientationName(orientation) === 'flat') return {x:-vertex.gy,y:vertex.gx};
+    return {x:vertex.gx,y:vertex.gy};
+  }
+
+  function analyze(graph, orientation='pointy') {
+    orientation = orientationName(orientation);
     const externalEdgeIds = graph.edges.filter(e => e.moduleKeys.length === 1).map(e => e.id);
     const extSet = new Set();
     for (const id of externalEdgeIds) {
@@ -233,29 +263,33 @@
     }
     const externalVertexIds = [...extSet].sort((a,b)=>a-b);
     if (externalVertexIds.length === 0) {
-      return {externalEdgeIds,externalVertexIds,lowerCandidateIds:[],bounds:{yMin:0,yMax:0,height:0},flatRow:true};
+      return {externalEdgeIds,externalVertexIds,lowerCandidateIds:[],bounds:{yMin:0,yMax:0,height:0},flatRow:true,orientation};
     }
-    const ys = externalVertexIds.map(id => graph.vertices[id].gy);
+
+    const coords = new Map(externalVertexIds.map(id=>[id,visualCoords(graph.vertices[id],orientation)]));
+    const ys = externalVertexIds.map(id => coords.get(id).y);
     const yMin = Math.min(...ys), yMax = Math.max(...ys), height = yMax-yMin;
-    const rs = new Set(graph.modules.map(m => m.r));
-    const flatRow = rs.size <= 1;
+    const rowKeys = orientation === 'flat'
+      ? new Set(graph.modules.map(m => 2*m.q + m.r))
+      : new Set(graph.modules.map(m => m.r));
+    const flatRow = rowKeys.size <= 1;
     let lowerCandidateIds;
     if (flatRow || height <= 1) {
       const tolerance = 1;
-      lowerCandidateIds = externalVertexIds.filter(id => graph.vertices[id].gy >= yMax - tolerance);
+      lowerCandidateIds = externalVertexIds.filter(id => coords.get(id).y >= yMax - tolerance);
     } else {
       const threshold = yMax - 0.25*height;
-      lowerCandidateIds = externalVertexIds.filter(id => graph.vertices[id].gy >= threshold - 1e-12);
+      lowerCandidateIds = externalVertexIds.filter(id => coords.get(id).y >= threshold - 1e-12);
     }
-    lowerCandidateIds.sort((a,b) => graph.vertices[a].gx-graph.vertices[b].gx || graph.vertices[a].gy-graph.vertices[b].gy || a-b);
-    return {externalEdgeIds,externalVertexIds,lowerCandidateIds,bounds:{yMin,yMax,height},flatRow};
+    lowerCandidateIds.sort((a,b) => coords.get(a).x-coords.get(b).x || coords.get(a).y-coords.get(b).y || a-b);
+    return {externalEdgeIds,externalVertexIds,lowerCandidateIds,bounds:{yMin,yMax,height},flatRow,orientation};
   }
 
   function isValidLowerEndpoint(analysis, vertexId) {
     return analysis.lowerCandidateIds.includes(vertexId);
   }
 
-  return { analyze, isValidLowerEndpoint };
+  return { analyze, isValidLowerEndpoint, visualCoords };
 });
 
 
@@ -1043,7 +1077,10 @@ return blossom;
   else root.EndpointSelector=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
-  function world(v,side){ return {x:v.gx*(Math.sqrt(3)/2)*side,y:v.gy*0.5*side}; }
+  function world(v,side,orientation='pointy'){
+    const p={x:v.gx*(Math.sqrt(3)/2)*side,y:v.gy*0.5*side};
+    return orientation==='flat'?{x:-p.y,y:p.x}:p;
+  }
   function separation(a,b,side){ const A=world(a,side),B=world(b,side); return Math.hypot(A.x-B.x,A.y-B.y); }
   function rankTuple(solution,startVertex,endVertex,sideLength){
     return [solution.repeatCount,solution.repeatSharedCount,solution.totalSegmentCount*sideLength,-separation(startVertex,endVertex,sideLength)];
@@ -1055,7 +1092,7 @@ return blossom;
     if(!set.has(startId)||!set.has(endId)) return {ok:false,reason:'not_lower_boundary'};
     return {ok:true};
   }
-  function autoSelect(graph,boundaryAnalysis,preparedOptimizer,sideLength){
+  function autoSelect(graph,boundaryAnalysis,preparedOptimizer,sideLength,orientation='pointy'){
     const ids=[...boundaryAnalysis.lowerCandidateIds];
     if(ids.length<2) throw new Error('at least two lower endpoint candidates are required');
     let best=null;
@@ -1066,8 +1103,8 @@ return blossom;
       if(!best||lexLess(rank,best.rank)) best={a,b,sol,rank};
     }
     let startId=best.a,endId=best.b;
-    const A=graph.vertices[startId],B=graph.vertices[endId];
-    if(A.gx>B.gx||(A.gx===B.gx&&A.gy>B.gy)){ const t=startId;startId=endId;endId=t; }
+    const A=world(graph.vertices[startId],sideLength,orientation),B=world(graph.vertices[endId],sideLength,orientation);
+    if(A.x>B.x||(A.x===B.x&&A.y>B.y)){ const t=startId;startId=endId;endId=t; }
     const solution=(startId===best.a&&endId===best.b)?best.sol:preparedOptimizer.solve(startId,endId);
     const ranking={repeatCount:solution.repeatCount,repeatSharedCount:solution.repeatSharedCount,totalLength:solution.totalSegmentCount*sideLength,separation:separation(graph.vertices[startId],graph.vertices[endId],sideLength)};
     return {startId,endId,solution,ranking};
@@ -1085,6 +1122,12 @@ return blossom;
   'use strict';
   const allowedVoltages=new Set([5,12,24]);
   function num(v){ return typeof v==='number'?v:Number(v); }
+  function sideMmFromSegments(segmentsPerSide,ledPerM){
+    const segments=num(segmentsPerSide), density=num(ledPerM);
+    if(!Number.isInteger(segments)||segments<=0) throw new Error('segmentsPerSide must be a positive integer');
+    if(!Number.isFinite(density)||density<=0) throw new Error('ledPerM must be finite and > 0');
+    return segments*1000/density;
+  }
   function validateInputs(input){
     const errors=[];
     const n={...input};
@@ -1119,9 +1162,13 @@ return blossom;
     const dx=(input.endVertex.gx-input.startVertex.gx)*(Math.sqrt(3)/2)*n.sideMm/1000;
     const dy=(input.endVertex.gy-input.startVertex.gy)*0.5*n.sideMm/1000;
     const endpointSeparationM=Math.hypot(dx,dy);
-    return {uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM};
+    const segmentsPerSide=n.sideMm*n.ledPerM/1000;
+    return {
+      uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM,
+      segmentsPerSide,sideMm:n.sideMm,ledPerM:n.ledPerM,wattsPerM:n.wattsPerM,voltage:n.voltage,reservePercent:n.reservePercent
+    };
   }
-  return {calculate,validateInputs};
+  return {calculate,validateInputs,sideMmFromSegments};
 });
 
 
@@ -1134,7 +1181,7 @@ return blossom;
   else root.ProjectIO=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(ConnectivityValidator,BoundaryAnalyzer){
   'use strict';
-  const V=1;
+  const V=2;
   const key=(q,r)=>`${q},${r}`;
   function finitePos(x){return Number.isFinite(x)&&x>0;}
   function endpointDescriptor(snapshot,id){
@@ -1151,13 +1198,17 @@ return blossom;
     const endSource=hasManualEnd?routing.manualEnd:routing.end;
     const start=mode==='manual'?(startSource&&Number.isInteger(startSource.gx)?{gx:startSource.gx,gy:startSource.gy}:(!hasManualStart?endpointDescriptor(snapshot,routing.startId):null)):null;
     const end=mode==='manual'?(endSource&&Number.isInteger(endSource.gx)?{gx:endSource.gx,gy:endSource.gy}:(!hasManualEnd?endpointDescriptor(snapshot,routing.endId):null)):null;
+    const ledPerM=strip.ledPerM??strip.led_per_m??60;
+    const legacySide=strip.sideMm??strip.side_mm??100;
+    const segments=strip.segmentsPerSide??strip.segments_per_side??Math.max(1,Math.round(legacySide*ledPerM/1000));
     const project={
       version:V,
       hexagons:cells,
+      layout:{orientation:snapshot.orientation==='flat'?'flat':'pointy'},
       routing:{endpoint_mode:mode,start,end,objective:routing.objective||'min_repeats'},
       strip:{
-        side_mm:strip.sideMm??strip.side_mm??100,
-        led_per_m:strip.ledPerM??strip.led_per_m??60,
+        segments_per_side:segments,
+        led_per_m:ledPerM,
         watts_per_m:strip.wattsPerM??strip.watts_per_m??18,
         voltage:strip.voltage??12,
         psu_reserve_percent:strip.reservePercent??strip.psu_reserve_percent??20
@@ -1170,7 +1221,7 @@ return blossom;
     let p;
     try{p=JSON.parse(jsonText);}catch(e){return {ok:false,error:`Malformed JSON: ${e.message}`};}
     if(!p||typeof p!=='object'||Array.isArray(p)) return {ok:false,error:'Project must be an object'};
-    if(p.version!==V) return {ok:false,error:`Unsupported project version ${String(p.version)}`};
+    if(![1,V].includes(p.version)) return {ok:false,error:`Unsupported project version ${String(p.version)}`};
     if(!Array.isArray(p.hexagons)) return {ok:false,error:'hexagons must be an array'};
     const cells=[]; const seen=new Set();
     for(const c of p.hexagons){
@@ -1187,13 +1238,36 @@ return blossom;
     }
     const s=p.strip;
     if(!s) return {ok:false,error:'strip settings are required'};
-    for(const name of ['side_mm','led_per_m','watts_per_m']) if(!finitePos(s[name])) return {ok:false,error:`strip.${name} must be finite and positive`};
-    if(![5,12,24].includes(s.voltage)) return {ok:false,error:'strip.voltage must be 5, 12, or 24'};
-    if(!Number.isFinite(s.psu_reserve_percent)||s.psu_reserve_percent<0) return {ok:false,error:'strip.psu_reserve_percent must be finite and >= 0'};
+    const warnings=[];
+    let orientation='pointy',segmentsPerSide,ledPerM,wattsPerM,voltage,reservePercent;
+    if(p.version===1){
+      for(const name of ['side_mm','led_per_m','watts_per_m']) if(!finitePos(s[name])) return {ok:false,error:`strip.${name} must be finite and positive`};
+      ledPerM=s.led_per_m; wattsPerM=s.watts_per_m; voltage=s.voltage; reservePercent=s.psu_reserve_percent;
+      const raw=s.side_mm*ledPerM/1000;
+      segmentsPerSide=Math.max(1,Math.round(raw));
+      if(Math.abs(raw-segmentsPerSide)>1e-9) warnings.push(`Legacy side length corresponds to ${raw.toFixed(3)} LED cut segments; rounded to ${segmentsPerSide} segments per side.`);
+    } else {
+      const layout=p.layout||{};
+      if(!['pointy','flat'].includes(layout.orientation)) return {ok:false,error:'layout.orientation must be pointy or flat'};
+      orientation=layout.orientation;
+      if(!Number.isInteger(s.segments_per_side)||s.segments_per_side<=0) return {ok:false,error:'strip.segments_per_side must be a positive integer'};
+      if(!finitePos(s.led_per_m)) return {ok:false,error:'strip.led_per_m must be finite and positive'};
+      if(!finitePos(s.watts_per_m)) return {ok:false,error:'strip.watts_per_m must be finite and positive'};
+      segmentsPerSide=s.segments_per_side; ledPerM=s.led_per_m; wattsPerM=s.watts_per_m; voltage=s.voltage; reservePercent=s.psu_reserve_percent;
+    }
+    if(![5,12,24].includes(voltage)) return {ok:false,error:'strip.voltage must be 5, 12, or 24'};
+    if(!Number.isFinite(reservePercent)||reservePercent<0) return {ok:false,error:'strip.psu_reserve_percent must be finite and >= 0'};
     const view=p.view||{};
     if(typeof view.show_numbers!=='boolean'||typeof view.show_diagnostics!=='boolean') return {ok:false,error:'view flags must be boolean'};
-    const project={version:V,hexagons:cells.sort((a,b)=>a.q-b.q||a.r-b.r),routing:{endpoint_mode:r.endpoint_mode,start:r.start??null,end:r.end??null,objective:r.objective},strip:{side_mm:s.side_mm,led_per_m:s.led_per_m,watts_per_m:s.watts_per_m,voltage:s.voltage,psu_reserve_percent:s.psu_reserve_percent},view:{show_numbers:view.show_numbers,show_diagnostics:view.show_diagnostics}};
-    return {ok:true,project,warnings:[]};
+    const project={
+      version:V,
+      hexagons:cells.sort((a,b)=>a.q-b.q||a.r-b.r),
+      layout:{orientation},
+      routing:{endpoint_mode:r.endpoint_mode,start:r.start??null,end:r.end??null,objective:r.objective},
+      strip:{segments_per_side:segmentsPerSide,led_per_m:ledPerM,watts_per_m:wattsPerM,voltage,psu_reserve_percent:reservePercent},
+      view:{show_numbers:view.show_numbers,show_diagnostics:view.show_diagnostics}
+    };
+    return {ok:true,project,warnings};
   }
   function resolveManualEndpoints(project,graph,boundaryAnalysis){
     if(!project.routing||project.routing.endpoint_mode!=='manual') return {mode:'auto',startId:null,endId:null,warnings:[]};
@@ -1209,7 +1283,7 @@ return blossom;
     if(warnings.length) return {mode:'auto',startId:null,endId:null,warnings};
     return {mode:'manual',startId:startId??null,endId:endId??null,warnings:[]};
   }
-  return {serialize,parse,resolveManualEndpoints};
+  return {serialize,parse,resolveManualEndpoints,version:V};
 });
 
 
@@ -1221,41 +1295,97 @@ return blossom;
   else root.SvgExporter=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(GeometryBuilder){
   'use strict';
-  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&apos;'}[c]));
   const fmt=n=>Number.isFinite(n)?(Math.round(n*100)/100).toString():'—';
-  function exportSvg({graph,modules,solution,startId,endId,showModuleNumbers,showRouteNumbers,electrical,sideMm}){
+  const value=(v,suffix='')=>Number.isFinite(Number(v))?`${fmt(Number(v))}${suffix}`:`—${suffix}`;
+
+  function exportSvg({graph,modules,solution,startId,endId,showModuleNumbers,showRouteNumbers,electrical,sideMm,orientation='pointy'}){
     const svgNs='http'+'://www.w3.org/2000/svg';
-    const pts=graph.vertices.map(v=>GeometryBuilder.toWorld(v,sideMm));
-    const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
-    const margin=Math.max(25,sideMm*0.35), line=Math.max(16,sideMm*.18);
-    const summaryH=Math.max(sideMm*1.2,margin*1.5+8*line+20);
-    const minX=Math.min(...xs)-margin,maxX=Math.max(...xs)+margin,minY=Math.min(...ys)-margin,maxY=Math.max(...ys)+margin;
-    const width=maxX-minX,height=(maxY-minY)+summaryH;
+    const pts=graph.vertices.map(v=>GeometryBuilder.toWorld(v,sideMm,orientation));
+    const bounds=GeometryBuilder.worldBounds(graph,sideMm,orientation);
+    const margin=Math.max(55,sideMm*.5);
+    const dimOffset=Math.max(18,sideMm*.16);
+    const line=Math.max(16,sideMm*.18);
+    const centerX=(bounds.minX+bounds.maxX)/2,centerY=(bounds.minY+bounds.maxY)/2;
+
+    const segmentsPerSide=electrical&&Number.isFinite(electrical.segmentsPerSide)?electrical.segmentsPerSide:(Number(sideMm)*Number(electrical&&electrical.ledPerM)/1000);
+    const summaryItems=[
+      `Габариты: ${fmt(bounds.width)} × ${fmt(bounds.height)} мм`,
+      `Модули: ${modules.length}`,
+      `Сегментов на сторону: ${fmt(segmentsPerSide)}`,
+      `LED/м: ${value(electrical&&electrical.ledPerM)}`,
+      `Сторона: ${fmt(sideMm)} мм`,
+      `Вт/м: ${value(electrical&&electrical.wattsPerM)}`,
+      `Напряжение: ${value(electrical&&electrical.voltage,' В')}`,
+      `Запас БП: ${value(electrical&&electrical.reservePercent,'%')}`,
+      `Уникальных участков: ${graph.edges.length}`,
+      `Повторных проходов: ${solution.repeatCount}`,
+      `Уникальная длина: ${fmt(electrical.uniqueLengthM)} м`,
+      `Повторы: ${fmt(electrical.repeatLengthM)} м`,
+      `Итого ленты: ${fmt(electrical.totalLengthM)} м`,
+      `LED ≈: ${electrical.ledCountApprox}`,
+      `Мощность: ${fmt(electrical.powerW)} Вт`,
+      `Ток: ${fmt(electrical.currentA)} А`,
+      `БП ≥: ${fmt(electrical.recommendedPsuW)} Вт`,
+      `Доля повтора: ${fmt(electrical.repeatPercent)}%`,
+      `START–END: ${fmt(electrical.endpointSeparationM)} м`
+    ];
+    const summaryColumns=4;
+    const summaryRows=Math.ceil(summaryItems.length/summaryColumns);
+    const columnWidth=Math.max(180,sideMm*2);
+    const summaryPad=Math.max(16,margin*.3);
+    const summaryWidth=summaryColumns*columnWidth+summaryPad*2;
+    const diagramWidth=bounds.width+2*margin;
+    const viewWidth=Math.max(diagramWidth,summaryWidth);
+    const minX=centerX-viewWidth/2,maxX=centerX+viewWidth/2,minY=bounds.minY-margin;
+    const summaryTitleY=bounds.maxY+margin+line;
+    const summaryGridY=summaryTitleY+line*1.25;
+    const connectionY=summaryGridY+summaryRows*line+line*.55;
+    const bottom=connectionY+line+Math.max(20,margin*.35);
+    const height=bottom-minY;
+
     const out=[];
-    out.push(`<svg xmlns="${svgNs}" viewBox="${fmt(minX)} ${fmt(minY)} ${fmt(width)} ${fmt(height)}" role="img" aria-label="Hex Router technical routing diagram">`);
+    out.push(`<svg xmlns="${svgNs}" viewBox="${fmt(minX)} ${fmt(minY)} ${fmt(viewWidth)} ${fmt(height)}" role="img" aria-label="Hex Router technical routing diagram">`);
     out.push(`<defs><marker id="dataArrow" markerWidth="4" markerHeight="4" refX="3.5" refY="1.5" orient="auto"><path d="M0,0 L0,3 L4,1.5 z" fill="#2563eb"/></marker></defs>`);
-    out.push(`<style>.module{fill:none;stroke:#6b7280;stroke-width:2}.corridor{stroke:#d1d5db;stroke-width:12;stroke-linecap:round}.route{stroke:#2563eb;stroke-width:5;stroke-linecap:round}.route.repeat{stroke:#d97706;stroke-dasharray:10 7}.module-number,.route-number,.label,.summary{font-family:Arial,sans-serif;fill:#111827}.module-number,.route-number{font-size:${Math.max(10,sideMm*.13)}px}.label{font-size:${Math.max(12,sideMm*.15)}px;font-weight:700}.summary{font-size:${Math.max(11,sideMm*.12)}px}</style>`);
-    for(const m of modules){
+    out.push(`<style>.module{fill:none;stroke:#6b7280;stroke-width:2}.corridor{stroke:#d1d5db;stroke-width:12;stroke-linecap:round}.route{stroke:#2563eb;stroke-width:5;stroke-linecap:round}.route.repeat{stroke:#d97706;stroke-dasharray:10 7}.dimension-frame{fill:none;stroke:#9ca3af;stroke-width:1}.module-number,.route-number,.label,.summary,.dimension-label{font-family:Arial,sans-serif;fill:#111827;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.module-number,.route-number{font-size:${Math.max(10,sideMm*.13)}px}.label{font-size:${Math.max(12,sideMm*.15)}px;font-weight:700}.dimension-label{font-size:${Math.max(11,sideMm*.12)}px;fill:#6b7280;font-weight:700;stroke-width:4px}.summary{font-size:${Math.max(11,sideMm*.12)}px;stroke-width:2px}.summary-title{font-weight:700;font-size:${Math.max(12,sideMm*.14)}px}</style>`);
+
+    out.push(`<rect class="dimension-frame" x="${fmt(bounds.minX)}" y="${fmt(bounds.minY)}" width="${fmt(bounds.width)}" height="${fmt(bounds.height)}"/>`);
+    const widthText=`${fmt(bounds.width)} мм`,heightText=`${fmt(bounds.height)} мм`;
+    out.push(`<text class="dimension-label" data-dimension="width-top" x="${fmt(centerX)}" y="${fmt(bounds.minY-dimOffset)}" text-anchor="middle" dominant-baseline="middle">${esc(widthText)}</text>`);
+    out.push(`<text class="dimension-label" data-dimension="width-bottom" x="${fmt(centerX)}" y="${fmt(bounds.maxY+dimOffset)}" text-anchor="middle" dominant-baseline="middle">${esc(widthText)}</text>`);
+    out.push(`<text class="dimension-label" data-dimension="height-left" x="${fmt(bounds.minX-dimOffset)}" y="${fmt(centerY)}" text-anchor="middle" dominant-baseline="middle">${esc(heightText)}</text>`);
+    out.push(`<text class="dimension-label" data-dimension="height-right" x="${fmt(bounds.maxX+dimOffset)}" y="${fmt(centerY)}" text-anchor="middle" dominant-baseline="middle">${esc(heightText)}</text>`);
+
+    const orderedModules=[...modules].sort((a,b)=>a.r-b.r||a.q-b.q);
+    for(const [index,m] of orderedModules.entries()){
       const polygon=m.vertexIds.map(id=>`${fmt(pts[id].x)},${fmt(pts[id].y)}`).join(' ');
       out.push(`<polygon class="module" data-module="${esc(m.key)}" points="${polygon}"/>`);
       if(showModuleNumbers){
-        const vs=m.vertexIds.map(id=>pts[id]); const cx=vs.reduce((s,p)=>s+p.x,0)/vs.length,cy=vs.reduce((s,p)=>s+p.y,0)/vs.length;
-        out.push(`<text class="module-number" x="${fmt(cx)}" y="${fmt(cy)}" text-anchor="middle">${esc(m.key)}</text>`);
+        const vs=m.vertexIds.map(id=>pts[id]);
+        const cx=vs.reduce((s,p)=>s+p.x,0)/vs.length,cy=vs.reduce((s,p)=>s+p.y,0)/vs.length;
+        out.push(`<text class="module-number" x="${fmt(cx)}" y="${fmt(cy)}" text-anchor="middle" dominant-baseline="middle">${index+1}</text>`);
       }
     }
     for(const e of graph.edges){const a=pts[e.u],b=pts[e.v];out.push(`<line class="corridor" x1="${fmt(a.x)}" y1="${fmt(a.y)}" x2="${fmt(b.x)}" y2="${fmt(b.y)}"/>`);}
     solution.traversals.forEach((t,i)=>{
       const a=pts[t.from],b=pts[t.to]; const cls=t.repeat?'route repeat':'route primary';
       out.push(`<line class="${cls}" data-route="${i+1}" x1="${fmt(a.x)}" y1="${fmt(a.y)}" x2="${fmt(b.x)}" y2="${fmt(b.y)}" marker-end="url(#dataArrow)"${t.repeat?' stroke-dasharray="10 7"':''}/>`);
-      if(showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;out.push(`<text class="route-number" x="${fmt(x)}" y="${fmt(y)}" text-anchor="middle">${i+1}</text>`);}
+      if(showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;out.push(`<text class="route-number" x="${fmt(x)}" y="${fmt(y)}" text-anchor="middle" dominant-baseline="middle">${i+1}</text>`);}
     });
     const sp=pts[startId],ep=pts[endId],r=Math.max(5,sideMm*.07);
-    out.push(`<circle cx="${fmt(sp.x)}" cy="${fmt(sp.y)}" r="${fmt(r)}" fill="#16a34a"/><text class="label" x="${fmt(sp.x+r*1.6)}" y="${fmt(sp.y-r)}">START</text>`);
-    out.push(`<circle cx="${fmt(ep.x)}" cy="${fmt(ep.y)}" r="${fmt(r)}" fill="#ea580c"/><text class="label" x="${fmt(ep.x+r*1.6)}" y="${fmt(ep.y-r)}">END</text>`);
-    out.push(`<text class="label" x="${fmt(minX+margin*.25)}" y="${fmt(maxY+margin*.6)}">DATA: START → END</text>`);
-    const sx=minX+margin*.25,sy=maxY+margin*1.25;
-    const summary=[`Modules: ${modules.length}`,`Unique segments: ${graph.edges.length}`,`Repeated: ${solution.repeatCount}`,`Total strip: ${fmt(electrical.totalLengthM)} m`,`LED approx: ${electrical.ledCountApprox}`,`Power: ${fmt(electrical.powerW)} W`,`Current: ${fmt(electrical.currentA)} A`,`PSU: ${fmt(electrical.recommendedPsuW)} W min.`];
-    summary.forEach((text,i)=>out.push(`<text class="summary" x="${fmt(sx)}" y="${fmt(sy+i*line)}">${esc(text)}</text>`));
+    out.push(`<circle cx="${fmt(sp.x)}" cy="${fmt(sp.y)}" r="${fmt(r)}" fill="#16a34a"/><text class="label" x="${fmt(sp.x+r*1.8)}" y="${fmt(sp.y-r*1.3)}">START</text>`);
+    out.push(`<circle cx="${fmt(ep.x)}" cy="${fmt(ep.y)}" r="${fmt(r)}" fill="#ea580c"/><text class="label" x="${fmt(ep.x+r*1.8)}" y="${fmt(ep.y-r*1.3)}">END</text>`);
+
+    const summaryLeft=minX+summaryPad;
+    out.push(`<text class="summary summary-title" x="${fmt(summaryLeft)}" y="${fmt(summaryTitleY)}">Параметры и расчёт</text>`);
+    out.push(`<g class="summary-grid" data-columns="4">`);
+    summaryItems.forEach((text,i)=>{
+      const row=Math.floor(i/summaryColumns),col=i%summaryColumns;
+      const x=summaryLeft+col*columnWidth,y=summaryGridY+row*line;
+      out.push(`<text class="summary" data-summary-col="${col}" data-summary-row="${row}" x="${fmt(x)}" y="${fmt(y)}">${esc(text)}</text>`);
+    });
+    out.push(`</g>`);
+    out.push(`<text class="summary" x="${fmt(summaryLeft)}" y="${fmt(connectionY)}">DATA: START → END; +V и GND подаются с обоих концов</text>`);
     out.push(`</svg>`);
     return out.join('');
   }
@@ -1281,14 +1411,15 @@ return blossom;
   const clone=o=>JSON.parse(JSON.stringify(o));
   const cellKey=(q,r)=>`${q},${r}`;
   const defaults=()=>({
-    cells:[],selectedKey:null,objective:'min_repeats',endpointMode:'auto',manualStart:null,manualEnd:null,
-    strip:{sideMm:100,ledPerM:60,wattsPerM:18,voltage:12,reservePercent:20},
+    cells:[],orientation:'pointy',objective:'min_repeats',endpointMode:'auto',manualStart:null,manualEnd:null,
+    strip:{segmentsPerSide:6,sideMm:100,ledPerM:60,wattsPerM:18,voltage:12,reservePercent:20},
     view:{showNumbers:true,showDiagnostics:false,showRouteNumbers:false},
     graph:null,boundary:null,solution:null,electrical:null,startId:null,endId:null,ranking:null,warnings:[],undo:[],redo:[]
   });
   function create(){
     const st=defaults();
 
+    function syncSide(){ st.strip.sideMm=ElectricalCalculator.sideMmFromSegments(st.strip.segmentsPerSide,st.strip.ledPerM); }
     function pushUndo(){ st.undo.push(clone(st.cells)); if(st.undo.length>100) st.undo.shift(); st.redo=[]; }
     function descFor(id){ if(id===null||id===undefined||!st.graph?.vertices[id]) return null; const v=st.graph.vertices[id]; return {gx:v.gx,gy:v.gy}; }
     function idFor(desc){ if(!desc) return null; const v=st.graph.vertices.find(v=>v.gx===desc.gx&&v.gy===desc.gy); return v?v.id:null; }
@@ -1314,8 +1445,9 @@ return blossom;
 
     function recompute(extraWarnings=[]){
       st.warnings=[...extraWarnings];
+      syncSide();
       st.graph=GeometryBuilder.build(st.cells);
-      st.boundary=BoundaryAnalyzer.analyze(st.graph);
+      st.boundary=BoundaryAnalyzer.analyze(st.graph,st.orientation);
       st.solution=null;st.electrical=null;st.startId=null;st.endId=null;st.ranking=null;
       if(st.graph.edges.length===0||st.boundary.lowerCandidateIds.length<2) return;
       const prepared=RouteOptimizer.prepare(st.graph,st.objective);
@@ -1332,24 +1464,26 @@ return blossom;
         } else selected=chooseWithFixed(prepared,ms,me);
       }
       if(!selected){
-        const auto=EndpointSelector.autoSelect(st.graph,st.boundary,prepared,st.strip.sideMm);
+        const auto=EndpointSelector.autoSelect(st.graph,st.boundary,prepared,st.strip.sideMm,st.orientation);
         selected={startId:auto.startId,endId:auto.endId,solution:auto.solution,ranking:auto.ranking};
       }
       st.startId=selected.startId;st.endId=selected.endId;st.solution=selected.solution;st.ranking=selected.ranking;
-      const input={moduleCount:st.cells.length,uniqueEdgeCount:st.graph.edges.length,repeatCount:st.solution.repeatCount,sideMm:st.strip.sideMm,ledPerM:st.strip.ledPerM,wattsPerM:st.strip.wattsPerM,voltage:st.strip.voltage,reservePercent:st.strip.reservePercent,startVertex:st.graph.vertices[st.startId],endVertex:st.graph.vertices[st.endId]};
+      const input={moduleCount:st.cells.length,uniqueEdgeCount:st.graph.edges.length,repeatCount:st.solution.repeatCount,sideMm:st.strip.sideMm,ledPerM:st.strip.ledPerM,wattsPerM:st.strip.wattsPerM,voltage:st.strip.voltage,reservePercent:st.strip.reservePercent,startVertex:st.graph.vertices[st.startId],endVertex:st.graph.vertices[st.endId],orientation:st.orientation};
       const val=ElectricalCalculator.validateInputs(input);
       if(val.ok) st.electrical=ElectricalCalculator.calculate(input);
       else st.warnings.push(...val.errors);
     }
 
-    function loadValidated(project){
+    function loadValidated(project,extraWarnings=[]){
       st.cells=project.hexagons.map(c=>({q:c.q,r:c.r}));
-      st.selectedKey=null;st.objective=project.routing.objective;st.endpointMode=project.routing.endpoint_mode;
+      st.orientation=project.layout?.orientation==='flat'?'flat':'pointy';
+      st.objective=project.routing.objective;st.endpointMode=project.routing.endpoint_mode;
       st.manualStart=project.routing.start?{...project.routing.start}:null;st.manualEnd=project.routing.end?{...project.routing.end}:null;
-      st.strip={sideMm:project.strip.side_mm,ledPerM:project.strip.led_per_m,wattsPerM:project.strip.watts_per_m,voltage:project.strip.voltage,reservePercent:project.strip.psu_reserve_percent};
+      st.strip={segmentsPerSide:project.strip.segments_per_side,sideMm:0,ledPerM:project.strip.led_per_m,wattsPerM:project.strip.watts_per_m,voltage:project.strip.voltage,reservePercent:project.strip.psu_reserve_percent};
+      syncSide();
       st.view={showNumbers:project.view.show_numbers,showDiagnostics:project.view.show_diagnostics,showRouteNumbers:false};
       st.undo=[];st.redo=[];
-      recompute();
+      recompute(extraWarnings);
     }
 
     function dispatch(action){
@@ -1357,23 +1491,30 @@ return blossom;
       switch(action.type){
         case 'ADD_HEX':{
           const grid=HexGrid.create(st.cells); const r=grid.add(action.q,action.r); if(!r.ok) return {ok:false,message:r.reason};
-          pushUndo(); st.cells=grid.cloneCells(); st.selectedKey=cellKey(action.q,action.r); recompute(); return {ok:true};
+          pushUndo(); st.cells=grid.cloneCells(); recompute(); return {ok:true};
         }
-        case 'SELECT_HEX':{
-          const k=action.key??cellKey(action.q,action.r); if(!st.cells.some(c=>cellKey(c.q,c.r)===k)) return {ok:false,message:'not_found'}; st.selectedKey=k; return {ok:true};
+        case 'DELETE_HEX':{
+          let q=action.q,r=action.r;
+          if(action.key!==undefined){const parts=String(action.key).split(',').map(Number);q=parts[0];r=parts[1];}
+          if(!Number.isInteger(q)||!Number.isInteger(r)) return {ok:false,message:'invalid_coordinates'};
+          const grid=HexGrid.create(st.cells); const res=grid.remove(q,r); if(!res.ok) return {ok:false,message:res.reason};
+          pushUndo();st.cells=grid.cloneCells();recompute();return {ok:true};
         }
-        case 'DELETE_SELECTED':{
-          if(!st.selectedKey) return {ok:false,message:'nothing_selected'}; const [q,r]=st.selectedKey.split(',').map(Number); const grid=HexGrid.create(st.cells); const res=grid.remove(q,r); if(!res.ok) return {ok:false,message:res.reason};
-          pushUndo();st.cells=grid.cloneCells();st.selectedKey=null;recompute();return {ok:true};
-        }
+        case 'SELECT_HEX':
+        case 'DELETE_SELECTED':return {ok:false,message:'selection_disabled'};
         case 'CLEAR':{
-          if(!st.cells.length) return {ok:true}; pushUndo();st.cells=[];st.selectedKey=null;recompute();return {ok:true};
+          if(!st.cells.length) return {ok:true}; pushUndo();st.cells=[];recompute();return {ok:true};
         }
         case 'UNDO':{
-          if(!st.undo.length) return {ok:false,message:'nothing_to_undo'}; st.redo.push(clone(st.cells));st.cells=st.undo.pop();st.selectedKey=null;recompute();return {ok:true};
+          if(!st.undo.length) return {ok:false,message:'nothing_to_undo'}; st.redo.push(clone(st.cells));st.cells=st.undo.pop();recompute();return {ok:true};
         }
         case 'REDO':{
-          if(!st.redo.length) return {ok:false,message:'nothing_to_redo'};st.undo.push(clone(st.cells));st.cells=st.redo.pop();st.selectedKey=null;recompute();return {ok:true};
+          if(!st.redo.length) return {ok:false,message:'nothing_to_redo'};st.undo.push(clone(st.cells));st.cells=st.redo.pop();recompute();return {ok:true};
+        }
+        case 'SET_ORIENTATION':{
+          if(!['pointy','flat'].includes(action.orientation)) return {ok:false,message:'invalid_orientation'};
+          if(st.orientation===action.orientation) return {ok:true};
+          st.orientation=action.orientation;recompute();return {ok:true};
         }
         case 'SET_OBJECTIVE':{
           if(!['min_repeats','avoid_shared'].includes(action.objective)) return {ok:false,message:'invalid_objective'};st.objective=action.objective;recompute();return {ok:true};
@@ -1389,25 +1530,26 @@ return blossom;
           if(!st.boundary.lowerCandidateIds.includes(action.vertexId)) return {ok:false,message:'not_lower_boundary'}; const d=descFor(action.vertexId); const other=idFor(st.manualStart);if(other===action.vertexId)return {ok:false,message:'same_endpoint'};st.manualEnd=d;st.endpointMode='manual';recompute();return {ok:true};
         }
         case 'SET_STRIP_INPUT':{
-          const f=action.field;const v=Number(action.value);const positive=['sideMm','ledPerM','wattsPerM'];
-          if(positive.includes(f)){if(!Number.isFinite(v)||v<=0)return {ok:false,message:'invalid_numeric'};}
+          const f=action.field;const v=Number(action.value);
+          if(f==='segmentsPerSide'){if(!Number.isInteger(v)||v<=0)return {ok:false,message:'invalid_numeric'};}
+          else if(['ledPerM','wattsPerM'].includes(f)){if(!Number.isFinite(v)||v<=0)return {ok:false,message:'invalid_numeric'};}
           else if(f==='reservePercent'){if(!Number.isFinite(v)||v<0)return {ok:false,message:'invalid_numeric'};}
           else if(f==='voltage'){if(![5,12,24].includes(v))return {ok:false,message:'invalid_voltage'};}
           else return {ok:false,message:'unknown_strip_field'};
-          st.strip[f]=v;recompute();return {ok:true};
+          st.strip[f]=v;syncSide();recompute();return {ok:true};
         }
         case 'SET_VIEW_FLAG':{
           if(!['showNumbers','showDiagnostics','showRouteNumbers'].includes(action.flag))return {ok:false,message:'unknown_view_flag'};st.view[action.flag]=!!action.value;return {ok:true};
         }
         case 'LOAD_PROJECT':{
-          const parsed=ProjectIO.parse(JSON.stringify(action.project));if(!parsed.ok)return {ok:false,message:parsed.error};loadValidated(parsed.project);return {ok:true};
+          const parsed=ProjectIO.parse(JSON.stringify(action.project));if(!parsed.ok)return {ok:false,message:parsed.error};loadValidated(parsed.project,parsed.warnings);return {ok:true};
         }
         default:return {ok:false,message:'unknown_action'};
       }
     }
 
     function snapshot(){
-      return clone({cells:st.cells,selectedKey:st.selectedKey,graph:st.graph,boundary:st.boundary,routing:{endpointMode:st.endpointMode,objective:st.objective,startId:st.startId,endId:st.endId,manualStart:st.manualStart,manualEnd:st.manualEnd,ranking:st.ranking},solution:st.solution,electrical:st.electrical,strip:st.strip,view:st.view,history:{undoCount:st.undo.length,redoCount:st.redo.length},warnings:st.warnings});
+      return clone({cells:st.cells,orientation:st.orientation,graph:st.graph,boundary:st.boundary,routing:{endpointMode:st.endpointMode,objective:st.objective,startId:st.startId,endId:st.endId,manualStart:st.manualStart,manualEnd:st.manualEnd,ranking:st.ranking},solution:st.solution,electrical:st.electrical,strip:st.strip,view:st.view,history:{undoCount:st.undo.length,redoCount:st.redo.length},warnings:st.warnings});
     }
     recompute();
     return {dispatch,snapshot};
@@ -1428,18 +1570,26 @@ return blossom;
   const {HexGrid,GeometryBuilder,ProjectIO,SvgExporter}=deps;
   const RENDER_SIDE=60;
   const SQRT3=Math.sqrt(3);
+  const ANIMATION_MS=350;
+  const FIT_PADDING=20;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const fmt=(v,d=2)=>Number.isFinite(v)?Number(v).toFixed(d):'—';
+  const fmtMm=v=>Number.isFinite(v)?String(Math.round(v*100)/100):'—';
   const key=(q,r)=>`${q},${r}`;
 
-  function center(q,r){return {x:SQRT3*RENDER_SIDE*(q+r/2),y:1.5*RENDER_SIDE*r};}
-  function polygonPoints(q,r){
-    const c=center(q,r),a=SQRT3/2*RENDER_SIDE,h=.5*RENDER_SIDE,R=RENDER_SIDE;
-    return [[0,-R],[a,-h],[a,h],[0,R],[-a,h],[-a,-h]].map(([dx,dy])=>`${c.x+dx},${c.y+dy}`).join(' ');
+  function rotatePoint(p,orientation='pointy'){return orientation==='flat'?{x:-p.y,y:p.x}:{x:p.x,y:p.y};}
+  function unrotatePoint(p,orientation='pointy'){return orientation==='flat'?{x:p.y,y:-p.x}:{x:p.x,y:p.y};}
+  function center(q,r,orientation='pointy'){
+    return rotatePoint({x:SQRT3*RENDER_SIDE*(q+r/2),y:1.5*RENDER_SIDE*r},orientation);
   }
-  function axialRound(x,y){
-    const rf=(2/3)*y/RENDER_SIDE;
-    const qf=x/(SQRT3*RENDER_SIDE)-rf/2;
+  function polygonPoints(q,r,orientation='pointy'){
+    const c0={x:SQRT3*RENDER_SIDE*(q+r/2),y:1.5*RENDER_SIDE*r},a=SQRT3/2*RENDER_SIDE,h=.5*RENDER_SIDE,R=RENDER_SIDE;
+    return [[0,-R],[a,-h],[a,h],[0,R],[-a,h],[-a,-h]].map(([dx,dy])=>rotatePoint({x:c0.x+dx,y:c0.y+dy},orientation)).map(p=>`${p.x},${p.y}`).join(' ');
+  }
+  function axialRound(x,y,orientation='pointy'){
+    const p=unrotatePoint({x,y},orientation);
+    const rf=(2/3)*p.y/RENDER_SIDE;
+    const qf=p.x/(SQRT3*RENDER_SIDE)-rf/2;
     let cx=qf,cz=rf,cy=-cx-cz;
     let rx=Math.round(cx),ry=Math.round(cy),rz=Math.round(cz);
     const dx=Math.abs(rx-cx),dy=Math.abs(ry-cy),dz=Math.abs(rz-cz);
@@ -1447,26 +1597,60 @@ return blossom;
     return {q:rx,r:rz};
   }
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function animationStartStep(current,total){
+    const n=Math.max(0,Number(total)||0),c=clamp(Number(current)||0,0,n);
+    return n>0&&c>=n?0:c;
+  }
+  function animationTick(current,total){
+    const n=Math.max(0,Number(total)||0),step=Math.min(n,(Number(current)||0)+1);
+    return {step,done:step>=n};
+  }
+  function overlaps(a,b){return !(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y);}
+  function placeLabel(anchorX,anchorY,text,occupied=[]){
+    const w=Math.max(30,String(text).length*7+12),h=20;
+    const candidates=[
+      {x:anchorX+14,y:anchorY-34},{x:anchorX+14,y:anchorY+14},
+      {x:anchorX-w-14,y:anchorY-34},{x:anchorX-w-14,y:anchorY+14},
+      {x:anchorX-w/2,y:anchorY-46},{x:anchorX-w/2,y:anchorY+24},
+      {x:anchorX+24,y:anchorY-h/2},{x:anchorX-w-24,y:anchorY-h/2}
+    ];
+    for(const c of candidates){const rect={...c,w,h};if(!occupied.some(r=>overlaps(rect,r)))return rect;}
+    for(let ring=1;ring<=8;ring++){
+      const rect={x:anchorX+14*ring,y:anchorY-34-10*ring,w,h};
+      if(!occupied.some(r=>overlaps(rect,r)))return rect;
+    }
+    return {x:anchorX+14,y:anchorY-34,w,h};
+  }
+  function lineRect(a,b,pad=8){return {x:Math.min(a.x,b.x)-pad,y:Math.min(a.y,b.y)-pad,w:Math.abs(a.x-b.x)+2*pad,h:Math.abs(a.y-b.y)+2*pad};}
+
+  function fitBoundsTransform(bounds,width=1000,height=700,padding=FIT_PADDING){
+    const pad=Math.max(FIT_PADDING,Number(padding)||0);
+    const x=Number(bounds&&('x' in bounds?bounds.x:bounds.minX));
+    const y=Number(bounds&&('y' in bounds?bounds.y:bounds.minY));
+    const w=Math.max(1,Number(bounds&&('width' in bounds?bounds.width:(bounds.maxX-bounds.minX)))||1);
+    const h=Math.max(1,Number(bounds&&('height' in bounds?bounds.height:(bounds.maxY-bounds.minY)))||1);
+    if(!Number.isFinite(x)||!Number.isFinite(y))return {scale:1,tx:width/2,ty:height/2};
+    const usableW=Math.max(1,width-2*pad),usableH=Math.max(1,height-2*pad);
+    const scale=Math.min(usableW/w,usableH/h);
+    return {scale,tx:width/2-(x+w/2)*scale,ty:height/2-(y+h/2)*scale};
+  }
 
   function computeFitTransform(snapshot,width=1000,height=700){
     const vertices=snapshot&&snapshot.graph&&snapshot.graph.vertices?snapshot.graph.vertices:[];
     if(!vertices.length)return {scale:1,tx:width/2,ty:height/2};
-    const points=vertices.map(v=>GeometryBuilder.toWorld(v,RENDER_SIDE));
+    const orientation=snapshot.orientation||'pointy';
+    const points=vertices.map(v=>GeometryBuilder.toWorld(v,RENDER_SIDE,orientation));
     const cells=snapshot&&Array.isArray(snapshot.cells)?snapshot.cells:[];
     if(cells.length){
       const grid=HexGrid.create(cells);
       for(const cell of grid.availableNeighbors()){
         const target=GeometryBuilder.build([cell]);
-        for(const v of target.vertices)points.push(GeometryBuilder.toWorld(v,RENDER_SIDE));
+        for(const v of target.vertices)points.push(GeometryBuilder.toWorld(v,RENDER_SIDE,orientation));
       }
     }
     const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
     const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
-    const w=Math.max(1,maxX-minX),h=Math.max(1,maxY-minY);
-    const padding=Math.min(80,Math.max(40,Math.min(width,height)*.1));
-    const usableW=Math.max(1,width-2*padding),usableH=Math.max(1,height-2*padding);
-    const scale=clamp(Math.min(usableW/w,usableH/h),.25,4);
-    return {scale,tx:width/2-(minX+maxX)/2*scale,ty:height/2-(minY+maxY)/2*scale};
+    return fitBoundsTransform({x:minX,y:minY,width:maxX-minX,height:maxY-minY},width,height,FIT_PADDING);
   }
 
   function mount(rootElement,state){
@@ -1476,10 +1660,11 @@ return blossom;
       <div class="layout">
         <section class="workspace">
           <div class="toolbar">
-            <button id="undo-btn" type="button">↶ Отменить</button><button id="redo-btn" type="button">↷ Вернуть</button><button id="delete-btn" type="button">Удалить</button><button id="clear-btn" type="button" class="danger">Очистить</button><button id="fit-btn" type="button">Вписать</button><span class="spacer"></span><span id="module-counter" class="subtle">0 модулей</span>
+            <button id="undo-btn" type="button">↶ Отменить</button><button id="redo-btn" type="button">↷ Вернуть</button><button id="delete-btn" type="button">Удалить</button><button id="clear-btn" type="button" class="danger">Очистить</button><button id="fit-btn" type="button">Вписать</button>
+            <label class="orientation-switch" title="Развернуть всё поле на 90 градусов"><span>Ориентация</span><input id="orientation-toggle" type="checkbox"><span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span><span id="orientation-text">вертикальная</span></label>
+            <span class="spacer"></span><span id="module-counter" class="subtle">0 модулей</span>
           </div>
           <div class="canvas-wrap">
-            <div id="canvas-help" class="canvas-help">Первый модуль: кликните в любом месте поля. Затем нажимайте «+» на свободной грани, чтобы добавить один соседний модуль.</div>
             <svg id="hex-canvas" class="hex-canvas" viewBox="0 0 1000 700" aria-label="Редактор шестигранной конструкции"></svg>
             <div id="canvas-toast" class="toast hidden" aria-live="polite"></div>
           </div>
@@ -1488,7 +1673,7 @@ return blossom;
             <input id="route-slider" type="range" min="0" max="0" value="0" aria-label="Шаг маршрута">
             <button id="route-animate-btn" type="button">Анимация</button><button id="route-pause-btn" type="button">Пауза</button>
           </div>
-          <div class="legend"><span><i class="swatch" style="background:var(--route)"></i>основной проход</span><span><i class="swatch" style="background:var(--repeat);border-top:2px dashed var(--repeat);background:none"></i>повтор</span><span><i class="swatch" style="background:var(--start)"></i>START</span><span><i class="swatch" style="background:var(--end)"></i>END</span></div>
+          <div class="legend"><span><i class="swatch" style="background:var(--route)"></i>основной проход</span><span><i class="swatch" style="background:var(--repeat);border-top:2px dashed var(--repeat);background:none"></i>повтор</span><span><i class="swatch" style="background:var(--start)"></i>START</span><span><i class="swatch" style="background:var(--end)"></i>END</span><span id="system-bounds">Габариты: —</span></div>
         </section>
         <aside class="sidebar">
           <section class="sidebar-section"><h2>Трассировка</h2>
@@ -1500,8 +1685,9 @@ return blossom;
           </section>
           <section class="sidebar-section"><h2>Лента и питание</h2>
             <div class="control-grid">
-              <div class="field"><label for="side-mm">Сторона, мм</label><input id="side-mm" type="number" min="1" step="1" value="100"></div>
+              <div class="field"><label for="segments-per-side">Сегментов на сторону</label><input id="segments-per-side" type="number" min="1" step="1" value="6"></div>
               <div class="field"><label for="led-per-m">LED/м</label><input id="led-per-m" type="number" min="1" step="1" value="60"></div>
+              <div class="field"><label for="side-mm">Сторона, мм (расчёт)</label><input id="side-mm" type="number" step="0.001" value="100" readonly></div>
               <div class="field"><label for="watts-per-m">Вт/м</label><input id="watts-per-m" type="number" min="0.1" step="0.1" value="18"></div>
               <div class="field"><label for="voltage">Напряжение</label><select id="voltage"><option value="5">5 В</option><option value="12" selected>12 В</option><option value="24">24 В</option></select></div>
               <div class="field"><label for="reserve-percent">Запас БП, %</label><input id="reserve-percent" type="number" min="0" step="1" value="20"></div>
@@ -1517,88 +1703,123 @@ return blossom;
     const $=id=>rootElement.querySelector('#'+id);
     const svg=$('hex-canvas');
     let snap=state.snapshot();
-    let routeStep=0,pickMode=null,animation=null;
+    let routeStep=0,pickMode=null,deleteMode=false,animation=null,fitRequest=0;
     const view={scale:1,tx:500,ty:350};
     const pointers=new Map();
     let gesture=null;
 
     function notify(text){const el=$('canvas-toast');el.textContent=text;el.classList.remove('hidden');clearTimeout(notify.t);notify.t=setTimeout(()=>el.classList.add('hidden'),2400);}
-    function messageFor(m){return ({disconnects:'Удаление разорвёт конструкцию.',use_clear:'Последний модуль удаляется кнопкой «Очистить».',must_touch:'Новый модуль должен касаться существующего.',same_endpoint:'START и END должны различаться.',not_lower_boundary:'Точка должна быть на нижнем внешнем контуре.',invalid_numeric:'Введите корректное положительное число.'}[m]||m||'Операция отклонена.');}
+    function messageFor(m){return ({disconnects:'Удаление разорвёт конструкцию.',use_clear:'Последний модуль удаляется кнопкой «Очистить».',must_touch:'Новый модуль должен касаться существующего.',same_endpoint:'START и END должны различаться.',not_lower_boundary:'Точка должна быть на нижнем внешнем контуре.',invalid_numeric:'Введите корректное положительное число.',selection_disabled:'Постоянное выделение модулей отключено.'}[m]||m||'Операция отклонена.');}
     function dispatch(action,{fit=false,preserveStep=false}={}){const r=state.dispatch(action);if(!r.ok){notify(messageFor(r.message));return false;}refresh({fit,preserveStep});return true;}
-    function stopAnimation(){if(animation){clearInterval(animation);animation=null;}}
+    function stopAnimation(){if(animation){clearInterval(animation);animation=null;}updatePlaybackButtons();}
+    function updatePlaybackButtons(){if(!$('route-pause-btn'))return;const total=snap.solution?.traversals.length||0;$('route-pause-btn').disabled=!animation;$('route-animate-btn').disabled=total===0;}
 
     function refresh({fit=false,preserveStep=false}={}){
       stopAnimation();snap=state.snapshot();
       if(!preserveStep) routeStep=snap.solution?snap.solution.traversals.length:0;
-      if(fit) fitView();
       renderAll();
+      if(fit)scheduleFitView();
     }
     function statusText(){if(!snap.cells.length)return 'Пустой проект';const mode=snap.routing.endpointMode==='auto'?'AUTO':'MANUAL';return `${snap.cells.length} мод. · ${mode} · ${snap.solution?snap.solution.repeatCount:0} повтор.`;}
 
     function renderAll(){
       $('status-pill').textContent=statusText();$('module-counter').textContent=`${snap.cells.length} модулей`;
-      $('undo-btn').disabled=snap.history.undoCount===0;$('redo-btn').disabled=snap.history.redoCount===0;$('delete-btn').disabled=!snap.selectedKey;
+      $('undo-btn').disabled=snap.history.undoCount===0;$('redo-btn').disabled=snap.history.redoCount===0;$('delete-btn').disabled=snap.cells.length===0;
+      $('delete-btn').classList.toggle('pick-active',deleteMode);$('delete-btn').textContent=deleteMode?'Выберите модуль…':'Удалить';
+      $('orientation-toggle').checked=snap.orientation==='flat';$('orientation-text').textContent=snap.orientation==='flat'?'горизонтальная':'вертикальная';
       $('objective-select').value=snap.routing.objective;$('show-numbers').checked=!!snap.view.showNumbers;$('show-route-numbers').checked=!!snap.view.showRouteNumbers;$('show-diagnostics').checked=!!snap.view.showDiagnostics;
-      $('side-mm').value=snap.strip.sideMm;$('led-per-m').value=snap.strip.ledPerM;$('watts-per-m').value=snap.strip.wattsPerM;$('voltage').value=String(snap.strip.voltage);$('reserve-percent').value=snap.strip.reservePercent;
+      $('segments-per-side').value=snap.strip.segmentsPerSide;$('side-mm').value=String(Math.round(snap.strip.sideMm*1000)/1000);$('led-per-m').value=snap.strip.ledPerM;$('watts-per-m').value=snap.strip.wattsPerM;$('voltage').value=String(snap.strip.voltage);$('reserve-percent').value=snap.strip.reservePercent;
+      const bounds=GeometryBuilder.worldBounds(snap.graph,snap.strip.sideMm,snap.orientation);$('system-bounds').textContent=snap.cells.length?`Габариты: ${fmtMm(bounds.width)} × ${fmtMm(bounds.height)} мм`:'Габариты: —';
       $('pick-start-btn').classList.toggle('pick-active',pickMode==='start');$('pick-end-btn').classList.toggle('pick-active',pickMode==='end');
       const max=snap.solution?snap.solution.traversals.length:0;routeStep=clamp(routeStep,0,max);$('route-slider').max=String(max);$('route-slider').value=String(routeStep);$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=max;
-      renderMetrics();renderWarnings();renderCanvas();
+      updatePlaybackButtons();renderMetrics();renderWarnings();renderCanvas();
     }
     function renderMetrics(){
       const e=snap.electrical;
       const values=e?[
-        ['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов',String(snap.graph.edges.length)]
+        ['Сегм./стор.',String(snap.strip.segmentsPerSide)],['Сторона',`${fmt(snap.strip.sideMm,2)} мм`],['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов трассы',String(snap.graph.edges.length)]
       ]:[['Модули',String(snap.cells.length)],['Маршрут','—']];
       $('metrics').innerHTML=values.map(([a,b])=>`<div class="metric"><span>${escapeHtml(a)}</span><strong>${escapeHtml(b)}</strong></div>`).join('');
     }
-    function renderWarnings(){const list=[...snap.warnings];if(pickMode)list.unshift(`Выберите ${pickMode==='start'?'START':'END'} среди подсвеченных нижних точек.`);$('warnings').innerHTML=list.length?`<div class="warning-box">${list.map(escapeHtml).join('<br>')}</div>`:'';}
+    function renderWarnings(){const list=[...snap.warnings];if(pickMode)list.unshift(`Выберите ${pickMode==='start'?'START':'END'} среди подсвеченных нижних точек.`);if(deleteMode)list.unshift('Режим удаления: нажмите на шестигранник. Esc отменяет режим.');$('warnings').innerHTML=list.length?`<div class="warning-box">${list.map(escapeHtml).join('<br>')}</div>`:'';}
 
     function line(x1,y1,x2,y2,attrs=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" ${attrs}/>`;}
+    function labelMarkup(rect,text,color='var(--text)',className='diagram-label'){
+      const tx=rect.x+rect.w/2,ty=rect.y+14;
+      return `<g class="${className}" pointer-events="none"><rect x="${rect.x}" y="${rect.y}" width="${rect.w}" height="${rect.h}" rx="4" fill="var(--panel)" fill-opacity=".88" stroke="var(--border)" stroke-width=".5"/><text x="${tx}" y="${ty}" text-anchor="middle" font-size="11" font-weight="750" fill="${color}">${escapeHtml(text)}</text></g>`;
+    }
+    function routeLabelMarkup(x,y,text){
+      const w=Math.max(18,String(text).length*7+8),h=18;
+      return `<g class="route-label" pointer-events="none"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="5" fill="var(--panel)" fill-opacity=".92" stroke="var(--border)" stroke-width=".5"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="800" fill="var(--text)">${escapeHtml(text)}</text></g>`;
+    }
     function renderCanvas(){
-      const chunks=[];
+      const orientation=snap.orientation||'pointy';
+      const chunks=[],labels=[],occupied=[];
       chunks.push(`<defs><marker id="ui-arrow" markerWidth="3.5" markerHeight="3.5" refX="3" refY="1.5" orient="auto"><path d="M0,0 L0,3 L3.5,1.5 z" fill="var(--route)"/></marker></defs>`);
-      chunks.push(`<g id="scene" transform="translate(${view.tx} ${view.ty}) scale(${view.scale})"><rect data-pan-bg="1" x="-5000" y="-5000" width="10000" height="10000" fill="transparent"/>`);
+      chunks.push(`<g id="scene" class="${deleteMode?'delete-mode':''}" transform="translate(${view.tx} ${view.ty}) scale(${view.scale})"><rect data-pan-bg="1" x="-5000" y="-5000" width="10000" height="10000" fill="transparent"/>`);
       const grid=HexGrid.create(snap.cells);
       if(snap.cells.length){
         for(const face of grid.freeFaces()){
-          const a=center(face.owner.q,face.owner.r), b=center(face.target.q,face.target.r);
-          const x=(a.x+b.x)/2, y=(a.y+b.y)/2;
+          const a=center(face.owner.q,face.owner.r,orientation),b=center(face.target.q,face.target.r,orientation);
+          const x=(a.x+b.x)/2,y=(a.y+b.y)/2;
+          occupied.push({x:x-19,y:y-19,w:38,h:38});
           chunks.push(`<g class="add-face" data-interactive="1" data-add-face="1" data-add-q="${face.target.q}" data-add-r="${face.target.r}" role="button" tabindex="0" aria-label="Добавить модуль на эту грань"><circle class="add-face-hit" cx="${x}" cy="${y}" r="16" fill="var(--start)" fill-opacity=".92" stroke="var(--start)" stroke-width="2"/><text class="add-face-plus" x="${x}" y="${y+6}" text-anchor="middle" font-size="20" font-weight="800" fill="white" pointer-events="none">+</text></g>`);
         }
       }
-      for(const e of snap.graph.edges){const a=GeometryBuilder.toWorld(snap.graph.vertices[e.u],RENDER_SIDE),b=GeometryBuilder.toWorld(snap.graph.vertices[e.v],RENDER_SIDE);chunks.push(line(a.x,a.y,b.x,b.y,`stroke="var(--corridor)" stroke-width="14" stroke-linecap="round"`));}
-      const cellOrder=[...snap.cells].sort((a,b)=>a.r-b.r||a.q-b.q);cellOrder.forEach((c,i)=>{const selected=key(c.q,c.r)===snap.selectedKey;chunks.push(`<polygon data-interactive="1" data-cell-key="${key(c.q,c.r)}" points="${polygonPoints(c.q,c.r)}" fill="${selected?'var(--accent-weak)':'transparent'}" stroke="${selected?'var(--accent)':'var(--hex)'}" stroke-width="${selected?3:1.8}"/>`);if(snap.view.showNumbers){const p=center(c.q,c.r);chunks.push(`<text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--muted)" pointer-events="none">${i+1}</text>`);}});
+      for(const e of snap.graph.edges){const a=GeometryBuilder.toWorld(snap.graph.vertices[e.u],RENDER_SIDE,orientation),b=GeometryBuilder.toWorld(snap.graph.vertices[e.v],RENDER_SIDE,orientation);chunks.push(line(a.x,a.y,b.x,b.y,`stroke="var(--corridor)" stroke-width="14" stroke-linecap="round"`));}
+      const cellOrder=[...snap.cells].sort((a,b)=>a.r-b.r||a.q-b.q);
+      cellOrder.forEach((c,i)=>{chunks.push(`<polygon data-interactive="1" data-cell-key="${key(c.q,c.r)}" points="${polygonPoints(c.q,c.r,orientation)}" fill="transparent" stroke="var(--hex)" stroke-width="1.8"/>`);if(snap.view.showNumbers){const p=center(c.q,c.r,orientation);const rect={x:p.x-13,y:p.y-11,w:26,h:20};occupied.push(rect);labels.push(labelMarkup(rect,String(i+1),'var(--muted)','module-label'));}});
       if(snap.solution){
         const upto=Math.min(routeStep,snap.solution.traversals.length);
-        for(let i=0;i<upto;i++){const t=snap.solution.traversals[i],a=GeometryBuilder.toWorld(snap.graph.vertices[t.from],RENDER_SIDE),b=GeometryBuilder.toWorld(snap.graph.vertices[t.to],RENDER_SIDE);const color=t.repeat?'var(--repeat)':'var(--route)';const dash=t.repeat?'stroke-dasharray="10 7"':'';chunks.push(line(a.x,a.y,b.x,b.y,`stroke="${color}" stroke-width="5.5" stroke-linecap="round" ${dash} marker-end="url(#ui-arrow)"`));if(snap.view.showRouteNumbers){chunks.push(`<text x="${(a.x+b.x)/2}" y="${(a.y+b.y)/2-5}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)" pointer-events="none">${i+1}</text>`);}}
-        if(snap.view.showDiagnostics)for(const id of snap.solution.oddVertexIds){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="7" fill="none" stroke="var(--diag)" stroke-width="3"/>`);}
+        for(let i=0;i<upto;i++){
+          const t=snap.solution.traversals[i],a=GeometryBuilder.toWorld(snap.graph.vertices[t.from],RENDER_SIDE,orientation),b=GeometryBuilder.toWorld(snap.graph.vertices[t.to],RENDER_SIDE,orientation);const color=t.repeat?'var(--repeat)':'var(--route)';const dash=t.repeat?'stroke-dasharray="10 7"':'';
+          chunks.push(line(a.x,a.y,b.x,b.y,`stroke="${color}" stroke-width="5.5" stroke-linecap="round" ${dash} marker-end="url(#ui-arrow)"`));
+          occupied.push(lineRect(a,b,6));
+          if(snap.view.showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;labels.push(routeLabelMarkup(x,y,String(i+1)));}
+        }
+        if(snap.view.showDiagnostics)for(const id of snap.solution.oddVertexIds){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="7" fill="none" stroke="var(--diag)" stroke-width="3"/>`);occupied.push({x:p.x-9,y:p.y-9,w:18,h:18});}
       }
-      const lower=new Set(snap.boundary.lowerCandidateIds);for(const id of lower){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE);const active=pickMode?'1':'0';chunks.push(`<circle ${pickMode?'data-interactive="1" data-endpoint-id="'+id+'"':''} cx="${p.x}" cy="${p.y}" r="${pickMode?8:4}" fill="${pickMode?'var(--accent)':'var(--muted)'}" fill-opacity="${pickMode?.75:.35}" stroke="var(--panel)" stroke-width="2" opacity="${active==='1'?1:.55}"/>`);}
-      if(snap.routing.startId!==null&&snap.graph.vertices[snap.routing.startId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.startId],RENDER_SIDE);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--start)" stroke="var(--panel)" stroke-width="3"/><text x="${p.x+12}" y="${p.y-12}" font-size="12" font-weight="800" fill="var(--start)">START</text>`);}
-      if(snap.routing.endId!==null&&snap.graph.vertices[snap.routing.endId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.endId],RENDER_SIDE);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--end)" stroke="var(--panel)" stroke-width="3"/><text x="${p.x+12}" y="${p.y-12}" font-size="12" font-weight="800" fill="var(--end)">END</text>`);}
-      if(!snap.cells.length)chunks.push(`<text x="0" y="0" text-anchor="middle" font-size="18" fill="var(--muted)" pointer-events="none">Кликните здесь или в другом месте, чтобы поставить первый модуль</text>`);
-      chunks.push(`</g>`);svg.innerHTML=chunks.join('');
+      const lower=new Set(snap.boundary.lowerCandidateIds);for(const id of lower){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE,orientation);const active=pickMode?'1':'0';chunks.push(`<circle ${pickMode?'data-interactive="1" data-endpoint-id="'+id+'"':''} cx="${p.x}" cy="${p.y}" r="${pickMode?8:4}" fill="${pickMode?'var(--accent)':'var(--muted)'}" fill-opacity="${pickMode?.75:.35}" stroke="var(--panel)" stroke-width="2" opacity="${active==='1'?1:.55}"/>`);}
+      if(snap.routing.startId!==null&&snap.graph.vertices[snap.routing.startId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.startId],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--start)" stroke="var(--panel)" stroke-width="3"/>`);occupied.push({x:p.x-12,y:p.y-12,w:24,h:24});const rect=placeLabel(p.x,p.y,'START',occupied);occupied.push(rect);labels.push(labelMarkup(rect,'START','var(--start)','endpoint-label'));}
+      if(snap.routing.endId!==null&&snap.graph.vertices[snap.routing.endId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.endId],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--end)" stroke="var(--panel)" stroke-width="3"/>`);occupied.push({x:p.x-12,y:p.y-12,w:24,h:24});const rect=placeLabel(p.x,p.y,'END',occupied);occupied.push(rect);labels.push(labelMarkup(rect,'END','var(--end)','endpoint-label'));}
+      if(!snap.cells.length)labels.push(`<text x="0" y="0" text-anchor="middle" font-size="18" fill="var(--muted)" pointer-events="none">Кликните здесь или в другом месте, чтобы поставить первый модуль</text>`);
+      chunks.push(`<g id="label-layer">${labels.join('')}</g></g>`);svg.innerHTML=chunks.join('');
     }
 
-    function fitView(){
-      const fitted=computeFitTransform(snap,1000,700);
-      view.scale=fitted.scale;view.tx=fitted.tx;view.ty=fitted.ty;
+    function renderedSceneBounds(){
+      const scene=svg.querySelector('#scene');
+      if(!scene)return null;
+      let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,found=false;
+      for(const child of scene.children){
+        if(child.hasAttribute&&child.hasAttribute('data-pan-bg'))continue;
+        if(typeof child.getBBox!=='function')continue;
+        let b;try{b=child.getBBox();}catch(_){continue;}
+        if(!b||![b.x,b.y,b.width,b.height].every(Number.isFinite))continue;
+        minX=Math.min(minX,b.x);minY=Math.min(minY,b.y);maxX=Math.max(maxX,b.x+b.width);maxY=Math.max(maxY,b.y+b.height);found=true;
+      }
+      return found?{x:minX,y:minY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)}:null;
     }
+    function fitRenderedScene(){
+      const bounds=renderedSceneBounds();
+      const fitted=bounds?fitBoundsTransform(bounds,1000,700,FIT_PADDING):computeFitTransform(snap,1000,700);
+      view.scale=fitted.scale;view.tx=fitted.tx;view.ty=fitted.ty;renderCanvas();
+    }
+    function scheduleFitView(){
+      const token=++fitRequest;
+      const run=()=>{if(token===fitRequest)fitRenderedScene();};
+      const afterOverlay=()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(run);else run();};
+      if(typeof queueMicrotask==='function')queueMicrotask(afterOverlay);else Promise.resolve().then(afterOverlay);
+    }
+    function fitView(){fitRenderedScene();}
     function clientToSvg(evt){const r=svg.getBoundingClientRect();return{x:(evt.clientX-r.left)/r.width*1000,y:(evt.clientY-r.top)/r.height*700};}
     function svgToScene(p){return{x:(p.x-view.tx)/view.scale,y:(p.y-view.ty)/view.scale};}
 
     svg.addEventListener('click',e=>{
-      const add=e.target.closest('[data-add-face]');if(add){dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});return;}
-      const cell=e.target.closest('[data-cell-key]');if(cell){dispatch({type:'SELECT_HEX',key:cell.dataset.cellKey},{preserveStep:true});return;}
       const ep=e.target.closest('[data-endpoint-id]');if(ep&&pickMode){const type=pickMode==='start'?'SET_MANUAL_START':'SET_MANUAL_END';if(dispatch({type,vertexId:Number(ep.dataset.endpointId)})){pickMode=null;renderAll();}return;}
+      const add=e.target.closest('[data-add-face]');if(add){if(deleteMode){notify('В режиме удаления выберите существующий шестигранник.');return;}dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});return;}
+      const cell=e.target.closest('[data-cell-key]');if(cell&&deleteMode){const ok=dispatch({type:'DELETE_HEX',key:cell.dataset.cellKey},{preserveStep:false});if(ok){deleteMode=false;renderAll();}return;}
     });
-    svg.addEventListener('keydown',e=>{
-      const add=e.target.closest&&e.target.closest('[data-add-face]');
-      if(add&&(e.key==='Enter'||e.key===' ')){
-        e.preventDefault();
-        dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});
-      }
-    });
+    svg.addEventListener('keydown',e=>{const add=e.target.closest&&e.target.closest('[data-add-face]');if(add&&(e.key==='Enter'||e.key===' ')){e.preventDefault();if(!deleteMode)dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});}});
     svg.addEventListener('pointerdown',e=>{
       if(e.target.closest('[data-interactive]'))return;
       svg.setPointerCapture(e.pointerId);const p=clientToSvg(e);pointers.set(e.pointerId,p);
@@ -1608,39 +1829,126 @@ return blossom;
     svg.addEventListener('pointermove',e=>{
       if(!pointers.has(e.pointerId))return;const p=clientToSvg(e);pointers.set(e.pointerId,p);
       if(gesture?.type==='pan'&&pointers.size===1){const dx=p.x-gesture.start.x,dy=p.y-gesture.start.y;if(Math.hypot(dx,dy)>3)gesture.moved=true;view.tx=gesture.tx+dx;view.ty=gesture.ty+dy;renderCanvas();}
-      else if(pointers.size>=2){const [a,b]=[...pointers.values()].slice(0,2);const dist=Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));const centerNow={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(gesture?.type!=='pinch')gesture={type:'pinch',distance:dist,center:centerNow,scale:view.scale,tx:view.tx,ty:view.ty,moved:true};const ns=clamp(gesture.scale*dist/gesture.distance,.25,4);const sceneCenter={x:(gesture.center.x-gesture.tx)/gesture.scale,y:(gesture.center.y-gesture.ty)/gesture.scale};view.scale=ns;view.tx=centerNow.x-sceneCenter.x*ns;view.ty=centerNow.y-sceneCenter.y*ns;renderCanvas();}
+      else if(pointers.size>=2){const [a,b]=[...pointers.values()].slice(0,2);const dist=Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));const centerNow={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(gesture?.type!=='pinch')gesture={type:'pinch',distance:dist,center:centerNow,scale:view.scale,tx:view.tx,ty:view.ty,moved:true};const ns=clamp(gesture.scale*dist/gesture.distance,.1,8);const sceneCenter={x:(gesture.center.x-gesture.tx)/gesture.scale,y:(gesture.center.y-gesture.ty)/gesture.scale};view.scale=ns;view.tx=centerNow.x-sceneCenter.x*ns;view.ty=centerNow.y-sceneCenter.y*ns;renderCanvas();}
     });
-    svg.addEventListener('pointerup',e=>{
-      const p=clientToSvg(e);const was=gesture;pointers.delete(e.pointerId);
-      if(pointers.size===0){if(was?.type==='pan'&&!was.moved&&!snap.cells.length){const a=axialRound(svgToScene(p).x,svgToScene(p).y);dispatch({type:'ADD_HEX',q:a.q,r:a.r},{fit:true});}gesture=null;}
-    });
+    svg.addEventListener('pointerup',e=>{const p=clientToSvg(e);const was=gesture;pointers.delete(e.pointerId);if(pointers.size===0){if(was?.type==='pan'&&!was.moved&&!snap.cells.length){const s=svgToScene(p),a=axialRound(s.x,s.y,snap.orientation);dispatch({type:'ADD_HEX',q:a.q,r:a.r},{fit:true});}gesture=null;}});
     svg.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);if(!pointers.size)gesture=null;});
-    svg.addEventListener('wheel',e=>{e.preventDefault();const p=clientToSvg(e),scene=svgToScene(p),ns=clamp(view.scale*(e.deltaY<0?1.12:.89),.25,4);view.scale=ns;view.tx=p.x-scene.x*ns;view.ty=p.y-scene.y*ns;renderCanvas();},{passive:false});
+    svg.addEventListener('wheel',e=>{e.preventDefault();const p=clientToSvg(e),scene=svgToScene(p),ns=clamp(view.scale*(e.deltaY<0?1.12:.89),.1,8);view.scale=ns;view.tx=p.x-scene.x*ns;view.ty=p.y-scene.y*ns;renderCanvas();},{passive:false});
 
-    $('undo-btn').addEventListener('click',()=>dispatch({type:'UNDO'}));$('redo-btn').addEventListener('click',()=>dispatch({type:'REDO'}));$('delete-btn').addEventListener('click',()=>dispatch({type:'DELETE_SELECTED'}));$('clear-btn').addEventListener('click',()=>{pickMode=null;dispatch({type:'CLEAR'},{fit:true});});$('fit-btn').addEventListener('click',()=>{fitView();renderCanvas();});
-    $('auto-endpoints-btn').addEventListener('click',()=>{pickMode=null;dispatch({type:'RESET_AUTO'});});$('pick-start-btn').addEventListener('click',()=>{pickMode=pickMode==='start'?null:'start';renderAll();});$('pick-end-btn').addEventListener('click',()=>{pickMode=pickMode==='end'?null:'end';renderAll();});
+    $('undo-btn').addEventListener('click',()=>{deleteMode=false;dispatch({type:'UNDO'});});$('redo-btn').addEventListener('click',()=>{deleteMode=false;dispatch({type:'REDO'});});
+    $('delete-btn').addEventListener('click',()=>{if(!snap.cells.length)return;pickMode=null;deleteMode=!deleteMode;renderAll();});
+    $('clear-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'CLEAR'},{fit:true});});$('fit-btn').addEventListener('click',()=>scheduleFitView());
+    $('orientation-toggle').addEventListener('change',e=>{deleteMode=false;pickMode=null;dispatch({type:'SET_ORIENTATION',orientation:e.target.checked?'flat':'pointy'},{fit:true});});
+    $('auto-endpoints-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'RESET_AUTO'});});$('pick-start-btn').addEventListener('click',()=>{deleteMode=false;pickMode=pickMode==='start'?null:'start';renderAll();});$('pick-end-btn').addEventListener('click',()=>{deleteMode=false;pickMode=pickMode==='end'?null:'end';renderAll();});
     $('objective-select').addEventListener('change',e=>dispatch({type:'SET_OBJECTIVE',objective:e.target.value}));
-    for(const [id,field] of [['side-mm','sideMm'],['led-per-m','ledPerM'],['watts-per-m','wattsPerM'],['voltage','voltage'],['reserve-percent','reservePercent']])$(id).addEventListener('change',e=>{if(!dispatch({type:'SET_STRIP_INPUT',field,value:e.target.value}))renderAll();});
+    for(const [id,field] of [['segments-per-side','segmentsPerSide'],['led-per-m','ledPerM'],['watts-per-m','wattsPerM'],['voltage','voltage'],['reserve-percent','reservePercent']])$(id).addEventListener('change',e=>{if(!dispatch({type:'SET_STRIP_INPUT',field,value:e.target.value}))renderAll();});
     for(const [id,flag] of [['show-numbers','showNumbers'],['show-route-numbers','showRouteNumbers'],['show-diagnostics','showDiagnostics']])$(id).addEventListener('change',e=>dispatch({type:'SET_VIEW_FLAG',flag,value:e.target.checked},{preserveStep:true}));
-    $('route-prev-btn').addEventListener('click',()=>{routeStep=Math.max(0,routeStep-1);renderAll();});$('route-next-btn').addEventListener('click',()=>{routeStep=Math.min(snap.solution?.traversals.length||0,routeStep+1);renderAll();});$('route-slider').addEventListener('input',e=>{routeStep=Number(e.target.value);renderCanvas();$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=Number(e.target.max);});$('show-full-route-btn').addEventListener('click',()=>{routeStep=snap.solution?.traversals.length||0;renderAll();});
-    $('route-animate-btn').addEventListener('click',()=>{stopAnimation();if(!snap.solution)return;if(root.matchMedia&&root.matchMedia('(prefers-reduced-motion: reduce)').matches){routeStep=snap.solution.traversals.length;renderAll();notify('Анимация отключена системной настройкой уменьшения движения.');return;}routeStep=0;renderAll();animation=setInterval(()=>{routeStep++;if(routeStep>=snap.solution.traversals.length)stopAnimation();renderAll();},180);});$('route-pause-btn').addEventListener('click',stopAnimation);
+    $('route-prev-btn').addEventListener('click',()=>{stopAnimation();routeStep=Math.max(0,routeStep-1);renderAll();});$('route-next-btn').addEventListener('click',()=>{stopAnimation();routeStep=Math.min(snap.solution?.traversals.length||0,routeStep+1);renderAll();});$('route-slider').addEventListener('input',e=>{stopAnimation();routeStep=Number(e.target.value);renderCanvas();$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=Number(e.target.max);});$('show-full-route-btn').addEventListener('click',()=>{stopAnimation();routeStep=snap.solution?.traversals.length||0;renderAll();});
+    $('route-animate-btn').addEventListener('click',()=>{if(!snap.solution||!snap.solution.traversals.length)return;stopAnimation();const total=snap.solution.traversals.length;routeStep=animationStartStep(routeStep,total);renderAll();animation=setInterval(()=>{const next=animationTick(routeStep,total);routeStep=next.step;if(next.done){clearInterval(animation);animation=null;}renderAll();},ANIMATION_MS);updatePlaybackButtons();});
+    $('route-pause-btn').addEventListener('click',()=>{stopAnimation();renderAll();});
 
     function download(name,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
     $('save-json-btn').addEventListener('click',()=>download('hex-router-project.json',ProjectIO.serialize(snap),'application/json'));
-    $('load-json-input').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const text=await file.text();const parsed=ProjectIO.parse(text);if(!parsed.ok){notify(parsed.error);return;}if(dispatch({type:'LOAD_PROJECT',project:parsed.project},{fit:true}))notify('Проект загружен.');}catch(err){notify('Не удалось прочитать файл: '+err.message);}finally{e.target.value='';}});
-    $('export-svg-btn').addEventListener('click',()=>{if(!snap.solution||!snap.electrical){notify('Сначала создайте конструкцию.');return;}const text=SvgExporter.export({graph:snap.graph,modules:snap.graph.modules,solution:snap.solution,startId:snap.routing.startId,endId:snap.routing.endId,showModuleNumbers:snap.view.showNumbers,showRouteNumbers:snap.view.showRouteNumbers,electrical:snap.electrical,sideMm:snap.strip.sideMm});download('hex-router-route.svg',text,'image/svg+xml');});
+    $('load-json-input').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const text=await file.text();const parsed=ProjectIO.parse(text);if(!parsed.ok){notify(parsed.error);return;}if(dispatch({type:'LOAD_PROJECT',project:parsed.project},{fit:true})){notify(parsed.warnings?.length?parsed.warnings.join(' '):'Проект загружен.');}}catch(err){notify('Не удалось прочитать файл: '+err.message);}finally{e.target.value='';}});
+    $('export-svg-btn').addEventListener('click',()=>{if(!snap.solution||!snap.electrical){notify('Сначала создайте конструкцию.');return;}const text=SvgExporter.export({graph:snap.graph,modules:snap.graph.modules,solution:snap.solution,startId:snap.routing.startId,endId:snap.routing.endId,showModuleNumbers:snap.view.showNumbers,showRouteNumbers:snap.view.showRouteNumbers,electrical:snap.electrical,sideMm:snap.strip.sideMm,orientation:snap.orientation});download('hex-router-route.svg',text,'image/svg+xml');});
 
-    const keyHandler=e=>{if(e.target.matches('input,select,textarea'))return;if(e.key==='Delete')dispatch({type:'DELETE_SELECTED'});if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();dispatch({type:e.shiftKey?'REDO':'UNDO'});}};rootElement.addEventListener('keydown',keyHandler);
-    fitView();renderAll();
-    return {destroy(){stopAnimation();rootElement.removeEventListener('keydown',keyHandler);rootElement.innerHTML='';}};
+    const keyHandler=e=>{if(e.target.matches('input,select,textarea'))return;if(e.key==='Escape'){pickMode=null;deleteMode=false;renderAll();return;}if(e.key==='Delete'&&snap.cells.length){deleteMode=!deleteMode;pickMode=null;renderAll();return;}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();deleteMode=false;dispatch({type:e.shiftKey?'REDO':'UNDO'});}};rootElement.addEventListener('keydown',keyHandler);
+    renderAll();scheduleFitView();
+    return {destroy(){fitRequest++;stopAnimation();rootElement.removeEventListener('keydown',keyHandler);rootElement.innerHTML='';}};
   }
-  return {mount,computeFitTransform};
+  return {mount,computeFitTransform,fitBoundsTransform,animationStartStep,animationTick,placeLabel};
+});
+
+
+/* src/app/dimension-overlay.js */
+(function(root,factory){
+  const GB=typeof module==='object'&&module.exports?require('../core/geometry-builder'):root.GeometryBuilder;
+  const api=factory(GB);
+  if(typeof module==='object'&&module.exports) module.exports=api; else root.DimensionOverlay=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(GeometryBuilder){
+  'use strict';
+  const RENDER_SIDE=60;
+
+  function fmtMm(value){
+    if(!Number.isFinite(value)) return '—';
+    return (Math.round(value*100)/100).toFixed(2).replace(/\.00$/,'').replace(/(\.\d)0$/,'$1');
+  }
+
+  function dimensionGeometry(snapshot){
+    const graph=snapshot&&snapshot.graph;
+    if(!graph||!Array.isArray(graph.vertices)||graph.vertices.length===0) return null;
+    const orientation=snapshot.orientation||'pointy';
+    const sideMm=Number(snapshot.strip&&snapshot.strip.sideMm);
+    if(!Number.isFinite(sideMm)||sideMm<=0) return null;
+    return {
+      scene:GeometryBuilder.worldBounds(graph,RENDER_SIDE,orientation),
+      mm:GeometryBuilder.worldBounds(graph,sideMm,orientation)
+    };
+  }
+
+  function dimensionMarkup(snapshot){
+    const geometry=dimensionGeometry(snapshot);
+    if(!geometry) return '';
+    const s=geometry.scene,m=geometry.mm;
+    const midX=(s.minX+s.maxX)/2,midY=(s.minY+s.maxY)/2;
+    const widthText=`${fmtMm(m.width)} мм`,heightText=`${fmtMm(m.height)} мм`;
+    const common='text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="var(--muted)" style="paint-order:stroke;stroke:var(--canvas);stroke-width:5px;stroke-linejoin:round"';
+    return `<g id="dimension-frame-layer" pointer-events="none">`+
+      `<rect x="${s.minX}" y="${s.minY}" width="${s.width}" height="${s.height}" fill="none" stroke="var(--muted)" stroke-width="1" opacity=".72" vector-effect="non-scaling-stroke"/>`+
+      `<text data-dimension="width-top" x="${midX}" y="${s.minY-12}" ${common}>${widthText}</text>`+
+      `<text data-dimension="width-bottom" x="${midX}" y="${s.maxY+12}" ${common}>${widthText}</text>`+
+      `<text data-dimension="height-left" x="${s.minX-12}" y="${midY}" ${common}>${heightText}</text>`+
+      `<text data-dimension="height-right" x="${s.maxX+12}" y="${midY}" ${common}>${heightText}</text>`+
+      `</g>`;
+  }
+
+  function install(host,state){
+    if(!host||!state||typeof state.snapshot!=='function') return {destroy(){}};
+    const help=host.querySelector('.canvas-help');
+    if(help) help.remove();
+    const svg=host.querySelector('#hex-canvas');
+    if(!svg||typeof MutationObserver==='undefined') return {destroy(){}};
+    let scheduled=false,destroyed=false;
+
+    function render(){
+      scheduled=false;
+      if(destroyed) return;
+      const scene=svg.querySelector('#scene');
+      if(!scene||scene.querySelector('#dimension-frame-layer')) return;
+      const markup=dimensionMarkup(state.snapshot());
+      if(markup) scene.insertAdjacentHTML('beforeend',markup);
+    }
+    function schedule(){
+      if(scheduled||destroyed) return;
+      scheduled=true;
+      queueMicrotask(render);
+    }
+
+    const observer=new MutationObserver(schedule);
+    observer.observe(svg,{childList:true,subtree:true});
+    render();
+    return {destroy(){
+      destroyed=true;
+      observer.disconnect();
+      const layer=svg.querySelector('#dimension-frame-layer');
+      if(layer) layer.remove();
+    }};
+  }
+
+  return {install,dimensionGeometry,dimensionMarkup};
 });
 
 
 /* src/app/main.js */
 (function(root){
-  function boot(){const host=document.getElementById('app');if(!host)return;const state=root.EditorState.create();root.HexRouterApp={state,ui:root.EditorUI.mount(host,state)};}
+  function boot(){
+    const host=document.getElementById('app');
+    if(!host)return;
+    const state=root.EditorState.create();
+    const ui=root.EditorUI.mount(host,state);
+    const dimensions=root.DimensionOverlay?root.DimensionOverlay.install(host,state):null;
+    root.HexRouterApp={state,ui,dimensions};
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })(typeof globalThis!=='undefined'?globalThis:this);
 </script>
