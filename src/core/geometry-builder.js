@@ -69,5 +69,14 @@
     return rotatePoint(point,orientation);
   }
 
-  return { build, toWorld, rotatePoint, normalizeOrientation, OFFSETS };
+  function worldBounds(graph, sideLength, orientation='pointy') {
+    const vertices=graph&&Array.isArray(graph.vertices)?graph.vertices:[];
+    if(!vertices.length) return {minX:0,maxX:0,minY:0,maxY:0,width:0,height:0};
+    const points=vertices.map(v=>toWorld(v,sideLength,orientation));
+    const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
+    const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+    return {minX,maxX,minY,maxY,width:maxX-minX,height:maxY-minY};
+  }
+
+  return { build, toWorld, worldBounds, rotatePoint, normalizeOrientation, OFFSETS };
 });
