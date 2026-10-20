@@ -14,8 +14,9 @@ const checks=[
   [/\bWebSocket\b/,'WebSocket']
 ];
 for(const [re,label] of checks)if(re.test(html))throw new Error(`Standalone verification failed: ${label} found`);
-for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn']){
+for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','segments-per-side','side-mm','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn']){
   if(!html.includes(`id="${id}"`))throw new Error(`Standalone verification failed: missing control ${id}`);
 }
 if(!html.includes('Hex Router Designer'))throw new Error('Standalone verification failed: product title missing');
+if(!/id="side-mm"[^>]*readonly/.test(html))throw new Error('Standalone verification failed: side-mm must be derived/read-only');
 console.log(`Standalone verification OK: ${path.basename(file)} is self-contained and has all required controls.`);

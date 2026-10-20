@@ -17,6 +17,7 @@ const sources=[
   'src/core/svg-exporter.js',
   'src/app/editor-state.js',
   'src/app/editor-ui.js',
+  'src/app/dimension-overlay.js',
   'src/app/main.js'
 ];
 const scripts=sources.map(file=>`\n/* ${file} */\n${fs.readFileSync(path.join(root,file),'utf8')}`).join('\n');
