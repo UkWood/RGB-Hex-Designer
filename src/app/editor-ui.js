@@ -9,18 +9,24 @@
   const {HexGrid,GeometryBuilder,ProjectIO,SvgExporter}=deps;
   const RENDER_SIDE=60;
   const SQRT3=Math.sqrt(3);
+  const ANIMATION_MS=350;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const fmt=(v,d=2)=>Number.isFinite(v)?Number(v).toFixed(d):'—';
   const key=(q,r)=>`${q},${r}`;
 
-  function center(q,r){return {x:SQRT3*RENDER_SIDE*(q+r/2),y:1.5*RENDER_SIDE*r};}
-  function polygonPoints(q,r){
-    const c=center(q,r),a=SQRT3/2*RENDER_SIDE,h=.5*RENDER_SIDE,R=RENDER_SIDE;
-    return [[0,-R],[a,-h],[a,h],[0,R],[-a,h],[-a,-h]].map(([dx,dy])=>`${c.x+dx},${c.y+dy}`).join(' ');
+  function rotatePoint(p,orientation='pointy'){return orientation==='flat'?{x:-p.y,y:p.x}:{x:p.x,y:p.y};}
+  function unrotatePoint(p,orientation='pointy'){return orientation==='flat'?{x:p.y,y:-p.x}:{x:p.x,y:p.y};}
+  function center(q,r,orientation='pointy'){
+    return rotatePoint({x:SQRT3*RENDER_SIDE*(q+r/2),y:1.5*RENDER_SIDE*r},orientation);
   }
-  function axialRound(x,y){
-    const rf=(2/3)*y/RENDER_SIDE;
-    const qf=x/(SQRT3*RENDER_SIDE)-rf/2;
+  function polygonPoints(q,r,orientation='pointy'){
+    const c0={x:SQRT3*RENDER_SIDE*(q+r/2),y:1.5*RENDER_SIDE*r},a=SQRT3/2*RENDER_SIDE,h=.5*RENDER_SIDE,R=RENDER_SIDE;
+    return [[0,-R],[a,-h],[a,h],[0,R],[-a,h],[-a,-h]].map(([dx,dy])=>rotatePoint({x:c0.x+dx,y:c0.y+dy},orientation)).map(p=>`${p.x},${p.y}`).join(' ');
+  }
+  function axialRound(x,y,orientation='pointy'){
+    const p=unrotatePoint({x,y},orientation);
+    const rf=(2/3)*p.y/RENDER_SIDE;
+    const qf=p.x/(SQRT3*RENDER_SIDE)-rf/2;
     let cx=qf,cz=rf,cy=-cx-cz;
     let rx=Math.round(cx),ry=Math.round(cy),rz=Math.round(cz);
     const dx=Math.abs(rx-cx),dy=Math.abs(ry-cy),dz=Math.abs(rz-cz);
@@ -28,17 +34,43 @@
     return {q:rx,r:rz};
   }
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function animationStartStep(current,total){
+    const n=Math.max(0,Number(total)||0),c=clamp(Number(current)||0,0,n);
+    return n>0&&c>=n?0:c;
+  }
+  function animationTick(current,total){
+    const n=Math.max(0,Number(total)||0),step=Math.min(n,(Number(current)||0)+1);
+    return {step,done:step>=n};
+  }
+  function overlaps(a,b){return !(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y);}
+  function placeLabel(anchorX,anchorY,text,occupied=[]){
+    const w=Math.max(30,String(text).length*7+12),h=20;
+    const candidates=[
+      {x:anchorX+14,y:anchorY-34},{x:anchorX+14,y:anchorY+14},
+      {x:anchorX-w-14,y:anchorY-34},{x:anchorX-w-14,y:anchorY+14},
+      {x:anchorX-w/2,y:anchorY-46},{x:anchorX-w/2,y:anchorY+24},
+      {x:anchorX+24,y:anchorY-h/2},{x:anchorX-w-24,y:anchorY-h/2}
+    ];
+    for(const c of candidates){const rect={...c,w,h};if(!occupied.some(r=>overlaps(rect,r)))return rect;}
+    for(let ring=1;ring<=8;ring++){
+      const rect={x:anchorX+14*ring,y:anchorY-34-10*ring,w,h};
+      if(!occupied.some(r=>overlaps(rect,r)))return rect;
+    }
+    return {x:anchorX+14,y:anchorY-34,w,h};
+  }
+  function lineRect(a,b,pad=8){return {x:Math.min(a.x,b.x)-pad,y:Math.min(a.y,b.y)-pad,w:Math.abs(a.x-b.x)+2*pad,h:Math.abs(a.y-b.y)+2*pad};}
 
   function computeFitTransform(snapshot,width=1000,height=700){
     const vertices=snapshot&&snapshot.graph&&snapshot.graph.vertices?snapshot.graph.vertices:[];
     if(!vertices.length)return {scale:1,tx:width/2,ty:height/2};
-    const points=vertices.map(v=>GeometryBuilder.toWorld(v,RENDER_SIDE));
+    const orientation=snapshot.orientation||'pointy';
+    const points=vertices.map(v=>GeometryBuilder.toWorld(v,RENDER_SIDE,orientation));
     const cells=snapshot&&Array.isArray(snapshot.cells)?snapshot.cells:[];
     if(cells.length){
       const grid=HexGrid.create(cells);
       for(const cell of grid.availableNeighbors()){
         const target=GeometryBuilder.build([cell]);
-        for(const v of target.vertices)points.push(GeometryBuilder.toWorld(v,RENDER_SIDE));
+        for(const v of target.vertices)points.push(GeometryBuilder.toWorld(v,RENDER_SIDE,orientation));
       }
     }
     const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
@@ -57,7 +89,9 @@
       <div class="layout">
         <section class="workspace">
           <div class="toolbar">
-            <button id="undo-btn" type="button">↶ Отменить</button><button id="redo-btn" type="button">↷ Вернуть</button><button id="delete-btn" type="button">Удалить</button><button id="clear-btn" type="button" class="danger">Очистить</button><button id="fit-btn" type="button">Вписать</button><span class="spacer"></span><span id="module-counter" class="subtle">0 модулей</span>
+            <button id="undo-btn" type="button">↶ Отменить</button><button id="redo-btn" type="button">↷ Вернуть</button><button id="delete-btn" type="button">Удалить</button><button id="clear-btn" type="button" class="danger">Очистить</button><button id="fit-btn" type="button">Вписать</button>
+            <label class="orientation-switch" title="Развернуть всё поле на 90 градусов"><span>Ориентация</span><input id="orientation-toggle" type="checkbox"><span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span><span id="orientation-text">вертикальная</span></label>
+            <span class="spacer"></span><span id="module-counter" class="subtle">0 модулей</span>
           </div>
           <div class="canvas-wrap">
             <div id="canvas-help" class="canvas-help">Первый модуль: кликните в любом месте поля. Затем нажимайте «+» на свободной грани, чтобы добавить один соседний модуль.</div>
@@ -81,8 +115,9 @@
           </section>
           <section class="sidebar-section"><h2>Лента и питание</h2>
             <div class="control-grid">
-              <div class="field"><label for="side-mm">Сторона, мм</label><input id="side-mm" type="number" min="1" step="1" value="100"></div>
+              <div class="field"><label for="segments-per-side">Сегментов на сторону</label><input id="segments-per-side" type="number" min="1" step="1" value="6"></div>
               <div class="field"><label for="led-per-m">LED/м</label><input id="led-per-m" type="number" min="1" step="1" value="60"></div>
+              <div class="field"><label for="side-mm">Сторона, мм (расчёт)</label><input id="side-mm" type="number" step="0.001" value="100" readonly></div>
               <div class="field"><label for="watts-per-m">Вт/м</label><input id="watts-per-m" type="number" min="0.1" step="0.1" value="18"></div>
               <div class="field"><label for="voltage">Напряжение</label><select id="voltage"><option value="5">5 В</option><option value="12" selected>12 В</option><option value="24">24 В</option></select></div>
               <div class="field"><label for="reserve-percent">Запас БП, %</label><input id="reserve-percent" type="number" min="0" step="1" value="20"></div>
@@ -98,15 +133,16 @@
     const $=id=>rootElement.querySelector('#'+id);
     const svg=$('hex-canvas');
     let snap=state.snapshot();
-    let routeStep=0,pickMode=null,animation=null;
+    let routeStep=0,pickMode=null,deleteMode=false,animation=null;
     const view={scale:1,tx:500,ty:350};
     const pointers=new Map();
     let gesture=null;
 
     function notify(text){const el=$('canvas-toast');el.textContent=text;el.classList.remove('hidden');clearTimeout(notify.t);notify.t=setTimeout(()=>el.classList.add('hidden'),2400);}
-    function messageFor(m){return ({disconnects:'Удаление разорвёт конструкцию.',use_clear:'Последний модуль удаляется кнопкой «Очистить».',must_touch:'Новый модуль должен касаться существующего.',same_endpoint:'START и END должны различаться.',not_lower_boundary:'Точка должна быть на нижнем внешнем контуре.',invalid_numeric:'Введите корректное положительное число.'}[m]||m||'Операция отклонена.');}
+    function messageFor(m){return ({disconnects:'Удаление разорвёт конструкцию.',use_clear:'Последний модуль удаляется кнопкой «Очистить».',must_touch:'Новый модуль должен касаться существующего.',same_endpoint:'START и END должны различаться.',not_lower_boundary:'Точка должна быть на нижнем внешнем контуре.',invalid_numeric:'Введите корректное положительное число.',selection_disabled:'Постоянное выделение модулей отключено.'}[m]||m||'Операция отклонена.');}
     function dispatch(action,{fit=false,preserveStep=false}={}){const r=state.dispatch(action);if(!r.ok){notify(messageFor(r.message));return false;}refresh({fit,preserveStep});return true;}
-    function stopAnimation(){if(animation){clearInterval(animation);animation=null;}}
+    function stopAnimation(){if(animation){clearInterval(animation);animation=null;}updatePlaybackButtons();}
+    function updatePlaybackButtons(){if(!$('route-pause-btn'))return;const total=snap.solution?.traversals.length||0;$('route-pause-btn').disabled=!animation;$('route-animate-btn').disabled=total===0;}
 
     function refresh({fit=false,preserveStep=false}={}){
       stopAnimation();snap=state.snapshot();
@@ -118,68 +154,73 @@
 
     function renderAll(){
       $('status-pill').textContent=statusText();$('module-counter').textContent=`${snap.cells.length} модулей`;
-      $('undo-btn').disabled=snap.history.undoCount===0;$('redo-btn').disabled=snap.history.redoCount===0;$('delete-btn').disabled=!snap.selectedKey;
+      $('undo-btn').disabled=snap.history.undoCount===0;$('redo-btn').disabled=snap.history.redoCount===0;$('delete-btn').disabled=snap.cells.length===0;
+      $('delete-btn').classList.toggle('pick-active',deleteMode);$('delete-btn').textContent=deleteMode?'Выберите модуль…':'Удалить';
+      $('orientation-toggle').checked=snap.orientation==='flat';$('orientation-text').textContent=snap.orientation==='flat'?'горизонтальная':'вертикальная';
       $('objective-select').value=snap.routing.objective;$('show-numbers').checked=!!snap.view.showNumbers;$('show-route-numbers').checked=!!snap.view.showRouteNumbers;$('show-diagnostics').checked=!!snap.view.showDiagnostics;
-      $('side-mm').value=snap.strip.sideMm;$('led-per-m').value=snap.strip.ledPerM;$('watts-per-m').value=snap.strip.wattsPerM;$('voltage').value=String(snap.strip.voltage);$('reserve-percent').value=snap.strip.reservePercent;
+      $('segments-per-side').value=snap.strip.segmentsPerSide;$('side-mm').value=String(Math.round(snap.strip.sideMm*1000)/1000);$('led-per-m').value=snap.strip.ledPerM;$('watts-per-m').value=snap.strip.wattsPerM;$('voltage').value=String(snap.strip.voltage);$('reserve-percent').value=snap.strip.reservePercent;
       $('pick-start-btn').classList.toggle('pick-active',pickMode==='start');$('pick-end-btn').classList.toggle('pick-active',pickMode==='end');
       const max=snap.solution?snap.solution.traversals.length:0;routeStep=clamp(routeStep,0,max);$('route-slider').max=String(max);$('route-slider').value=String(routeStep);$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=max;
-      renderMetrics();renderWarnings();renderCanvas();
+      updatePlaybackButtons();renderMetrics();renderWarnings();renderCanvas();
     }
     function renderMetrics(){
       const e=snap.electrical;
       const values=e?[
-        ['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов',String(snap.graph.edges.length)]
+        ['Сегм./стор.',String(snap.strip.segmentsPerSide)],['Сторона',`${fmt(snap.strip.sideMm,2)} мм`],['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов трассы',String(snap.graph.edges.length)]
       ]:[['Модули',String(snap.cells.length)],['Маршрут','—']];
       $('metrics').innerHTML=values.map(([a,b])=>`<div class="metric"><span>${escapeHtml(a)}</span><strong>${escapeHtml(b)}</strong></div>`).join('');
     }
-    function renderWarnings(){const list=[...snap.warnings];if(pickMode)list.unshift(`Выберите ${pickMode==='start'?'START':'END'} среди подсвеченных нижних точек.`);$('warnings').innerHTML=list.length?`<div class="warning-box">${list.map(escapeHtml).join('<br>')}</div>`:'';}
+    function renderWarnings(){const list=[...snap.warnings];if(pickMode)list.unshift(`Выберите ${pickMode==='start'?'START':'END'} среди подсвеченных нижних точек.`);if(deleteMode)list.unshift('Режим удаления: нажмите на шестигранник. Esc отменяет режим.');$('warnings').innerHTML=list.length?`<div class="warning-box">${list.map(escapeHtml).join('<br>')}</div>`:'';}
 
     function line(x1,y1,x2,y2,attrs=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" ${attrs}/>`;}
+    function labelMarkup(rect,text,color='var(--text)',className='diagram-label'){
+      const tx=rect.x+rect.w/2,ty=rect.y+14;
+      return `<g class="${className}" pointer-events="none"><rect x="${rect.x}" y="${rect.y}" width="${rect.w}" height="${rect.h}" rx="4" fill="var(--panel)" fill-opacity=".88" stroke="var(--border)" stroke-width=".5"/><text x="${tx}" y="${ty}" text-anchor="middle" font-size="11" font-weight="750" fill="${color}">${escapeHtml(text)}</text></g>`;
+    }
     function renderCanvas(){
-      const chunks=[];
+      const orientation=snap.orientation||'pointy';
+      const chunks=[],labels=[],occupied=[];
       chunks.push(`<defs><marker id="ui-arrow" markerWidth="3.5" markerHeight="3.5" refX="3" refY="1.5" orient="auto"><path d="M0,0 L0,3 L3.5,1.5 z" fill="var(--route)"/></marker></defs>`);
-      chunks.push(`<g id="scene" transform="translate(${view.tx} ${view.ty}) scale(${view.scale})"><rect data-pan-bg="1" x="-5000" y="-5000" width="10000" height="10000" fill="transparent"/>`);
+      chunks.push(`<g id="scene" class="${deleteMode?'delete-mode':''}" transform="translate(${view.tx} ${view.ty}) scale(${view.scale})"><rect data-pan-bg="1" x="-5000" y="-5000" width="10000" height="10000" fill="transparent"/>`);
       const grid=HexGrid.create(snap.cells);
       if(snap.cells.length){
         for(const face of grid.freeFaces()){
-          const a=center(face.owner.q,face.owner.r), b=center(face.target.q,face.target.r);
-          const x=(a.x+b.x)/2, y=(a.y+b.y)/2;
+          const a=center(face.owner.q,face.owner.r,orientation),b=center(face.target.q,face.target.r,orientation);
+          const x=(a.x+b.x)/2,y=(a.y+b.y)/2;
+          occupied.push({x:x-19,y:y-19,w:38,h:38});
           chunks.push(`<g class="add-face" data-interactive="1" data-add-face="1" data-add-q="${face.target.q}" data-add-r="${face.target.r}" role="button" tabindex="0" aria-label="Добавить модуль на эту грань"><circle class="add-face-hit" cx="${x}" cy="${y}" r="16" fill="var(--start)" fill-opacity=".92" stroke="var(--start)" stroke-width="2"/><text class="add-face-plus" x="${x}" y="${y+6}" text-anchor="middle" font-size="20" font-weight="800" fill="white" pointer-events="none">+</text></g>`);
         }
       }
-      for(const e of snap.graph.edges){const a=GeometryBuilder.toWorld(snap.graph.vertices[e.u],RENDER_SIDE),b=GeometryBuilder.toWorld(snap.graph.vertices[e.v],RENDER_SIDE);chunks.push(line(a.x,a.y,b.x,b.y,`stroke="var(--corridor)" stroke-width="14" stroke-linecap="round"`));}
-      const cellOrder=[...snap.cells].sort((a,b)=>a.r-b.r||a.q-b.q);cellOrder.forEach((c,i)=>{const selected=key(c.q,c.r)===snap.selectedKey;chunks.push(`<polygon data-interactive="1" data-cell-key="${key(c.q,c.r)}" points="${polygonPoints(c.q,c.r)}" fill="${selected?'var(--accent-weak)':'transparent'}" stroke="${selected?'var(--accent)':'var(--hex)'}" stroke-width="${selected?3:1.8}"/>`);if(snap.view.showNumbers){const p=center(c.q,c.r);chunks.push(`<text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--muted)" pointer-events="none">${i+1}</text>`);}});
+      for(const e of snap.graph.edges){const a=GeometryBuilder.toWorld(snap.graph.vertices[e.u],RENDER_SIDE,orientation),b=GeometryBuilder.toWorld(snap.graph.vertices[e.v],RENDER_SIDE,orientation);chunks.push(line(a.x,a.y,b.x,b.y,`stroke="var(--corridor)" stroke-width="14" stroke-linecap="round"`));}
+      const cellOrder=[...snap.cells].sort((a,b)=>a.r-b.r||a.q-b.q);
+      cellOrder.forEach((c,i)=>{chunks.push(`<polygon data-interactive="1" data-cell-key="${key(c.q,c.r)}" points="${polygonPoints(c.q,c.r,orientation)}" fill="transparent" stroke="var(--hex)" stroke-width="1.8"/>`);if(snap.view.showNumbers){const p=center(c.q,c.r,orientation);const rect={x:p.x-13,y:p.y-11,w:26,h:20};occupied.push(rect);labels.push(labelMarkup(rect,String(i+1),'var(--muted)','module-label'));}});
       if(snap.solution){
         const upto=Math.min(routeStep,snap.solution.traversals.length);
-        for(let i=0;i<upto;i++){const t=snap.solution.traversals[i],a=GeometryBuilder.toWorld(snap.graph.vertices[t.from],RENDER_SIDE),b=GeometryBuilder.toWorld(snap.graph.vertices[t.to],RENDER_SIDE);const color=t.repeat?'var(--repeat)':'var(--route)';const dash=t.repeat?'stroke-dasharray="10 7"':'';chunks.push(line(a.x,a.y,b.x,b.y,`stroke="${color}" stroke-width="5.5" stroke-linecap="round" ${dash} marker-end="url(#ui-arrow)"`));if(snap.view.showRouteNumbers){chunks.push(`<text x="${(a.x+b.x)/2}" y="${(a.y+b.y)/2-5}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)" pointer-events="none">${i+1}</text>`);}}
-        if(snap.view.showDiagnostics)for(const id of snap.solution.oddVertexIds){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="7" fill="none" stroke="var(--diag)" stroke-width="3"/>`);}
+        for(let i=0;i<upto;i++){
+          const t=snap.solution.traversals[i],a=GeometryBuilder.toWorld(snap.graph.vertices[t.from],RENDER_SIDE,orientation),b=GeometryBuilder.toWorld(snap.graph.vertices[t.to],RENDER_SIDE,orientation);const color=t.repeat?'var(--repeat)':'var(--route)';const dash=t.repeat?'stroke-dasharray="10 7"':'';
+          chunks.push(line(a.x,a.y,b.x,b.y,`stroke="${color}" stroke-width="5.5" stroke-linecap="round" ${dash} marker-end="url(#ui-arrow)"`));
+          occupied.push(lineRect(a,b,6));
+          if(snap.view.showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;const rect=placeLabel(x,y,String(i+1),occupied);occupied.push(rect);labels.push(labelMarkup(rect,String(i+1),'var(--text)','route-label'));}
+        }
+        if(snap.view.showDiagnostics)for(const id of snap.solution.oddVertexIds){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="7" fill="none" stroke="var(--diag)" stroke-width="3"/>`);occupied.push({x:p.x-9,y:p.y-9,w:18,h:18});}
       }
-      const lower=new Set(snap.boundary.lowerCandidateIds);for(const id of lower){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE);const active=pickMode?'1':'0';chunks.push(`<circle ${pickMode?'data-interactive="1" data-endpoint-id="'+id+'"':''} cx="${p.x}" cy="${p.y}" r="${pickMode?8:4}" fill="${pickMode?'var(--accent)':'var(--muted)'}" fill-opacity="${pickMode?.75:.35}" stroke="var(--panel)" stroke-width="2" opacity="${active==='1'?1:.55}"/>`);}
-      if(snap.routing.startId!==null&&snap.graph.vertices[snap.routing.startId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.startId],RENDER_SIDE);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--start)" stroke="var(--panel)" stroke-width="3"/><text x="${p.x+12}" y="${p.y-12}" font-size="12" font-weight="800" fill="var(--start)">START</text>`);}
-      if(snap.routing.endId!==null&&snap.graph.vertices[snap.routing.endId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.endId],RENDER_SIDE);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--end)" stroke="var(--panel)" stroke-width="3"/><text x="${p.x+12}" y="${p.y-12}" font-size="12" font-weight="800" fill="var(--end)">END</text>`);}
-      if(!snap.cells.length)chunks.push(`<text x="0" y="0" text-anchor="middle" font-size="18" fill="var(--muted)" pointer-events="none">Кликните здесь или в другом месте, чтобы поставить первый модуль</text>`);
-      chunks.push(`</g>`);svg.innerHTML=chunks.join('');
+      const lower=new Set(snap.boundary.lowerCandidateIds);for(const id of lower){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE,orientation);const active=pickMode?'1':'0';chunks.push(`<circle ${pickMode?'data-interactive="1" data-endpoint-id="'+id+'"':''} cx="${p.x}" cy="${p.y}" r="${pickMode?8:4}" fill="${pickMode?'var(--accent)':'var(--muted)'}" fill-opacity="${pickMode?.75:.35}" stroke="var(--panel)" stroke-width="2" opacity="${active==='1'?1:.55}"/>`);}
+      if(snap.routing.startId!==null&&snap.graph.vertices[snap.routing.startId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.startId],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--start)" stroke="var(--panel)" stroke-width="3"/>`);occupied.push({x:p.x-12,y:p.y-12,w:24,h:24});const rect=placeLabel(p.x,p.y,'START',occupied);occupied.push(rect);labels.push(labelMarkup(rect,'START','var(--start)','endpoint-label'));}
+      if(snap.routing.endId!==null&&snap.graph.vertices[snap.routing.endId]){const p=GeometryBuilder.toWorld(snap.graph.vertices[snap.routing.endId],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--end)" stroke="var(--panel)" stroke-width="3"/>`);occupied.push({x:p.x-12,y:p.y-12,w:24,h:24});const rect=placeLabel(p.x,p.y,'END',occupied);occupied.push(rect);labels.push(labelMarkup(rect,'END','var(--end)','endpoint-label'));}
+      if(!snap.cells.length)labels.push(`<text x="0" y="0" text-anchor="middle" font-size="18" fill="var(--muted)" pointer-events="none">Кликните здесь или в другом месте, чтобы поставить первый модуль</text>`);
+      chunks.push(`<g id="label-layer">${labels.join('')}</g></g>`);svg.innerHTML=chunks.join('');
     }
 
-    function fitView(){
-      const fitted=computeFitTransform(snap,1000,700);
-      view.scale=fitted.scale;view.tx=fitted.tx;view.ty=fitted.ty;
-    }
+    function fitView(){const fitted=computeFitTransform(snap,1000,700);view.scale=fitted.scale;view.tx=fitted.tx;view.ty=fitted.ty;}
     function clientToSvg(evt){const r=svg.getBoundingClientRect();return{x:(evt.clientX-r.left)/r.width*1000,y:(evt.clientY-r.top)/r.height*700};}
     function svgToScene(p){return{x:(p.x-view.tx)/view.scale,y:(p.y-view.ty)/view.scale};}
 
     svg.addEventListener('click',e=>{
-      const add=e.target.closest('[data-add-face]');if(add){dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});return;}
-      const cell=e.target.closest('[data-cell-key]');if(cell){dispatch({type:'SELECT_HEX',key:cell.dataset.cellKey},{preserveStep:true});return;}
       const ep=e.target.closest('[data-endpoint-id]');if(ep&&pickMode){const type=pickMode==='start'?'SET_MANUAL_START':'SET_MANUAL_END';if(dispatch({type,vertexId:Number(ep.dataset.endpointId)})){pickMode=null;renderAll();}return;}
+      const add=e.target.closest('[data-add-face]');if(add){if(deleteMode){notify('В режиме удаления выберите существующий шестигранник.');return;}dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});return;}
+      const cell=e.target.closest('[data-cell-key]');if(cell&&deleteMode){const ok=dispatch({type:'DELETE_HEX',key:cell.dataset.cellKey},{preserveStep:false});if(ok){deleteMode=false;renderAll();}return;}
     });
-    svg.addEventListener('keydown',e=>{
-      const add=e.target.closest&&e.target.closest('[data-add-face]');
-      if(add&&(e.key==='Enter'||e.key===' ')){
-        e.preventDefault();
-        dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});
-      }
-    });
+    svg.addEventListener('keydown',e=>{const add=e.target.closest&&e.target.closest('[data-add-face]');if(add&&(e.key==='Enter'||e.key===' ')){e.preventDefault();if(!deleteMode)dispatch({type:'ADD_HEX',q:Number(add.dataset.addQ),r:Number(add.dataset.addR)},{fit:false});}});
     svg.addEventListener('pointerdown',e=>{
       if(e.target.closest('[data-interactive]'))return;
       svg.setPointerCapture(e.pointerId);const p=clientToSvg(e);pointers.set(e.pointerId,p);
@@ -191,29 +232,30 @@
       if(gesture?.type==='pan'&&pointers.size===1){const dx=p.x-gesture.start.x,dy=p.y-gesture.start.y;if(Math.hypot(dx,dy)>3)gesture.moved=true;view.tx=gesture.tx+dx;view.ty=gesture.ty+dy;renderCanvas();}
       else if(pointers.size>=2){const [a,b]=[...pointers.values()].slice(0,2);const dist=Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));const centerNow={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(gesture?.type!=='pinch')gesture={type:'pinch',distance:dist,center:centerNow,scale:view.scale,tx:view.tx,ty:view.ty,moved:true};const ns=clamp(gesture.scale*dist/gesture.distance,.25,4);const sceneCenter={x:(gesture.center.x-gesture.tx)/gesture.scale,y:(gesture.center.y-gesture.ty)/gesture.scale};view.scale=ns;view.tx=centerNow.x-sceneCenter.x*ns;view.ty=centerNow.y-sceneCenter.y*ns;renderCanvas();}
     });
-    svg.addEventListener('pointerup',e=>{
-      const p=clientToSvg(e);const was=gesture;pointers.delete(e.pointerId);
-      if(pointers.size===0){if(was?.type==='pan'&&!was.moved&&!snap.cells.length){const a=axialRound(svgToScene(p).x,svgToScene(p).y);dispatch({type:'ADD_HEX',q:a.q,r:a.r},{fit:true});}gesture=null;}
-    });
+    svg.addEventListener('pointerup',e=>{const p=clientToSvg(e);const was=gesture;pointers.delete(e.pointerId);if(pointers.size===0){if(was?.type==='pan'&&!was.moved&&!snap.cells.length){const s=svgToScene(p),a=axialRound(s.x,s.y,snap.orientation);dispatch({type:'ADD_HEX',q:a.q,r:a.r},{fit:true});}gesture=null;}});
     svg.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);if(!pointers.size)gesture=null;});
     svg.addEventListener('wheel',e=>{e.preventDefault();const p=clientToSvg(e),scene=svgToScene(p),ns=clamp(view.scale*(e.deltaY<0?1.12:.89),.25,4);view.scale=ns;view.tx=p.x-scene.x*ns;view.ty=p.y-scene.y*ns;renderCanvas();},{passive:false});
 
-    $('undo-btn').addEventListener('click',()=>dispatch({type:'UNDO'}));$('redo-btn').addEventListener('click',()=>dispatch({type:'REDO'}));$('delete-btn').addEventListener('click',()=>dispatch({type:'DELETE_SELECTED'}));$('clear-btn').addEventListener('click',()=>{pickMode=null;dispatch({type:'CLEAR'},{fit:true});});$('fit-btn').addEventListener('click',()=>{fitView();renderCanvas();});
-    $('auto-endpoints-btn').addEventListener('click',()=>{pickMode=null;dispatch({type:'RESET_AUTO'});});$('pick-start-btn').addEventListener('click',()=>{pickMode=pickMode==='start'?null:'start';renderAll();});$('pick-end-btn').addEventListener('click',()=>{pickMode=pickMode==='end'?null:'end';renderAll();});
+    $('undo-btn').addEventListener('click',()=>{deleteMode=false;dispatch({type:'UNDO'});});$('redo-btn').addEventListener('click',()=>{deleteMode=false;dispatch({type:'REDO'});});
+    $('delete-btn').addEventListener('click',()=>{if(!snap.cells.length)return;pickMode=null;deleteMode=!deleteMode;renderAll();});
+    $('clear-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'CLEAR'},{fit:true});});$('fit-btn').addEventListener('click',()=>{fitView();renderCanvas();});
+    $('orientation-toggle').addEventListener('change',e=>{deleteMode=false;pickMode=null;dispatch({type:'SET_ORIENTATION',orientation:e.target.checked?'flat':'pointy'},{fit:true});});
+    $('auto-endpoints-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'RESET_AUTO'});});$('pick-start-btn').addEventListener('click',()=>{deleteMode=false;pickMode=pickMode==='start'?null:'start';renderAll();});$('pick-end-btn').addEventListener('click',()=>{deleteMode=false;pickMode=pickMode==='end'?null:'end';renderAll();});
     $('objective-select').addEventListener('change',e=>dispatch({type:'SET_OBJECTIVE',objective:e.target.value}));
-    for(const [id,field] of [['side-mm','sideMm'],['led-per-m','ledPerM'],['watts-per-m','wattsPerM'],['voltage','voltage'],['reserve-percent','reservePercent']])$(id).addEventListener('change',e=>{if(!dispatch({type:'SET_STRIP_INPUT',field,value:e.target.value}))renderAll();});
+    for(const [id,field] of [['segments-per-side','segmentsPerSide'],['led-per-m','ledPerM'],['watts-per-m','wattsPerM'],['voltage','voltage'],['reserve-percent','reservePercent']])$(id).addEventListener('change',e=>{if(!dispatch({type:'SET_STRIP_INPUT',field,value:e.target.value}))renderAll();});
     for(const [id,flag] of [['show-numbers','showNumbers'],['show-route-numbers','showRouteNumbers'],['show-diagnostics','showDiagnostics']])$(id).addEventListener('change',e=>dispatch({type:'SET_VIEW_FLAG',flag,value:e.target.checked},{preserveStep:true}));
-    $('route-prev-btn').addEventListener('click',()=>{routeStep=Math.max(0,routeStep-1);renderAll();});$('route-next-btn').addEventListener('click',()=>{routeStep=Math.min(snap.solution?.traversals.length||0,routeStep+1);renderAll();});$('route-slider').addEventListener('input',e=>{routeStep=Number(e.target.value);renderCanvas();$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=Number(e.target.max);});$('show-full-route-btn').addEventListener('click',()=>{routeStep=snap.solution?.traversals.length||0;renderAll();});
-    $('route-animate-btn').addEventListener('click',()=>{stopAnimation();if(!snap.solution)return;if(root.matchMedia&&root.matchMedia('(prefers-reduced-motion: reduce)').matches){routeStep=snap.solution.traversals.length;renderAll();notify('Анимация отключена системной настройкой уменьшения движения.');return;}routeStep=0;renderAll();animation=setInterval(()=>{routeStep++;if(routeStep>=snap.solution.traversals.length)stopAnimation();renderAll();},180);});$('route-pause-btn').addEventListener('click',stopAnimation);
+    $('route-prev-btn').addEventListener('click',()=>{stopAnimation();routeStep=Math.max(0,routeStep-1);renderAll();});$('route-next-btn').addEventListener('click',()=>{stopAnimation();routeStep=Math.min(snap.solution?.traversals.length||0,routeStep+1);renderAll();});$('route-slider').addEventListener('input',e=>{stopAnimation();routeStep=Number(e.target.value);renderCanvas();$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=Number(e.target.max);});$('show-full-route-btn').addEventListener('click',()=>{stopAnimation();routeStep=snap.solution?.traversals.length||0;renderAll();});
+    $('route-animate-btn').addEventListener('click',()=>{if(!snap.solution||!snap.solution.traversals.length)return;stopAnimation();const total=snap.solution.traversals.length;routeStep=animationStartStep(routeStep,total);renderAll();animation=setInterval(()=>{const next=animationTick(routeStep,total);routeStep=next.step;if(next.done){clearInterval(animation);animation=null;}renderAll();},ANIMATION_MS);updatePlaybackButtons();});
+    $('route-pause-btn').addEventListener('click',()=>{stopAnimation();renderAll();});
 
     function download(name,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
     $('save-json-btn').addEventListener('click',()=>download('hex-router-project.json',ProjectIO.serialize(snap),'application/json'));
-    $('load-json-input').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const text=await file.text();const parsed=ProjectIO.parse(text);if(!parsed.ok){notify(parsed.error);return;}if(dispatch({type:'LOAD_PROJECT',project:parsed.project},{fit:true}))notify('Проект загружен.');}catch(err){notify('Не удалось прочитать файл: '+err.message);}finally{e.target.value='';}});
-    $('export-svg-btn').addEventListener('click',()=>{if(!snap.solution||!snap.electrical){notify('Сначала создайте конструкцию.');return;}const text=SvgExporter.export({graph:snap.graph,modules:snap.graph.modules,solution:snap.solution,startId:snap.routing.startId,endId:snap.routing.endId,showModuleNumbers:snap.view.showNumbers,showRouteNumbers:snap.view.showRouteNumbers,electrical:snap.electrical,sideMm:snap.strip.sideMm});download('hex-router-route.svg',text,'image/svg+xml');});
+    $('load-json-input').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const text=await file.text();const parsed=ProjectIO.parse(text);if(!parsed.ok){notify(parsed.error);return;}if(dispatch({type:'LOAD_PROJECT',project:parsed.project},{fit:true})){notify(parsed.warnings?.length?parsed.warnings.join(' '):'Проект загружен.');}}catch(err){notify('Не удалось прочитать файл: '+err.message);}finally{e.target.value='';}});
+    $('export-svg-btn').addEventListener('click',()=>{if(!snap.solution||!snap.electrical){notify('Сначала создайте конструкцию.');return;}const text=SvgExporter.export({graph:snap.graph,modules:snap.graph.modules,solution:snap.solution,startId:snap.routing.startId,endId:snap.routing.endId,showModuleNumbers:snap.view.showNumbers,showRouteNumbers:snap.view.showRouteNumbers,electrical:snap.electrical,sideMm:snap.strip.sideMm,orientation:snap.orientation});download('hex-router-route.svg',text,'image/svg+xml');});
 
-    const keyHandler=e=>{if(e.target.matches('input,select,textarea'))return;if(e.key==='Delete')dispatch({type:'DELETE_SELECTED'});if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();dispatch({type:e.shiftKey?'REDO':'UNDO'});}};rootElement.addEventListener('keydown',keyHandler);
+    const keyHandler=e=>{if(e.target.matches('input,select,textarea'))return;if(e.key==='Escape'){pickMode=null;deleteMode=false;renderAll();return;}if(e.key==='Delete'&&snap.cells.length){deleteMode=!deleteMode;pickMode=null;renderAll();return;}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();deleteMode=false;dispatch({type:e.shiftKey?'REDO':'UNDO'});}};rootElement.addEventListener('keydown',keyHandler);
     fitView();renderAll();
     return {destroy(){stopAnimation();rootElement.removeEventListener('keydown',keyHandler);rootElement.innerHTML='';}};
   }
-  return {mount,computeFitTransform};
+  return {mount,computeFitTransform,animationStartStep,animationTick,placeLabel};
 });
