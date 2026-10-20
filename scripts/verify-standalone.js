@@ -1,7 +1,7 @@
 const fs=require('node:fs');
 const path=require('node:path');
-const file=path.join(__dirname,'..','Hex_Router_Designer.html');
-if(!fs.existsSync(file))throw new Error('Hex_Router_Designer.html not found; run npm run build');
+const file=path.join(__dirname,'..','index.html');
+if(!fs.existsSync(file))throw new Error('index.html not found; run npm run build');
 const html=fs.readFileSync(file,'utf8');
 const checks=[
   [/https?:\/\//i,'external URL'],
