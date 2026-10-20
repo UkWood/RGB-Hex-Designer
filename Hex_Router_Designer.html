@@ -979,7 +979,7 @@ return blossom;
           augAdj[e.v].push({to:e.u,copyId:c,edgeId:e.id});
         }
       }
-      for (const list of augAdj) list.sort((a,b)=>b.to-a.to || b.edgeId-a.edgeId || b.copyId-a.copyId);
+      for (const list of augAdj) list.sort((a,b)=>b.to-a.to || b.edgeId-a.edgeId || b.copyId-a.copyId); // pop smallest
       const usedCopy=new Set();
       const nodeStack=[startId];
       const edgeStack=[null];
