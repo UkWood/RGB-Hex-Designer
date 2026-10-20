@@ -90,6 +90,16 @@ test('svg_legend_contains_dimensions_strip_power_inputs_and_calculations',()=>{
   for(const text of ['Сегментов на сторону: 6','LED/м: 60','Сторона: 100 мм','Вт/м: 18','Напряжение: 12 В','Запас БП: 20%','Уникальная длина:','Повторы:','Итого ленты:','LED ≈:','Мощность:','Ток:','БП ≥:']) assert.ok(svg.includes(text),`missing legend item: ${text}`);
 });
 
+test('svg_summary_is_arranged_in_four_columns_for_compact_printing',()=>{
+  const svg=fixture();
+  assert.match(svg,/class="summary-grid" data-columns="4"/);
+  const cols=[...svg.matchAll(/data-summary-col="(\d+)"/g)].map(m=>Number(m[1]));
+  assert.ok(cols.length>=16,'expected most summary parameters to be in the grid');
+  assert.deepEqual([...new Set(cols)].sort((a,b)=>a-b),[0,1,2,3]);
+  const rows=[...svg.matchAll(/data-summary-row="(\d+)"/g)].map(m=>Number(m[1]));
+  assert.ok(Math.max(...rows)<=4,'summary should use at most five compact rows');
+});
+
 test('svg_has_no_external_urls_scripts_or_raster_images',()=>{
   const svg=fixture();
   assert.doesNotMatch(svg,/(?:href|src)="https?:\/\//i);
