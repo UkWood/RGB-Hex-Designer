@@ -25,4 +25,4 @@ const html=template.replace('__INLINE_STYLES__',styles).replace('__INLINE_SCRIPT
 if(/__INLINE_(?:STYLES|SCRIPTS)__/.test(html))throw new Error('unresolved build placeholder');
 const out=path.join(root,'Hex_Router_Designer.html');
 fs.writeFileSync(out,html,'utf8');
-console.log(`Built ${out} (${Buffer.byteLength(html)} bytes`);
+console.log(`Built ${out} (${Buffer.byteLength(html)} bytes)`);
