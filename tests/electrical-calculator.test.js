@@ -2,7 +2,15 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const Electrical=require('../src/core/electrical-calculator');
 
-function input(voltage=12){return {moduleCount:3,uniqueEdgeCount:10,repeatCount:2,sideMm:100,ledPerM:60,wattsPerM:18,voltage,reservePercent:20,startVertex:{gx:0,gy:0},endVertex:{gx:4,gy:0}};}
+function input(voltage=12){return {moduleCount:3,uniqueEdgeCount:10,repeatCount:2,sideMm:100,ledPerM:60,wattsPerM:18,voltage,reservePercent:20,startVertex:{gx:0,gy:0},endVertex:{gx:4,gy:0},orientation:'pointy'};}
+
+test('side_length_is_derived_from_cut_segments_and_density',()=>{
+  assert.equal(Electrical.sideMmFromSegments(6,60),100);
+  assert.equal(Electrical.sideMmFromSegments(6,120),50);
+  assert.equal(Electrical.sideMmFromSegments(10,100),100);
+  assert.throws(()=>Electrical.sideMmFromSegments(2.5,60),/integer/i);
+  assert.throws(()=>Electrical.sideMmFromSegments(6,0),/> 0|positive/i);
+});
 
 test('calculates_exact_lengths_leds_power_current_and_reserve',()=>{
   const s=Electrical.calculate(input(12));
@@ -29,9 +37,11 @@ test('reserve_defaults_to_twenty_percent',()=>{
   assert.ok(Math.abs(s.recommendedPsuW-s.powerW*1.2)<1e-12);
 });
 
-test('endpoint_separation_uses_normalized_world_geometry',()=>{
-  const s=Electrical.calculate(input());
-  assert.ok(Math.abs(s.endpointSeparationM-(4*Math.sqrt(3)/2*0.1))<1e-12);
+test('endpoint_separation_respects_field_orientation',()=>{
+  const pointy=Electrical.calculate(input());
+  const flat=Electrical.calculate({...input(),orientation:'flat'});
+  assert.ok(Math.abs(pointy.endpointSeparationM-(4*Math.sqrt(3)/2*0.1))<1e-12);
+  assert.ok(Math.abs(flat.endpointSeparationM-pointy.endpointSeparationM)<1e-12);
 });
 
 test('invalid_inputs_are_reported_without_nan_or_infinity',()=>{
