@@ -14,7 +14,7 @@ function fixture(showModuleNumbers=true,showRouteNumbers=true,sideMm=100,orienta
   const ep=EndpointSelector.autoSelect(graph,boundary,RouteOptimizer.prepare(graph,'min_repeats'),sideMm,orientation);
   const strip={segmentsPerSide:6,ledPerM:60,sideMm,wattsPerM:18,voltage:12,reservePercent:20};
   const electrical=Electrical.calculate({moduleCount:cells.length,uniqueEdgeCount:graph.edges.length,repeatCount:ep.solution.repeatCount,sideMm,ledPerM:strip.ledPerM,wattsPerM:strip.wattsPerM,voltage:strip.voltage,reservePercent:strip.reservePercent,startVertex:graph.vertices[ep.startId],endVertex:graph.vertices[ep.endId]});
-  return SvgExporter.export({graph,modules:graph.modules,solution:ep.solution,startId:ep.startId,endId:ep.endId,showModuleNumbers,showRouteNumbers,electrical,sideMm,orientation,strip});
+  return SvgExporter.export({graph,modules:graph.modules,solution:ep.solution,startId:ep.startId,endId:ep.endId,showModuleNumbers,showRouteNumbers,electrical,sideMm,orientation});
 }
 
 test('exports_standalone_svg_with_viewbox_modules_and_route',()=>{
