@@ -6,6 +6,12 @@
   'use strict';
   const allowedVoltages=new Set([5,12,24]);
   function num(v){ return typeof v==='number'?v:Number(v); }
+  function sideMmFromSegments(segmentsPerSide,ledPerM){
+    const segments=num(segmentsPerSide), density=num(ledPerM);
+    if(!Number.isInteger(segments)||segments<=0) throw new Error('segmentsPerSide must be a positive integer');
+    if(!Number.isFinite(density)||density<=0) throw new Error('ledPerM must be finite and > 0');
+    return segments*1000/density;
+  }
   function validateInputs(input){
     const errors=[];
     const n={...input};
@@ -42,5 +48,5 @@
     const endpointSeparationM=Math.hypot(dx,dy);
     return {uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM};
   }
-  return {calculate,validateInputs};
+  return {calculate,validateInputs,sideMmFromSegments};
 });
