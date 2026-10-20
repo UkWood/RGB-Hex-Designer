@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - Hex_Router_Designer.html
+      - index.html
   pull_request:
     branches: [main]
 
@@ -38,16 +38,16 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
-          if git diff --quiet -- Hex_Router_Designer.html && git ls-files --error-unmatch Hex_Router_Designer.html >/dev/null 2>&1; then
+          if git diff --quiet -- index.html && git ls-files --error-unmatch index.html >/dev/null 2>&1; then
             echo "Standalone HTML is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Hex_Router_Designer.html
+          git add index.html
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
             exit 0
           fi
-          git commit -m "build: regenerate standalone designer [skip ci]"
+          git commit -m "build: regenerate Pages index [skip ci]"
           git push
