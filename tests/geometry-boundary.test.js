@@ -47,6 +47,16 @@ test('flat_orientation_is_exact_ninety_degree_rotation_of_pointy_world_geometry'
   }
 });
 
+test('world_bounds_are_pure_hex_dimensions_in_mm_for_both_orientations',()=>{
+  const g=GeometryBuilder.build([{q:0,r:0},{q:1,r:0}]);
+  const pointy=GeometryBuilder.worldBounds(g,100,'pointy');
+  assert.ok(Math.abs(pointy.width-2*Math.sqrt(3)*100)<1e-9);
+  assert.ok(Math.abs(pointy.height-200)<1e-9);
+  const flat=GeometryBuilder.worldBounds(g,100,'flat');
+  assert.ok(Math.abs(flat.width-200)<1e-9);
+  assert.ok(Math.abs(flat.height-2*Math.sqrt(3)*100)<1e-9);
+});
+
 test('normal_height_lower_candidates_obey_bottom_quarter_rule', () => {
   const g = GeometryBuilder.build([{q:0,r:0},{q:0,r:1},{q:0,r:2}]);
   const a = BoundaryAnalyzer.analyze(g,'pointy');
