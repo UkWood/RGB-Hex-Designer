@@ -34,6 +34,15 @@ jobs:
       - name: Verify standalone HTML
         run: npm run verify
 
+      - name: Upload standalone preview
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rgb-hex-designer-preview
+          path: index.html
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Commit generated standalone HTML
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
