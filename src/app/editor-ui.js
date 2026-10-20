@@ -10,6 +10,7 @@
   const RENDER_SIDE=60;
   const SQRT3=Math.sqrt(3);
   const ANIMATION_MS=350;
+  const FIT_PADDING=20;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const fmt=(v,d=2)=>Number.isFinite(v)?Number(v).toFixed(d):'—';
   const fmtMm=v=>Number.isFinite(v)?String(Math.round(v*100)/100):'—';
@@ -61,6 +62,18 @@
   }
   function lineRect(a,b,pad=8){return {x:Math.min(a.x,b.x)-pad,y:Math.min(a.y,b.y)-pad,w:Math.abs(a.x-b.x)+2*pad,h:Math.abs(a.y-b.y)+2*pad};}
 
+  function fitBoundsTransform(bounds,width=1000,height=700,padding=FIT_PADDING){
+    const pad=Math.max(FIT_PADDING,Number(padding)||0);
+    const x=Number(bounds&&('x' in bounds?bounds.x:bounds.minX));
+    const y=Number(bounds&&('y' in bounds?bounds.y:bounds.minY));
+    const w=Math.max(1,Number(bounds&&('width' in bounds?bounds.width:(bounds.maxX-bounds.minX)))||1);
+    const h=Math.max(1,Number(bounds&&('height' in bounds?bounds.height:(bounds.maxY-bounds.minY)))||1);
+    if(!Number.isFinite(x)||!Number.isFinite(y))return {scale:1,tx:width/2,ty:height/2};
+    const usableW=Math.max(1,width-2*pad),usableH=Math.max(1,height-2*pad);
+    const scale=Math.min(usableW/w,usableH/h);
+    return {scale,tx:width/2-(x+w/2)*scale,ty:height/2-(y+h/2)*scale};
+  }
+
   function computeFitTransform(snapshot,width=1000,height=700){
     const vertices=snapshot&&snapshot.graph&&snapshot.graph.vertices?snapshot.graph.vertices:[];
     if(!vertices.length)return {scale:1,tx:width/2,ty:height/2};
@@ -76,11 +89,7 @@
     }
     const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
     const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
-    const w=Math.max(1,maxX-minX),h=Math.max(1,maxY-minY);
-    const padding=Math.min(80,Math.max(40,Math.min(width,height)*.1));
-    const usableW=Math.max(1,width-2*padding),usableH=Math.max(1,height-2*padding);
-    const scale=clamp(Math.min(usableW/w,usableH/h),.25,4);
-    return {scale,tx:width/2-(minX+maxX)/2*scale,ty:height/2-(minY+maxY)/2*scale};
+    return fitBoundsTransform({x:minX,y:minY,width:maxX-minX,height:maxY-minY},width,height,FIT_PADDING);
   }
 
   function mount(rootElement,state){
@@ -95,7 +104,6 @@
             <span class="spacer"></span><span id="module-counter" class="subtle">0 модулей</span>
           </div>
           <div class="canvas-wrap">
-            <div id="canvas-help" class="canvas-help">Первый модуль: кликните в любом месте поля. Затем нажимайте «+» на свободной грани, чтобы добавить один соседний модуль.</div>
             <svg id="hex-canvas" class="hex-canvas" viewBox="0 0 1000 700" aria-label="Редактор шестигранной конструкции"></svg>
             <div id="canvas-toast" class="toast hidden" aria-live="polite"></div>
           </div>
@@ -134,7 +142,7 @@
     const $=id=>rootElement.querySelector('#'+id);
     const svg=$('hex-canvas');
     let snap=state.snapshot();
-    let routeStep=0,pickMode=null,deleteMode=false,animation=null;
+    let routeStep=0,pickMode=null,deleteMode=false,animation=null,fitRequest=0;
     const view={scale:1,tx:500,ty:350};
     const pointers=new Map();
     let gesture=null;
@@ -148,8 +156,8 @@
     function refresh({fit=false,preserveStep=false}={}){
       stopAnimation();snap=state.snapshot();
       if(!preserveStep) routeStep=snap.solution?snap.solution.traversals.length:0;
-      if(fit) fitView();
       renderAll();
+      if(fit)scheduleFitView();
     }
     function statusText(){if(!snap.cells.length)return 'Пустой проект';const mode=snap.routing.endpointMode==='auto'?'AUTO':'MANUAL';return `${snap.cells.length} мод. · ${mode} · ${snap.solution?snap.solution.repeatCount:0} повтор.`;}
 
@@ -217,7 +225,31 @@
       chunks.push(`<g id="label-layer">${labels.join('')}</g></g>`);svg.innerHTML=chunks.join('');
     }
 
-    function fitView(){const fitted=computeFitTransform(snap,1000,700);view.scale=fitted.scale;view.tx=fitted.tx;view.ty=fitted.ty;}
+    function renderedSceneBounds(){
+      const scene=svg.querySelector('#scene');
+      if(!scene)return null;
+      let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,found=false;
+      for(const child of scene.children){
+        if(child.hasAttribute&&child.hasAttribute('data-pan-bg'))continue;
+        if(typeof child.getBBox!=='function')continue;
+        let b;try{b=child.getBBox();}catch(_){continue;}
+        if(!b||![b.x,b.y,b.width,b.height].every(Number.isFinite))continue;
+        minX=Math.min(minX,b.x);minY=Math.min(minY,b.y);maxX=Math.max(maxX,b.x+b.width);maxY=Math.max(maxY,b.y+b.height);found=true;
+      }
+      return found?{x:minX,y:minY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)}:null;
+    }
+    function fitRenderedScene(){
+      const bounds=renderedSceneBounds();
+      const fitted=bounds?fitBoundsTransform(bounds,1000,700,FIT_PADDING):computeFitTransform(snap,1000,700);
+      view.scale=fitted.scale;view.tx=fitted.tx;view.ty=fitted.ty;renderCanvas();
+    }
+    function scheduleFitView(){
+      const token=++fitRequest;
+      const run=()=>{if(token===fitRequest)fitRenderedScene();};
+      const afterOverlay=()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(run);else run();};
+      if(typeof queueMicrotask==='function')queueMicrotask(afterOverlay);else Promise.resolve().then(afterOverlay);
+    }
+    function fitView(){fitRenderedScene();}
     function clientToSvg(evt){const r=svg.getBoundingClientRect();return{x:(evt.clientX-r.left)/r.width*1000,y:(evt.clientY-r.top)/r.height*700};}
     function svgToScene(p){return{x:(p.x-view.tx)/view.scale,y:(p.y-view.ty)/view.scale};}
 
@@ -236,15 +268,15 @@
     svg.addEventListener('pointermove',e=>{
       if(!pointers.has(e.pointerId))return;const p=clientToSvg(e);pointers.set(e.pointerId,p);
       if(gesture?.type==='pan'&&pointers.size===1){const dx=p.x-gesture.start.x,dy=p.y-gesture.start.y;if(Math.hypot(dx,dy)>3)gesture.moved=true;view.tx=gesture.tx+dx;view.ty=gesture.ty+dy;renderCanvas();}
-      else if(pointers.size>=2){const [a,b]=[...pointers.values()].slice(0,2);const dist=Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));const centerNow={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(gesture?.type!=='pinch')gesture={type:'pinch',distance:dist,center:centerNow,scale:view.scale,tx:view.tx,ty:view.ty,moved:true};const ns=clamp(gesture.scale*dist/gesture.distance,.25,4);const sceneCenter={x:(gesture.center.x-gesture.tx)/gesture.scale,y:(gesture.center.y-gesture.ty)/gesture.scale};view.scale=ns;view.tx=centerNow.x-sceneCenter.x*ns;view.ty=centerNow.y-sceneCenter.y*ns;renderCanvas();}
+      else if(pointers.size>=2){const [a,b]=[...pointers.values()].slice(0,2);const dist=Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));const centerNow={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(gesture?.type!=='pinch')gesture={type:'pinch',distance:dist,center:centerNow,scale:view.scale,tx:view.tx,ty:view.ty,moved:true};const ns=clamp(gesture.scale*dist/gesture.distance,.1,8);const sceneCenter={x:(gesture.center.x-gesture.tx)/gesture.scale,y:(gesture.center.y-gesture.ty)/gesture.scale};view.scale=ns;view.tx=centerNow.x-sceneCenter.x*ns;view.ty=centerNow.y-sceneCenter.y*ns;renderCanvas();}
     });
     svg.addEventListener('pointerup',e=>{const p=clientToSvg(e);const was=gesture;pointers.delete(e.pointerId);if(pointers.size===0){if(was?.type==='pan'&&!was.moved&&!snap.cells.length){const s=svgToScene(p),a=axialRound(s.x,s.y,snap.orientation);dispatch({type:'ADD_HEX',q:a.q,r:a.r},{fit:true});}gesture=null;}});
     svg.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);if(!pointers.size)gesture=null;});
-    svg.addEventListener('wheel',e=>{e.preventDefault();const p=clientToSvg(e),scene=svgToScene(p),ns=clamp(view.scale*(e.deltaY<0?1.12:.89),.25,4);view.scale=ns;view.tx=p.x-scene.x*ns;view.ty=p.y-scene.y*ns;renderCanvas();},{passive:false});
+    svg.addEventListener('wheel',e=>{e.preventDefault();const p=clientToSvg(e),scene=svgToScene(p),ns=clamp(view.scale*(e.deltaY<0?1.12:.89),.1,8);view.scale=ns;view.tx=p.x-scene.x*ns;view.ty=p.y-scene.y*ns;renderCanvas();},{passive:false});
 
     $('undo-btn').addEventListener('click',()=>{deleteMode=false;dispatch({type:'UNDO'});});$('redo-btn').addEventListener('click',()=>{deleteMode=false;dispatch({type:'REDO'});});
     $('delete-btn').addEventListener('click',()=>{if(!snap.cells.length)return;pickMode=null;deleteMode=!deleteMode;renderAll();});
-    $('clear-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'CLEAR'},{fit:true});});$('fit-btn').addEventListener('click',()=>{fitView();renderCanvas();});
+    $('clear-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'CLEAR'},{fit:true});});$('fit-btn').addEventListener('click',()=>scheduleFitView());
     $('orientation-toggle').addEventListener('change',e=>{deleteMode=false;pickMode=null;dispatch({type:'SET_ORIENTATION',orientation:e.target.checked?'flat':'pointy'},{fit:true});});
     $('auto-endpoints-btn').addEventListener('click',()=>{pickMode=null;deleteMode=false;dispatch({type:'RESET_AUTO'});});$('pick-start-btn').addEventListener('click',()=>{deleteMode=false;pickMode=pickMode==='start'?null:'start';renderAll();});$('pick-end-btn').addEventListener('click',()=>{deleteMode=false;pickMode=pickMode==='end'?null:'end';renderAll();});
     $('objective-select').addEventListener('change',e=>dispatch({type:'SET_OBJECTIVE',objective:e.target.value}));
@@ -260,8 +292,8 @@
     $('export-svg-btn').addEventListener('click',()=>{if(!snap.solution||!snap.electrical){notify('Сначала создайте конструкцию.');return;}const text=SvgExporter.export({graph:snap.graph,modules:snap.graph.modules,solution:snap.solution,startId:snap.routing.startId,endId:snap.routing.endId,showModuleNumbers:snap.view.showNumbers,showRouteNumbers:snap.view.showRouteNumbers,electrical:snap.electrical,sideMm:snap.strip.sideMm,orientation:snap.orientation});download('hex-router-route.svg',text,'image/svg+xml');});
 
     const keyHandler=e=>{if(e.target.matches('input,select,textarea'))return;if(e.key==='Escape'){pickMode=null;deleteMode=false;renderAll();return;}if(e.key==='Delete'&&snap.cells.length){deleteMode=!deleteMode;pickMode=null;renderAll();return;}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();deleteMode=false;dispatch({type:e.shiftKey?'REDO':'UNDO'});}};rootElement.addEventListener('keydown',keyHandler);
-    fitView();renderAll();
-    return {destroy(){stopAnimation();rootElement.removeEventListener('keydown',keyHandler);rootElement.innerHTML='';}};
+    renderAll();scheduleFitView();
+    return {destroy(){fitRequest++;stopAnimation();rootElement.removeEventListener('keydown',keyHandler);rootElement.innerHTML='';}};
   }
-  return {mount,computeFitTransform,animationStartStep,animationTick,placeLabel};
+  return {mount,computeFitTransform,fitBoundsTransform,animationStartStep,animationTick,placeLabel};
 });
