@@ -12,6 +12,7 @@
   const ANIMATION_MS=350;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const fmt=(v,d=2)=>Number.isFinite(v)?Number(v).toFixed(d):'—';
+  const fmtMm=v=>Number.isFinite(v)?String(Math.round(v*100)/100):'—';
   const key=(q,r)=>`${q},${r}`;
 
   function rotatePoint(p,orientation='pointy'){return orientation==='flat'?{x:-p.y,y:p.x}:{x:p.x,y:p.y};}
@@ -103,7 +104,7 @@
             <input id="route-slider" type="range" min="0" max="0" value="0" aria-label="Шаг маршрута">
             <button id="route-animate-btn" type="button">Анимация</button><button id="route-pause-btn" type="button">Пауза</button>
           </div>
-          <div class="legend"><span><i class="swatch" style="background:var(--route)"></i>основной проход</span><span><i class="swatch" style="background:var(--repeat);border-top:2px dashed var(--repeat);background:none"></i>повтор</span><span><i class="swatch" style="background:var(--start)"></i>START</span><span><i class="swatch" style="background:var(--end)"></i>END</span></div>
+          <div class="legend"><span><i class="swatch" style="background:var(--route)"></i>основной проход</span><span><i class="swatch" style="background:var(--repeat);border-top:2px dashed var(--repeat);background:none"></i>повтор</span><span><i class="swatch" style="background:var(--start)"></i>START</span><span><i class="swatch" style="background:var(--end)"></i>END</span><span id="system-bounds">Габариты: —</span></div>
         </section>
         <aside class="sidebar">
           <section class="sidebar-section"><h2>Трассировка</h2>
@@ -159,6 +160,7 @@
       $('orientation-toggle').checked=snap.orientation==='flat';$('orientation-text').textContent=snap.orientation==='flat'?'горизонтальная':'вертикальная';
       $('objective-select').value=snap.routing.objective;$('show-numbers').checked=!!snap.view.showNumbers;$('show-route-numbers').checked=!!snap.view.showRouteNumbers;$('show-diagnostics').checked=!!snap.view.showDiagnostics;
       $('segments-per-side').value=snap.strip.segmentsPerSide;$('side-mm').value=String(Math.round(snap.strip.sideMm*1000)/1000);$('led-per-m').value=snap.strip.ledPerM;$('watts-per-m').value=snap.strip.wattsPerM;$('voltage').value=String(snap.strip.voltage);$('reserve-percent').value=snap.strip.reservePercent;
+      const bounds=GeometryBuilder.worldBounds(snap.graph,snap.strip.sideMm,snap.orientation);$('system-bounds').textContent=snap.cells.length?`Габариты: ${fmtMm(bounds.width)} × ${fmtMm(bounds.height)} мм`:'Габариты: —';
       $('pick-start-btn').classList.toggle('pick-active',pickMode==='start');$('pick-end-btn').classList.toggle('pick-active',pickMode==='end');
       const max=snap.solution?snap.solution.traversals.length:0;routeStep=clamp(routeStep,0,max);$('route-slider').max=String(max);$('route-slider').value=String(routeStep);$('route-prev-btn').disabled=routeStep<=0;$('route-next-btn').disabled=routeStep>=max;
       updatePlaybackButtons();renderMetrics();renderWarnings();renderCanvas();
@@ -176,6 +178,10 @@
     function labelMarkup(rect,text,color='var(--text)',className='diagram-label'){
       const tx=rect.x+rect.w/2,ty=rect.y+14;
       return `<g class="${className}" pointer-events="none"><rect x="${rect.x}" y="${rect.y}" width="${rect.w}" height="${rect.h}" rx="4" fill="var(--panel)" fill-opacity=".88" stroke="var(--border)" stroke-width=".5"/><text x="${tx}" y="${ty}" text-anchor="middle" font-size="11" font-weight="750" fill="${color}">${escapeHtml(text)}</text></g>`;
+    }
+    function routeLabelMarkup(x,y,text){
+      const w=Math.max(18,String(text).length*7+8),h=18;
+      return `<g class="route-label" pointer-events="none"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="5" fill="var(--panel)" fill-opacity=".92" stroke="var(--border)" stroke-width=".5"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="800" fill="var(--text)">${escapeHtml(text)}</text></g>`;
     }
     function renderCanvas(){
       const orientation=snap.orientation||'pointy';
@@ -200,7 +206,7 @@
           const t=snap.solution.traversals[i],a=GeometryBuilder.toWorld(snap.graph.vertices[t.from],RENDER_SIDE,orientation),b=GeometryBuilder.toWorld(snap.graph.vertices[t.to],RENDER_SIDE,orientation);const color=t.repeat?'var(--repeat)':'var(--route)';const dash=t.repeat?'stroke-dasharray="10 7"':'';
           chunks.push(line(a.x,a.y,b.x,b.y,`stroke="${color}" stroke-width="5.5" stroke-linecap="round" ${dash} marker-end="url(#ui-arrow)"`));
           occupied.push(lineRect(a,b,6));
-          if(snap.view.showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;const rect=placeLabel(x,y,String(i+1),occupied);occupied.push(rect);labels.push(labelMarkup(rect,String(i+1),'var(--text)','route-label'));}
+          if(snap.view.showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;labels.push(routeLabelMarkup(x,y,String(i+1)));}
         }
         if(snap.view.showDiagnostics)for(const id of snap.solution.oddVertexIds){const p=GeometryBuilder.toWorld(snap.graph.vertices[id],RENDER_SIDE,orientation);chunks.push(`<circle cx="${p.x}" cy="${p.y}" r="7" fill="none" stroke="var(--diag)" stroke-width="3"/>`);occupied.push({x:p.x-9,y:p.y-9,w:18,h:18});}
       }
