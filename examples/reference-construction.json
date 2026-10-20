@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "hexagons": [
+    {"q": 0, "r": 0},
+    {"q": 0, "r": 1},
+    {"q": 1, "r": 1},
+    {"q": -2, "r": 2},
+    {"q": -1, "r": 2},
+    {"q": -3, "r": 3},
+    {"q": -2, "r": 3},
+    {"q": -1, "r": 3}
+  ],
+  "routing": {
+    "endpoint_mode": "auto",
+    "start": null,
+    "end": null,
+    "objective": "min_repeats"
+  },
+  "strip": {
+    "side_mm": 100,
+    "led_per_m": 60,
+    "watts_per_m": 18,
+    "voltage": 12,
+    "psu_reserve_percent": 20
+  },
+  "view": {
+    "show_numbers": true,
+    "show_diagnostics": false
+  }
+}
