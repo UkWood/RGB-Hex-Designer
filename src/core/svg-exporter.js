@@ -31,7 +31,7 @@
     solution.traversals.forEach((t,i)=>{
       const a=pts[t.from],b=pts[t.to]; const cls=t.repeat?'route repeat':'route primary';
       out.push(`<line class="${cls}" data-route="${i+1}" x1="${fmt(a.x)}" y1="${fmt(a.y)}" x2="${fmt(b.x)}" y2="${fmt(b.y)}" marker-end="url(#dataArrow)"${t.repeat?' stroke-dasharray="10 7"':''}/>`);
-      if(showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;const dx=b.x-a.x,dy=b.y-a.y,len=Math.max(1,Math.hypot(dx,dy)),off=Math.max(8,sideMm*.1);const nx=-dy/len,ny=dx/len;out.push(`<text class="route-number" x="${fmt(x+nx*off)}" y="${fmt(y+ny*off)}" text-anchor="middle">${i+1}</text>`);}
+      if(showRouteNumbers){const x=(a.x+b.x)/2,y=(a.y+b.y)/2;out.push(`<text class="route-number" x="${fmt(x)}" y="${fmt(y)}" text-anchor="middle" dominant-baseline="middle">${i+1}</text>`);}
     });
     const sp=pts[startId],ep=pts[endId],r=Math.max(5,sideMm*.07);
     out.push(`<circle cx="${fmt(sp.x)}" cy="${fmt(sp.y)}" r="${fmt(r)}" fill="#16a34a"/><text class="label" x="${fmt(sp.x+r*1.8)}" y="${fmt(sp.y-r*1.3)}">START</text>`);
