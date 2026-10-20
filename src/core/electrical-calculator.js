@@ -46,7 +46,11 @@
     const dx=(input.endVertex.gx-input.startVertex.gx)*(Math.sqrt(3)/2)*n.sideMm/1000;
     const dy=(input.endVertex.gy-input.startVertex.gy)*0.5*n.sideMm/1000;
     const endpointSeparationM=Math.hypot(dx,dy);
-    return {uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM};
+    const segmentsPerSide=n.sideMm*n.ledPerM/1000;
+    return {
+      uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM,
+      segmentsPerSide,sideMm:n.sideMm,ledPerM:n.ledPerM,wattsPerM:n.wattsPerM,voltage:n.voltage,reservePercent:n.reservePercent
+    };
   }
   return {calculate,validateInputs,sideMmFromSegments};
 });
