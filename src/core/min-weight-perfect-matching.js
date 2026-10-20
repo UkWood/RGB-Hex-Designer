@@ -30,6 +30,9 @@
       }
     }
 
+    // EdmondsBlossom maximizes weight. For a fixed-cardinality (perfect)
+    // matching, maximizing (maxDistance + 1 - distance) is exactly the same
+    // as minimizing the original total distance.
     const base=maxDistance+1;
     const edges=[];
     for (let i=0;i<n;i++) {
