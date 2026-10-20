@@ -5,6 +5,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
   const OFFSETS = [[0,-2],[1,-1],[1,1],[0,2],[-1,1],[-1,-1]];
+  const ORIENTATIONS = new Set(['pointy','flat']);
   const vKey = (gx,gy) => `${gx},${gy}`;
   const eKey = (a,b) => a < b ? `${a}|${b}` : `${b}|${a}`;
 
@@ -51,12 +52,22 @@
     return {vertices,edges,modules};
   }
 
-  function toWorld(vertex, sideLength) {
-    return {
+  function normalizeOrientation(orientation) {
+    return ORIENTATIONS.has(orientation) ? orientation : 'pointy';
+  }
+
+  function rotatePoint(point, orientation='pointy') {
+    if (normalizeOrientation(orientation) === 'flat') return {x:-point.y,y:point.x};
+    return {x:point.x,y:point.y};
+  }
+
+  function toWorld(vertex, sideLength, orientation='pointy') {
+    const point = {
       x: vertex.gx * (Math.sqrt(3)/2) * sideLength,
       y: vertex.gy * 0.5 * sideLength
     };
+    return rotatePoint(point,orientation);
   }
 
-  return { build, toWorld, OFFSETS };
+  return { build, toWorld, rotatePoint, normalizeOrientation, OFFSETS };
 });
