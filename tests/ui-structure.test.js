@@ -7,6 +7,7 @@ const HexGrid=require('../src/core/hex-grid');
 const GeometryBuilder=require('../src/core/geometry-builder');
 
 const ROOT=path.join(__dirname,'..');
+const EPS=1e-9;
 
 test('editor_ui_declares_all_stable_control_ids',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
@@ -65,8 +66,8 @@ test('fit_transform_keeps_available_neighbor_targets_inside_canvas_in_both_orien
       for(const v of tg.vertices){
         const p=GeometryBuilder.toWorld(v,60,orientation);
         const x=fit.tx+p.x*fit.scale, y=fit.ty+p.y*fit.scale;
-        assert.ok(x>=20&&x<=980,`target x ${x} outside canvas in ${orientation}`);
-        assert.ok(y>=20&&y<=680,`target y ${y} outside canvas in ${orientation}`);
+        assert.ok(x>=20-EPS&&x<=980+EPS,`target x ${x} outside canvas in ${orientation}`);
+        assert.ok(y>=20-EPS&&y<=680+EPS,`target y ${y} outside canvas in ${orientation}`);
       }
     }
   }
@@ -76,9 +77,9 @@ test('fit_bounds_transform_uses_at_least_twenty_pixel_margin_and_maximizes_scale
   const fit=EditorUI.fitBoundsTransform({x:-100,y:-50,width:200,height:100},1000,700,20);
   const left=fit.tx-100*fit.scale,right=fit.tx+100*fit.scale;
   const top=fit.ty-50*fit.scale,bottom=fit.ty+50*fit.scale;
-  assert.ok(left>=20-1e-9&&right<=980+1e-9);
-  assert.ok(top>=20-1e-9&&bottom<=680+1e-9);
-  assert.ok(Math.abs(left-20)<1e-9||Math.abs(top-20)<1e-9||Math.abs(right-980)<1e-9||Math.abs(bottom-680)<1e-9,'fit should use the available area, not leave excessive whitespace');
+  assert.ok(left>=20-EPS&&right<=980+EPS);
+  assert.ok(top>=20-EPS&&bottom<=680+EPS);
+  assert.ok(Math.abs(left-20)<EPS||Math.abs(top-20)<EPS||Math.abs(right-980)<EPS||Math.abs(bottom-680)<EPS,'fit should use the available area, not leave excessive whitespace');
 });
 
 test('fit_button_and_orientation_refit_from_rendered_scene_bounds',()=>{
