@@ -10,7 +10,7 @@ const ROOT=path.join(__dirname,'..');
 
 test('editor_ui_declares_all_stable_control_ids',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
-  for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','segments-per-side','side-mm']){
+  for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','segments-per-side','side-mm','system-bounds']){
     assert.ok(source.includes(`id="${id}"`),`missing ${id}`);
   }
 });
@@ -27,6 +27,18 @@ test('orientation_switch_is_present_and_labels_are_rendered_in_upright_overlay',
   assert.match(source,/id="orientation-toggle"/);
   assert.match(source,/id="label-layer"/);
   assert.match(source,/placeLabel/);
+});
+
+test('route_step_numbers_are_rendered_at_segment_midpoints',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  assert.match(source,/const x=\(a\.x\+b\.x\)\/2,y=\(a\.y\+b\.y\)\/2;labels\.push\(routeLabelMarkup\(x,y,String\(i\+1\)\)\)/);
+});
+
+test('system_bounds_are_shown_in_bottom_legend',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  assert.match(source,/id="system-bounds"/);
+  assert.match(source,/GeometryBuilder\.worldBounds\(snap\.graph,snap\.strip\.sideMm,snap\.orientation\)/);
+  assert.match(source,/Габариты:/);
 });
 
 test('responsive_styles_include_narrow_layout_and_touch_sized_controls',()=>{
