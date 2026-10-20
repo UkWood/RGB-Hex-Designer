@@ -17,13 +17,9 @@
     const dimOffset=Math.max(18,sideMm*.16);
     const line=Math.max(16,sideMm*.18);
     const centerX=(bounds.minX+bounds.maxX)/2,centerY=(bounds.minY+bounds.maxY)/2;
-    const diagramWidth=bounds.width+2*margin;
-    const viewWidth=Math.max(diagramWidth,Math.max(360,sideMm*3.6));
-    const minX=centerX-viewWidth/2,maxX=centerX+viewWidth/2,minY=bounds.minY-margin;
 
     const segmentsPerSide=electrical&&Number.isFinite(electrical.segmentsPerSide)?electrical.segmentsPerSide:(Number(sideMm)*Number(electrical&&electrical.ledPerM)/1000);
-    const summary=[
-      'Параметры и расчёт',
+    const summaryItems=[
       `Габариты: ${fmt(bounds.width)} × ${fmt(bounds.height)} мм`,
       `Модули: ${modules.length}`,
       `Сегментов на сторону: ${fmt(segmentsPerSide)}`,
@@ -42,11 +38,20 @@
       `Ток: ${fmt(electrical.currentA)} А`,
       `БП ≥: ${fmt(electrical.recommendedPsuW)} Вт`,
       `Доля повтора: ${fmt(electrical.repeatPercent)}%`,
-      `START–END: ${fmt(electrical.endpointSeparationM)} м`,
-      'DATA: START → END; +V и GND подаются с обоих концов'
+      `START–END: ${fmt(electrical.endpointSeparationM)} м`
     ];
-    const summaryStartY=bounds.maxY+margin+line;
-    const bottom=summaryStartY+(summary.length-1)*line+line+Math.max(20,margin*.35);
+    const summaryColumns=4;
+    const summaryRows=Math.ceil(summaryItems.length/summaryColumns);
+    const columnWidth=Math.max(180,sideMm*2);
+    const summaryPad=Math.max(16,margin*.3);
+    const summaryWidth=summaryColumns*columnWidth+summaryPad*2;
+    const diagramWidth=bounds.width+2*margin;
+    const viewWidth=Math.max(diagramWidth,summaryWidth);
+    const minX=centerX-viewWidth/2,maxX=centerX+viewWidth/2,minY=bounds.minY-margin;
+    const summaryTitleY=bounds.maxY+margin+line;
+    const summaryGridY=summaryTitleY+line*1.25;
+    const connectionY=summaryGridY+summaryRows*line+line*.55;
+    const bottom=connectionY+line+Math.max(20,margin*.35);
     const height=bottom-minY;
 
     const out=[];
@@ -81,8 +86,16 @@
     out.push(`<circle cx="${fmt(sp.x)}" cy="${fmt(sp.y)}" r="${fmt(r)}" fill="#16a34a"/><text class="label" x="${fmt(sp.x+r*1.8)}" y="${fmt(sp.y-r*1.3)}">START</text>`);
     out.push(`<circle cx="${fmt(ep.x)}" cy="${fmt(ep.y)}" r="${fmt(r)}" fill="#ea580c"/><text class="label" x="${fmt(ep.x+r*1.8)}" y="${fmt(ep.y-r*1.3)}">END</text>`);
 
-    const sx=minX+Math.max(12,margin*.25);
-    summary.forEach((text,i)=>out.push(`<text class="summary${i===0?' summary-title':''}" x="${fmt(sx)}" y="${fmt(summaryStartY+i*line)}">${esc(text)}</text>`));
+    const summaryLeft=minX+summaryPad;
+    out.push(`<text class="summary summary-title" x="${fmt(summaryLeft)}" y="${fmt(summaryTitleY)}">Параметры и расчёт</text>`);
+    out.push(`<g class="summary-grid" data-columns="4">`);
+    summaryItems.forEach((text,i)=>{
+      const row=Math.floor(i/summaryColumns),col=i%summaryColumns;
+      const x=summaryLeft+col*columnWidth,y=summaryGridY+row*line;
+      out.push(`<text class="summary" data-summary-col="${col}" data-summary-row="${row}" x="${fmt(x)}" y="${fmt(y)}">${esc(text)}</text>`);
+    });
+    out.push(`</g>`);
+    out.push(`<text class="summary" x="${fmt(summaryLeft)}" y="${fmt(connectionY)}">DATA: START → END; +V и GND подаются с обоих концов</text>`);
     out.push(`</svg>`);
     return out.join('');
   }
