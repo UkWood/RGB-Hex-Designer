@@ -46,6 +46,17 @@ test('numbering_flags_control_module_and_route_labels',()=>{
   assert.doesNotMatch(off,/class="module-number"/); assert.doesNotMatch(off,/class="route-number"/);
 });
 
+test('exported_route_numbers_are_exactly_at_segment_midpoints',()=>{
+  const svg=fixture(false,true,100);
+  const line=svg.match(/<line class="route [^"]+" data-route="1" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/);
+  const number=svg.match(/<text class="route-number" x="([^"]+)" y="([^"]+)"[^>]*>1<\/text>/);
+  assert.ok(line&&number,'first route segment and number must exist');
+  const [x1,y1,x2,y2]=line.slice(1).map(Number);
+  const [x,y]=number.slice(1).map(Number);
+  assert.ok(Math.abs(x-(x1+x2)/2)<0.02);
+  assert.ok(Math.abs(y-(y1+y2)/2)<0.02);
+});
+
 test('svg_has_no_external_urls_scripts_or_raster_images',()=>{
   const svg=fixture();
   assert.doesNotMatch(svg,/(?:href|src)="https?:\/\//i);
