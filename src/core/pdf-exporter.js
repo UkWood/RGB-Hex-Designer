@@ -55,9 +55,15 @@
     ];
   }
   function canvasJpegBytes(canvas,root){const data=canvas.toDataURL('image/jpeg',.94),base64=data.slice(data.indexOf(',')+1),bin=(root.atob||atob)(base64),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}
+  function svgDataUrl(svg){
+    let text=String(svg);const m=text.match(/viewBox="\s*([^\"]+)"/i);
+    if(m){const nums=m[1].trim().split(/[ ,]+/).map(Number);if(nums.length===4&&nums.every(Number.isFinite)){const w=Math.abs(nums[2]),h=Math.abs(nums[3]);if(!/<svg\b[^>]*\bwidth=/i.test(text))text=text.replace(/<svg\b/i,`<svg width="${w}"`);if(!/<svg\b[^>]*\bheight=/i.test(text))text=text.replace(/<svg\b/i,`<svg height="${h}"`);}}
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}`;
+  }
   async function drawSvg(ctx,svg,root,box){
-    const BlobCtor=root.Blob||Blob,URLApi=root.URL||URL,ImageCtor=root.Image||Image,blob=new BlobCtor([svg],{type:'image/svg+xml;charset=utf-8'}),url=URLApi.createObjectURL(blob),img=new ImageCtor();
-    try{await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url;});const iw=img.naturalWidth||img.width||box.w,ih=img.naturalHeight||img.height||box.h,scale=Math.min(box.w/iw,box.h/ih),w=iw*scale,h=ih*scale;ctx.drawImage(img,box.x+(box.w-w)/2,box.y+(box.h-h)/2,w,h);}finally{URLApi.revokeObjectURL(url);}
+    const ImageCtor=root.Image||Image,img=new ImageCtor(),url=svgDataUrl(svg);
+    await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('failed to render SVG for PDF'));img.src=url;});
+    const iw=img.naturalWidth||img.width||box.w,ih=img.naturalHeight||img.height||box.h,scale=Math.min(box.w/iw,box.h/ih),w=iw*scale,h=ih*scale;ctx.drawImage(img,box.x+(box.w-w)/2,box.y+(box.h-h)/2,w,h);
   }
   function drawTableHeader(ctx,y){ctx.fillStyle='#f3f4f6';ctx.fillRect(MARGIN,y,PAGE_W-2*MARGIN,48);ctx.strokeStyle='#9ca3af';ctx.strokeRect(MARGIN,y,PAGE_W-2*MARGIN,48);drawText(ctx,'№ ребра',MARGIN+18,y+11,'700 23px Arial');drawText(ctx,'Дополнительные проходы',MARGIN+500,y+11,'700 23px Arial');return y+48;}
   function drawTableRows(ctx,rows,y,maxRows){const take=rows.splice(0,maxRows);for(const row of take){ctx.strokeStyle='#c7cdd6';ctx.strokeRect(MARGIN,y,PAGE_W-2*MARGIN,44);drawText(ctx,row.number,MARGIN+18,y+9,'22px Arial');drawText(ctx,row.additionalPasses,MARGIN+500,y+9,'22px Arial');y+=44;}return y;}
@@ -78,5 +84,5 @@
     return pages;
   }
   async function downloadPdf(snapshot,rootArg){const root=rootArg||(typeof globalThis!=='undefined'?globalThis:this),pages=await renderPages(snapshot,root),bytes=buildImagePdf(pages),BlobCtor=root.Blob||Blob,urlApi=root.URL||URL,blob=new BlobCtor([bytes],{type:'application/pdf'}),url=urlApi.createObjectURL(blob),a=root.document.createElement('a');a.href=url;a.download=fileNameFor(snapshot.projectName);a.style.display='none';root.document.body.appendChild(a);a.click();a.remove();const timer=root.setTimeout||setTimeout;timer(()=>urlApi.revokeObjectURL(url),1000);return {bytes,pageCount:pages.length,fileName:a.download};}
-  return {buildImagePdf,fileNameFor,repeatedSpecRows,renderPages,downloadPdf};
+  return {buildImagePdf,fileNameFor,repeatedSpecRows,svgDataUrl,renderPages,downloadPdf};
 });
