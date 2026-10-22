@@ -23,10 +23,10 @@ test('pdf_export_downloads_directly_without_opening_window_or_print_dialog',()=>
 });
 
 test('assigned_start_and_end_markers_are_click_through_so_opposite_endpoint_can_use_same_vertex',()=>{
-  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
-  assert.match(source,/circle\[fill="var\(--start\)"\]/);
-  assert.match(source,/circle\[fill="var\(--end\)"\]/);
-  assert.match(source,/pointer-events[^\n]{0,80}none|pointerEvents[^\n]{0,80}none/);
+  const styles=fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
+  assert.match(styles,/circle\[fill="var\(--start\)"\]/);
+  assert.match(styles,/circle\[fill="var\(--end\)"\]/);
+  assert.match(styles,/pointer-events\s*:\s*none/);
 });
 
 test('project_name_change_refreshes_legacy_editor_snapshot_before_save_json_click',()=>{
