@@ -2,10 +2,10 @@
   const req=typeof module==='object'&&module.exports;
   const deps=req?{GeometryBuilder:require('../core/geometry-builder') }:{GeometryBuilder:root.GeometryBuilder};
   const api=factory(deps);if(req)module.exports=api;else root.V3UI=api;
-})(typeof globalThis!=='undefined'?globalThis:this,function({GeometryBuilder}){
+})(typeof globalThis!=='undefined'?globalThis:this,function(deps){
   'use strict';
+  const {GeometryBuilder}=deps;
   const RENDER_SIDE=60,FIT_PADDING=20;
-  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function rectFitsViewport(rect,viewport,padding=FIT_PADDING){const p=Math.max(FIT_PADDING,Number(padding)||0);return rect.left>=viewport.left+p&&rect.top>=viewport.top+p&&rect.right<=viewport.right-p&&rect.bottom<=viewport.bottom-p;}
   function visibleSceneRect(svg){
     const viewport=svg&&svg.getBoundingClientRect?svg.getBoundingClientRect():null;if(!viewport)return null;
