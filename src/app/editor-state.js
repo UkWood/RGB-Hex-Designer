@@ -1,23 +1,20 @@
 (function(root,factory){
   const req=typeof module==='object'&&module.exports;
   const deps=req?{
-    HexGrid:require('../core/hex-grid'),GeometryBuilder:require('../core/geometry-builder'),BoundaryAnalyzer:require('../core/boundary-analyzer'),RouteOptimizer:require('../core/route-optimizer'),EndpointSelector:require('../core/endpoint-selector'),ElectricalCalculator:require('../core/electrical-calculator'),ProjectIO:require('../core/project-io')
-  }:{HexGrid:root.HexGrid,GeometryBuilder:root.GeometryBuilder,BoundaryAnalyzer:root.BoundaryAnalyzer,RouteOptimizer:root.RouteOptimizer,EndpointSelector:root.EndpointSelector,ElectricalCalculator:root.ElectricalCalculator,ProjectIO:root.ProjectIO};
+    HexGrid:require('../core/hex-grid'),GeometryBuilder:require('../core/geometry-builder'),BoundaryAnalyzer:require('../core/boundary-analyzer'),RouteOptimizer:require('../core/route-optimizer'),EndpointSelector:require('../core/endpoint-selector'),ElectricalCalculator:require('../core/electrical-calculator'),ProjectIO:require('../core/project-io'),DisplayNumbering:require('../core/display-numbering')
+  }:{HexGrid:root.HexGrid,GeometryBuilder:root.GeometryBuilder,BoundaryAnalyzer:root.BoundaryAnalyzer,RouteOptimizer:root.RouteOptimizer,EndpointSelector:root.EndpointSelector,ElectricalCalculator:root.ElectricalCalculator,ProjectIO:root.ProjectIO,DisplayNumbering:root.DisplayNumbering};
   const api=factory(deps);if(req)module.exports=api;else root.EditorState=api;
-})(typeof globalThis!=='undefined'?globalThis:this,function({HexGrid,GeometryBuilder,BoundaryAnalyzer,RouteOptimizer,EndpointSelector,ElectricalCalculator,ProjectIO}){
+})(typeof globalThis!=='undefined'?globalThis:this,function({HexGrid,GeometryBuilder,BoundaryAnalyzer,RouteOptimizer,EndpointSelector,ElectricalCalculator,ProjectIO,DisplayNumbering}){
   const clone=o=>JSON.parse(JSON.stringify(o));
   const defaults=()=>({
     projectName:'',requiredWidthMm:null,requiredHeightMm:null,cells:[],orientation:'pointy',objective:'min_repeats',endpointMode:'auto',manualStart:null,manualEnd:null,
     strip:{segmentsPerEdge:6,baseEdgeMm:100,edgeCorrectionMm:0,edgeMm:100,segmentsPerSide:6,sideMm:100,ledPerM:60,wattsPerM:18,voltage:12,reservePercent:20},
     view:{showHexNumbers:true,showEdgeNumbers:false,showRouteNumbers:false,showDiagnostics:false,showNumbers:true},
-    graph:null,boundary:null,solution:null,electrical:null,startId:null,endId:null,ranking:null,warnings:[],undo:[],redo:[]
+    graph:null,boundary:null,solution:null,electrical:null,numbering:null,startId:null,endId:null,ranking:null,warnings:[],undo:[],redo:[]
   });
   function create(){
     const st=defaults();
-    function syncEdge(){
-      const d=ElectricalCalculator.edgeLengthsFromSegments(st.strip.segmentsPerEdge,st.strip.ledPerM,st.strip.edgeCorrectionMm);
-      st.strip.baseEdgeMm=d.baseEdgeMm;st.strip.edgeMm=d.edgeMm;st.strip.segmentsPerSide=st.strip.segmentsPerEdge;st.strip.sideMm=d.edgeMm;
-    }
+    function syncEdge(){const d=ElectricalCalculator.edgeLengthsFromSegments(st.strip.segmentsPerEdge,st.strip.ledPerM,st.strip.edgeCorrectionMm);st.strip.baseEdgeMm=d.baseEdgeMm;st.strip.edgeMm=d.edgeMm;st.strip.segmentsPerSide=st.strip.segmentsPerEdge;st.strip.sideMm=d.edgeMm;}
     function pushUndo(){st.undo.push(clone(st.cells));if(st.undo.length>100)st.undo.shift();st.redo=[];}
     function descFor(id){if(id===null||id===undefined||!st.graph?.vertices[id])return null;const v=st.graph.vertices[id];return {gx:v.gx,gy:v.gy};}
     function idFor(desc){if(!desc)return null;const v=st.graph.vertices.find(v=>v.gx===desc.gx&&v.gy===desc.gy);return v?v.id:null;}
@@ -31,7 +28,7 @@
     }
     function recompute(extraWarnings=[]){
       st.warnings=[...extraWarnings];syncEdge();st.graph=GeometryBuilder.build(st.cells);st.boundary=BoundaryAnalyzer.analyze(st.graph,st.orientation);
-      st.solution=null;st.electrical=null;st.startId=null;st.endId=null;st.ranking=null;
+      st.solution=null;st.electrical=null;st.numbering=null;st.startId=null;st.endId=null;st.ranking=null;
       if(st.graph.edges.length===0||st.boundary.lowerCandidateIds.length<2)return;
       const prepared=RouteOptimizer.prepare(st.graph,st.objective);let selected=null;
       if(st.endpointMode==='manual'){
@@ -44,6 +41,7 @@
       st.startId=selected.startId;st.endId=selected.endId;st.solution=selected.solution;st.ranking=selected.ranking;
       const input={moduleCount:st.cells.length,uniqueEdgeCount:st.graph.edges.length,repeatCount:st.solution.repeatCount,segmentsPerEdge:st.strip.segmentsPerEdge,baseEdgeMm:st.strip.baseEdgeMm,edgeCorrectionMm:st.strip.edgeCorrectionMm,edgeMm:st.strip.edgeMm,ledPerM:st.strip.ledPerM,wattsPerM:st.strip.wattsPerM,voltage:st.strip.voltage,reservePercent:st.strip.reservePercent,startVertex:st.graph.vertices[st.startId],endVertex:st.graph.vertices[st.endId],orientation:st.orientation};
       const val=ElectricalCalculator.validateInputs(input);if(val.ok)st.electrical=ElectricalCalculator.calculate(input);else st.warnings.push(...val.errors);
+      st.numbering=DisplayNumbering.derive({graph:st.graph,solution:st.solution,startId:st.startId,orientation:st.orientation,edgeMm:st.strip.edgeMm});
     }
     function loadValidated(project,extraWarnings=[]){
       st.projectName=project.project?.name||'';st.requiredWidthMm=project.layout?.required_width_mm??null;st.requiredHeightMm=project.layout?.required_height_mm??null;
@@ -85,7 +83,7 @@
         default:return {ok:false,message:'unknown_action'};
       }
     }
-    function snapshot(){return clone({projectName:st.projectName,requiredWidthMm:st.requiredWidthMm,requiredHeightMm:st.requiredHeightMm,cells:st.cells,orientation:st.orientation,graph:st.graph,boundary:st.boundary,routing:{endpointMode:st.endpointMode,objective:st.objective,startId:st.startId,endId:st.endId,manualStart:st.manualStart,manualEnd:st.manualEnd,ranking:st.ranking},solution:st.solution,electrical:st.electrical,strip:st.strip,view:st.view,history:{undoCount:st.undo.length,redoCount:st.redo.length},warnings:st.warnings});}
+    function snapshot(){return clone({projectName:st.projectName,requiredWidthMm:st.requiredWidthMm,requiredHeightMm:st.requiredHeightMm,cells:st.cells,orientation:st.orientation,graph:st.graph,boundary:st.boundary,routing:{endpointMode:st.endpointMode,objective:st.objective,startId:st.startId,endId:st.endId,manualStart:st.manualStart,manualEnd:st.manualEnd,ranking:st.ranking},solution:st.solution,electrical:st.electrical,numbering:st.numbering,strip:st.strip,view:st.view,history:{undoCount:st.undo.length,redoCount:st.redo.length},warnings:st.warnings});}
     recompute();return {dispatch,snapshot};
   }
   return {create};
