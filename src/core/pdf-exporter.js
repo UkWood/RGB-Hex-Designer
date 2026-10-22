@@ -56,7 +56,7 @@
   }
   function canvasJpegBytes(canvas,root){const data=canvas.toDataURL('image/jpeg',.94),base64=data.slice(data.indexOf(',')+1),bin=(root.atob||atob)(base64),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}
   function svgDataUrl(svg){
-    let text=String(svg);const m=text.match(/viewBox="\s*([^\"]+)"/i);
+    let text=String(svg);if(!/<svg\b[^>]*\bxmlns=/i.test(text))text=text.replace(/<svg\b/i,'<svg xmlns="http://www.w3.org/2000/svg"');const m=text.match(/viewBox="\s*([^\"]+)"/i);
     if(m){const nums=m[1].trim().split(/[ ,]+/).map(Number);if(nums.length===4&&nums.every(Number.isFinite)){const w=Math.abs(nums[2]),h=Math.abs(nums[3]);if(!/<svg\b[^>]*\bwidth=/i.test(text))text=text.replace(/<svg\b/i,`<svg width="${w}"`);if(!/<svg\b[^>]*\bheight=/i.test(text))text=text.replace(/<svg\b/i,`<svg height="${h}"`);}}
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}`;
   }
