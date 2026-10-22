@@ -35,13 +35,19 @@ test('partial_required_dimensions_are_printed_as_values_with_missing_axis_dash_n
   assert.match(html,/Требуемые габариты<\/span><strong>—<\/strong>/);
 });
 
-test('edge_specification_uses_semantic_repeating_header_and_blank_zero_extra_pass_cells',()=>{
+test('edge_specification_contains_only_edges_with_additional_passes',()=>{
   const s=snap();const html=PrintDocument.render(s);
   assert.match(html,/<table[^>]*class="edge-spec"/);assert.match(html,/<thead>/);assert.match(html,/display:\s*table-header-group/);assert.match(html,/break-inside:\s*avoid|page-break-inside:\s*avoid/);
-  assert.equal((html.match(/data-edge-row=/g)||[]).length,s.graph.edges.length);
+  const repeated=s.numbering.specRows.filter(r=>r.additionalPasses>0);
+  assert.ok(repeated.length>0,'fixture must contain repeated edges');
+  assert.equal((html.match(/data-edge-row=/g)||[]).length,repeated.length);
   for(const row of s.numbering.specRows){
-    const re=row.additionalPasses===0?new RegExp(`data-edge-row="${row.number}"[^>]*>[\\s\\S]*?<td>${row.number}<\\/td>[\\s\\S]*?<td><\\/td>`):new RegExp(`data-edge-row="${row.number}"[^>]*>[\\s\\S]*?<td>${row.number}<\\/td>[\\s\\S]*?<td>${row.additionalPasses}<\\/td>`);
-    assert.match(html,re);
+    const marker=new RegExp(`data-edge-row="${row.number}"`);
+    if(row.additionalPasses===0)assert.doesNotMatch(html,marker,`single-pass edge ${row.number} must be omitted`);
+    else {
+      assert.match(html,marker);
+      assert.match(html,new RegExp(`data-edge-row="${row.number}"[^>]*>[\\s\\S]*?<td>${row.number}<\\/td>[\\s\\S]*?<td>${row.additionalPasses}<\\/td>`));
+    }
   }
 });
 
