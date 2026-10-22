@@ -25,6 +25,16 @@ test('parameter_grid_has_four_columns_and_all_new_edge_and_dimension_values',()=
   for(const text of ['Требуемые габариты','Фактические габариты','Сегментов на ребро','Базовая длина ребра','Коррекция длины ребра','Итоговая длина ребра','LED/м','Вт/м','Напряжение','Запас БП','Уникальная длина','Повторы','Итого ленты','Мощность','Ток','БП ≥','START–END'])assert.ok(html.includes(text),`missing ${text}`);
 });
 
+test('partial_required_dimensions_are_printed_as_values_with_missing_axis_dash_not_zero',()=>{
+  const s=snap();s.requiredHeightMm=null;
+  let html=PrintDocument.render(s);
+  assert.match(html,/1200 × — мм/);assert.doesNotMatch(html,/1200 × 0 мм/);
+  s.requiredWidthMm=null;s.requiredHeightMm=800;html=PrintDocument.render(s);
+  assert.match(html,/— × 800 мм/);assert.doesNotMatch(html,/0 × 800 мм/);
+  s.requiredHeightMm=null;html=PrintDocument.render(s);
+  assert.match(html,/Требуемые габариты<\/span><strong>—<\/strong>/);
+});
+
 test('edge_specification_uses_semantic_repeating_header_and_blank_zero_extra_pass_cells',()=>{
   const s=snap();const html=PrintDocument.render(s);
   assert.match(html,/<table[^>]*class="edge-spec"/);assert.match(html,/<thead>/);assert.match(html,/display:\s*table-header-group/);assert.match(html,/break-inside:\s*avoid|page-break-inside:\s*avoid/);
