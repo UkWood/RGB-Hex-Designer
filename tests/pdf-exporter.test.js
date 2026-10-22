@@ -24,3 +24,12 @@ test('specification_rows_include_only_edges_with_additional_passes',()=>{
   const rows=PdfExporter.repeatedSpecRows([{number:1,additionalPasses:0},{number:2,additionalPasses:1},{number:3,additionalPasses:2}]);
   assert.deepEqual(rows,[{number:2,additionalPasses:1},{number:3,additionalPasses:2}]);
 });
+
+test('svg_for_canvas_is_encoded_as_self_contained_data_url_with_intrinsic_viewbox_size',()=>{
+  const url=PdfExporter.svgDataUrl('<svg viewBox="0 0 400 200"><text>Тест</text></svg>');
+  assert.match(url,/^data:image\/svg\+xml;charset=utf-8,/);
+  const decoded=decodeURIComponent(url.slice(url.indexOf(',')+1));
+  assert.match(decoded,/width="400"/);
+  assert.match(decoded,/height="200"/);
+  assert.match(decoded,/viewBox="0 0 400 200"/);
+});
