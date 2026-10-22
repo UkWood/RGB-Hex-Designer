@@ -15,10 +15,6 @@ function exhaustive(ids, distance) {
   return best;
 }
 
-function completeDistances(matrix) {
-  return (a,b) => matrix[a][b];
-}
-
 test('exact_matching_known_4_6_8_vertex_fixtures', () => {
   for (const n of [4,6,8]) {
     const ids = Array.from({length:n},(_,i)=>i);
@@ -123,10 +119,20 @@ test('all_original_edges_are_covered_and_traversals_connect', () => {
   }
 });
 
-
 test('min_repeats_tie_prefers_fewer_shared_repeated_segments', () => {
   const g = graph(4, [[0,1,true],[1,3,false],[0,2,false],[2,3,false]]);
   const s = RouteOptimizer.prepare(g,'min_repeats').solve(0,3);
   assert.equal(s.repeatCount,2);
   assert.equal(s.repeatSharedCount,0);
+});
+
+test('same_start_end_builds_closed_chinese_postman_circuit_covering_every_edge',()=>{
+  const g=graph(4,[[0,1],[1,2],[2,3]]);
+  const s=RouteOptimizer.prepare(g,'min_repeats').solve(0,0);
+  assertContinuous(s,0,0,g.edges.length);
+  assert.equal(s.repeatCount,3);
+  assert.equal(s.totalSegmentCount,6);
+  assert.deepEqual(s.duplicateCounts,[1,1,1]);
+  const counts=Array(g.edges.length).fill(0);for(const t of s.traversals)counts[t.edgeId]++;
+  assert.deepEqual(counts,[2,2,2]);
 });
