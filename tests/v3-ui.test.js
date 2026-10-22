@@ -15,6 +15,13 @@ test('v3_ui_declares_project_target_edge_numbering_and_pdf_controls',()=>{
   assert.doesNotMatch(source,/<input id="show-route-numbers"/,'must reuse existing route checkbox rather than duplicate its id');
 });
 
+test('pdf_export_downloads_directly_without_opening_window_or_print_dialog',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(source,/PdfExporter/);
+  assert.match(source,/downloadPdf|download\(/);
+  assert.doesNotMatch(source,/\bwindow\.open\b|\bw\.open\(|\.print\s*\(/);
+});
+
 test('project_name_change_refreshes_legacy_editor_snapshot_before_save_json_click',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
   assert.match(source,/\$\('project-name'\)[^\n]*addEventListener\('change'[^\n]*forceEditorRefresh/);
