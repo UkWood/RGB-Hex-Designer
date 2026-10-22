@@ -15,12 +15,12 @@ test('rank_tuple_obeys_repeat_shared_length_then_separation_priority',()=>{
   assert.ok(EndpointSelector.rankTuple(mk(1,0,5),a,c,100)[3] < EndpointSelector.rankTuple(mk(1,0,5),a,b,100)[3]);
 });
 
-test('manual_endpoint_validation_rejects_upper_and_same',()=>{
+test('manual_endpoint_validation_accepts_same_lower_vertex_and_rejects_upper',()=>{
   const g=GeometryBuilder.build([{q:0,r:0},{q:0,r:1}]);
   const ba=BoundaryAnalyzer.analyze(g);
   const low=ba.lowerCandidateIds[0];
   const upper=ba.externalVertexIds.find(id=>!ba.lowerCandidateIds.includes(id));
-  assert.deepEqual(EndpointSelector.validateManual(ba,low,low),{ok:false,reason:'same_endpoint'});
+  assert.deepEqual(EndpointSelector.validateManual(ba,low,low),{ok:true});
   assert.deepEqual(EndpointSelector.validateManual(ba,upper,low),{ok:false,reason:'not_lower_boundary'});
 });
 
