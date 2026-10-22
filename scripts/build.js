@@ -17,7 +17,6 @@ const sources=[
   'src/core/display-numbering.js',
   'src/core/diagram-renderer.js',
   'src/core/print-document.js',
-  'src/core/svg-exporter.js',
   'src/app/editor-state.js',
   'src/app/editor-ui.js',
   'src/app/dimension-overlay.js',
