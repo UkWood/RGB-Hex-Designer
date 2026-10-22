@@ -97,12 +97,13 @@ test('editor_uses_per_face_add_controls_instead_of_whole_neighbor_cells',()=>{
   assert.match(source,/Добавить модуль на эту грань/);
 });
 
-test('add_face_controls_are_rendered_in_topmost_scene_layer_so_clicks_are_not_occluded',()=>{
+test('endpoint_click_through_rule_does_not_disable_green_add_face_circles',()=>{
+  const css=fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
-  const labels=source.indexOf('id="label-layer"');
-  const addLayer=source.indexOf('id="add-face-layer"');
-  assert.ok(labels>=0,'label layer missing');
-  assert.ok(addLayer>labels,'add-face layer must be appended after geometry, route, endpoints, and labels');
+  assert.match(source,/class="add-face-hit"[^>]*fill="var\(--start\)"/);
+  assert.match(css,/#scene\s*>\s*circle\[fill="var\(--start\)"\]/);
+  assert.match(css,/#scene\s*>\s*circle\[fill="var\(--end\)"\]/);
+  assert.doesNotMatch(css,/#scene\s+circle\[fill="var\(--start\)"\]/);
 });
 
 test('hexes_are_not_persistently_selected_and_delete_is_a_temporary_mode',()=>{
