@@ -7,7 +7,8 @@ const ROOT=path.join(__dirname,'..');
 
 test('v3_ui_declares_project_target_edge_numbering_and_pdf_controls',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
-  for(const id of ['project-name','required-width-mm','required-height-mm','segments-per-edge','base-edge-mm','edge-correction-mm','edge-mm','show-hex-numbers','show-edge-numbers','show-route-numbers','export-pdf-btn']) assert.ok(source.includes(`id="${id}"`),`missing ${id}`);
+  for(const id of ['project-name','required-width-mm','required-height-mm','segments-per-edge','base-edge-mm','edge-correction-mm','edge-mm','show-hex-numbers','show-edge-numbers','show-route-numbers']) assert.ok(source.includes(`id="${id}"`),`missing ${id}`);
+  assert.ok(source.includes("pdf.id='export-pdf-btn'")||source.includes('id="export-pdf-btn"'),'missing export-pdf-btn');
   for(const text of ['Наименование проекта','Требуемая ширина, мм','Требуемая высота, мм','Сегментов на ребро','Базовая длина ребра, мм','Коррекция длины ребра, мм','Итоговая длина ребра, мм','№ шестигранников','№ рёбер']) assert.ok(source.includes(text),`missing ${text}`);
   assert.match(source,/Избегать общих рёбер/);
 });
