@@ -14,10 +14,12 @@ const sources=[
   'src/core/endpoint-selector.js',
   'src/core/electrical-calculator.js',
   'src/core/project-io.js',
+  'src/core/display-numbering.js',
   'src/core/svg-exporter.js',
   'src/app/editor-state.js',
   'src/app/editor-ui.js',
   'src/app/dimension-overlay.js',
+  'src/app/v3-ui.js',
   'src/app/main.js'
 ];
 const scripts=sources.map(file=>`\n/* ${file} */\n${fs.readFileSync(path.join(root,file),'utf8')}`).join('\n');
