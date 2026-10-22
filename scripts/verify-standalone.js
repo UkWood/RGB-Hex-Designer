@@ -14,9 +14,11 @@ const checks=[
   [/\bWebSocket\b/,'WebSocket']
 ];
 for(const [re,label] of checks)if(re.test(html))throw new Error(`Standalone verification failed: ${label} found`);
-for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','segments-per-side','side-mm','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn']){
-  if(!html.includes(`id="${id}"`))throw new Error(`Standalone verification failed: missing control ${id}`);
+for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','project-name','required-width-mm','required-height-mm','segments-per-edge','base-edge-mm','edge-correction-mm','edge-mm','show-hex-numbers','show-edge-numbers']){
+  if(!html.includes(`id="${id}"`))throw new Error(`Standalone verification failed: missing v3 control ${id}`);
 }
+for(const token of ['show-route-numbers','export-pdf-btn','PrintDocument','DiagramRenderer','DisplayNumbering'])if(!html.includes(token))throw new Error(`Standalone verification failed: missing ${token}`);
+if(html.includes('/* src/core/svg-exporter.js */'))throw new Error('Standalone verification failed: legacy SVG exporter is still bundled');
 if(!html.includes('Hex Router Designer'))throw new Error('Standalone verification failed: product title missing');
-if(!/id="side-mm"[^>]*readonly/.test(html))throw new Error('Standalone verification failed: side-mm must be derived/read-only');
-console.log(`Standalone verification OK: ${path.basename(file)} is self-contained and has all required controls.`);
+if(!/id="base-edge-mm"[^>]*readonly/.test(html)||!/id="edge-mm"[^>]*readonly/.test(html))throw new Error('Standalone verification failed: derived edge-length controls must be read-only');
+console.log(`Standalone verification OK: ${path.basename(file)} is self-contained, PDF-only, and has all v3 controls.`);
