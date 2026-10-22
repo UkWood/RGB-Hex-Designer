@@ -9,11 +9,13 @@
   const fmt=(n,d=2)=>Number.isFinite(Number(n))?Number(Number(n).toFixed(d)).toString():'—';
   function safeTitle(projectName){const raw=String(projectName??'').trim();if(!raw)return 'Без названия';const clean=raw.replace(/[<>:"/\\|?*\x00-\x1F]/g,'_').trim();return clean||'Без названия';}
   function item(label,value){return `<div class="parameter"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`;}
+  function positiveValue(v){return v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))&&Number(v)>0;}
   function render(snapshot){
     const displayTitle=String(snapshot?.projectName??'').trim()||'Без названия',documentTitle=safeTitle(displayTitle),graph=snapshot?.graph,e=snapshot?.electrical,strip=snapshot?.strip||{},solution=snapshot?.solution;
     if(!graph||!solution||!e)throw new Error('routeable construction is required for print export');
     const edgeMm=Number(strip.edgeMm??strip.sideMm),bounds=GeometryBuilder.worldBounds(graph,edgeMm,snapshot.orientation);
-    const required=Number.isFinite(Number(snapshot.requiredWidthMm))&&Number.isFinite(Number(snapshot.requiredHeightMm))?`${fmt(snapshot.requiredWidthMm)} × ${fmt(snapshot.requiredHeightMm)} мм`:'—';
+    const rwOk=positiveValue(snapshot.requiredWidthMm),rhOk=positiveValue(snapshot.requiredHeightMm);
+    const required=rwOk||rhOk?`${rwOk?fmt(snapshot.requiredWidthMm):'—'} × ${rhOk?fmt(snapshot.requiredHeightMm):'—'} мм`:'—';
     const orientation=snapshot.orientation==='flat'?'горизонтальная':'вертикальная';
     const params=[
       ['Фактические габариты',`${fmt(bounds.width)} × ${fmt(bounds.height)} мм`],['Требуемые габариты',required],['Ориентация',orientation],['Шестигранников',String(graph.modules.length)],
