@@ -38,7 +38,6 @@
         const ms=idFor(st.manualStart),me=idFor(st.manualEnd);let invalid=false;
         if(st.manualStart&&(ms===null||!st.boundary.lowerCandidateIds.includes(ms)))invalid=true;
         if(st.manualEnd&&(me===null||!st.boundary.lowerCandidateIds.includes(me)))invalid=true;
-        if(ms!==null&&me!==null&&ms===me)invalid=true;
         if(invalid){st.endpointMode='auto';st.manualStart=null;st.manualEnd=null;st.warnings.push('Manual endpoint is no longer on the valid lower boundary; routing returned to AUTO.');}else selected=chooseWithFixed(prepared,ms,me);
       }
       if(!selected){const auto=EndpointSelector.autoSelect(st.graph,st.boundary,prepared,st.strip.edgeMm,st.orientation);selected={startId:auto.startId,endId:auto.endId,solution:auto.solution,ranking:auto.ranking};}
@@ -68,8 +67,8 @@
         case 'SET_OBJECTIVE':if(!['min_repeats','avoid_shared'].includes(action.objective))return {ok:false,message:'invalid_objective'};st.objective=action.objective;recompute();return {ok:true};
         case 'SET_ENDPOINT_MODE':if(!['auto','manual'].includes(action.mode))return {ok:false,message:'invalid_endpoint_mode'};st.endpointMode=action.mode;if(action.mode==='auto'){st.manualStart=null;st.manualEnd=null;}recompute();return {ok:true};
         case 'RESET_AUTO':st.endpointMode='auto';st.manualStart=null;st.manualEnd=null;recompute();return {ok:true};
-        case 'SET_MANUAL_START':{if(!st.boundary.lowerCandidateIds.includes(action.vertexId))return {ok:false,message:'not_lower_boundary'};const d=descFor(action.vertexId),other=idFor(st.manualEnd);if(other===action.vertexId)return {ok:false,message:'same_endpoint'};st.manualStart=d;st.endpointMode='manual';recompute();return {ok:true};}
-        case 'SET_MANUAL_END':{if(!st.boundary.lowerCandidateIds.includes(action.vertexId))return {ok:false,message:'not_lower_boundary'};const d=descFor(action.vertexId),other=idFor(st.manualStart);if(other===action.vertexId)return {ok:false,message:'same_endpoint'};st.manualEnd=d;st.endpointMode='manual';recompute();return {ok:true};}
+        case 'SET_MANUAL_START':{if(!st.boundary.lowerCandidateIds.includes(action.vertexId))return {ok:false,message:'not_lower_boundary'};st.manualStart=descFor(action.vertexId);st.endpointMode='manual';recompute();return {ok:true};}
+        case 'SET_MANUAL_END':{if(!st.boundary.lowerCandidateIds.includes(action.vertexId))return {ok:false,message:'not_lower_boundary'};st.manualEnd=descFor(action.vertexId);st.endpointMode='manual';recompute();return {ok:true};}
         case 'SET_STRIP_INPUT':{
           let f=action.field;if(f==='segmentsPerSide')f='segmentsPerEdge';const v=Number(action.value);
           if(f==='segmentsPerEdge'){if(!Number.isInteger(v)||v<=0)return {ok:false,message:'invalid_numeric'};}
