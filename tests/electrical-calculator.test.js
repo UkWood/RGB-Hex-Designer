@@ -1,6 +1,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const Electrical=require('../src/core/electrical-calculator');
+const GeometryBuilder=require('../src/core/geometry-builder');
 
 function input(voltage=12){return {moduleCount:3,uniqueEdgeCount:10,repeatCount:2,sideMm:100,ledPerM:60,wattsPerM:18,voltage,reservePercent:20,startVertex:{gx:0,gy:0},endVertex:{gx:4,gy:0},orientation:'pointy'};}
 
@@ -50,4 +51,27 @@ test('invalid_inputs_are_reported_without_nan_or_infinity',()=>{
   assert.equal(v.ok,false);
   assert.ok(v.errors.length>=5);
   assert.equal(v.normalized,undefined);
+});
+
+test('corrected_edge_length_adds_signed_correction_and_drives_geometry_and_electrical_totals',()=>{
+  assert.deepEqual(Electrical.edgeLengthsFromSegments(6,60,0),{baseEdgeMm:100,edgeMm:100});
+  assert.deepEqual(Electrical.edgeLengthsFromSegments(6,60,5),{baseEdgeMm:100,edgeMm:105});
+  assert.deepEqual(Electrical.edgeLengthsFromSegments(6,60,-5),{baseEdgeMm:100,edgeMm:95});
+  assert.throws(()=>Electrical.edgeLengthsFromSegments(6,60,-100),/> 0|positive/i);
+  assert.throws(()=>Electrical.edgeLengthsFromSegments(6,60,-101),/> 0|positive/i);
+
+  const lengths=Electrical.edgeLengthsFromSegments(6,60,5);
+  const s=Electrical.calculate({...input(),sideMm:lengths.edgeMm,segmentsPerEdge:6,baseEdgeMm:lengths.baseEdgeMm,edgeCorrectionMm:5});
+  assert.equal(s.edgeMm,105);
+  assert.equal(s.baseEdgeMm,100);
+  assert.equal(s.edgeCorrectionMm,5);
+  assert.equal(s.segmentsPerEdge,6);
+  assert.equal(s.uniqueLengthM,1.05);
+  assert.equal(s.repeatLengthM,0.21);
+
+  const graph=GeometryBuilder.build([{q:0,r:0}]);
+  const base=GeometryBuilder.worldBounds(graph,100,'pointy');
+  const corrected=GeometryBuilder.worldBounds(graph,lengths.edgeMm,'pointy');
+  assert.ok(Math.abs(corrected.width/base.width-1.05)<1e-12);
+  assert.ok(Math.abs(corrected.height/base.height-1.05)<1e-12);
 });
