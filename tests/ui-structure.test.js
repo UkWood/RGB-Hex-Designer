@@ -97,6 +97,14 @@ test('editor_uses_per_face_add_controls_instead_of_whole_neighbor_cells',()=>{
   assert.match(source,/Добавить модуль на эту грань/);
 });
 
+test('add_face_controls_are_rendered_in_topmost_scene_layer_so_clicks_are_not_occluded',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  const labels=source.indexOf('id="label-layer"');
+  const addLayer=source.indexOf('id="add-face-layer"');
+  assert.ok(labels>=0,'label layer missing');
+  assert.ok(addLayer>labels,'add-face layer must be appended after geometry, route, endpoints, and labels');
+});
+
 test('hexes_are_not_persistently_selected_and_delete_is_a_temporary_mode',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
   assert.doesNotMatch(source,/SELECT_HEX/);
