@@ -40,7 +40,7 @@
     const help=host.querySelector('.canvas-help');if(help)help.remove();
     const svg=host.querySelector('#hex-canvas');if(!svg||typeof MutationObserver==='undefined')return {destroy(){},refresh(){}};
     let scheduled=false,destroyed=false;
-    function render(force=false){scheduled=false;if(destroyed)return;const scene=svg.querySelector('#scene');if(!scene)return;const existing=scene.querySelector('#dimension-frame-layer');if(existing&&(force||true))existing.remove();const markup=dimensionMarkup(state.snapshot());if(markup)scene.insertAdjacentHTML('beforeend',markup);}
+    function render(force=false){scheduled=false;if(destroyed)return;const scene=svg.querySelector('#scene');if(!scene)return;const existing=scene.querySelector('#dimension-frame-layer');if(existing&&!force)return;if(existing)existing.remove();const markup=dimensionMarkup(state.snapshot());if(markup)scene.insertAdjacentHTML('beforeend',markup);}
     function schedule(){if(scheduled||destroyed)return;scheduled=true;queueMicrotask(()=>render(false));}
     const observer=new MutationObserver(mutations=>{if(mutations.some(m=>[...m.addedNodes].some(n=>n.id==='dimension-frame-layer')))return;schedule();});observer.observe(svg,{childList:true,subtree:true});render();
     return {refresh(){render(true);},destroy(){destroyed=true;observer.disconnect();const layer=svg.querySelector('#dimension-frame-layer');if(layer)layer.remove();}};
