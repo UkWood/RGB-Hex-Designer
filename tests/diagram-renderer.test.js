@@ -40,3 +40,14 @@ test('target_frame_is_absent_when_required_dimensions_are_incomplete',()=>{
   const snap=fixture({target:false});snap.requiredWidthMm=500;snap.requiredHeightMm=null;
   assert.doesNotMatch(DiagramRenderer.render(snap),/class="target-frame"/);
 });
+
+test('repeated_physical_edges_are_bright_red_and_twice_route_width_in_pdf_diagram',()=>{
+  const snap=fixture({closed:true});
+  const repeated=snap.numbering.specRows.filter(r=>r.additionalPasses>=1);
+  assert.ok(repeated.length>0,'fixture must contain at least one repeated physical edge');
+  const svg=DiagramRenderer.render(snap);
+  assert.match(svg,/\.repeat-edge-highlight\{stroke:#ff0000;stroke-width:8;/);
+  const highlighted=[...svg.matchAll(/data-repeat-edge="(\d+)"/g)].map(m=>Number(m[1])).sort((a,b)=>a-b);
+  const expected=repeated.map(r=>r.edgeId).sort((a,b)=>a-b);
+  assert.deepEqual(highlighted,expected);
+});
