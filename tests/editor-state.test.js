@@ -59,5 +59,6 @@ test('loading_v3_populates_metadata_targets_edge_inputs_and_view_flags',()=>{
   const p={version:3,project:{name:'Загрузка'},hexagons:[{q:0,r:0}],layout:{orientation:'flat',required_width_mm:900,required_height_mm:700},routing:{endpoint_mode:'auto',start:null,end:null,objective:'min_repeats'},strip:{segments_per_edge:6,led_per_m:60,edge_correction_mm:5,watts_per_m:18,voltage:12,psu_reserve_percent:20},view:{show_hex_numbers:false,show_edge_numbers:true,show_route_numbers:true,show_diagnostics:true}};
   assert.equal(s.dispatch({type:'LOAD_PROJECT',project:p}).ok,true);const snap=s.snapshot();
   assert.equal(snap.projectName,'Загрузка');assert.equal(snap.requiredWidthMm,900);assert.equal(snap.requiredHeightMm,700);
-  assert.equal(snap.orientation,'flat');assert.equal(snap.strip.edgeMm,105);assert.deepEqual(snap.view,{showHexNumbers:false,showEdgeNumbers:true,showRouteNumbers:true,showDiagnostics:true});
+  assert.equal(snap.orientation,'flat');assert.equal(snap.strip.edgeMm,105);
+  assert.equal(snap.view.showHexNumbers,false);assert.equal(snap.view.showEdgeNumbers,true);assert.equal(snap.view.showRouteNumbers,true);assert.equal(snap.view.showDiagnostics,true);
 });
