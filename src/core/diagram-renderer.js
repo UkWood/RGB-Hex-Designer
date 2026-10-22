@@ -7,11 +7,11 @@
   const fmt=n=>Number.isFinite(Number(n))?String(Math.round(Number(n)*100)/100):'—';
   function moduleCenter(module,points){const ps=module.vertexIds.map(id=>points[id]);return {x:ps.reduce((s,p)=>s+p.x,0)/ps.length,y:ps.reduce((s,p)=>s+p.y,0)/ps.length};}
   function targetBounds(bounds,w,h){const cx=(bounds.minX+bounds.maxX)/2,cy=(bounds.minY+bounds.maxY)/2;return {minX:cx-w/2,maxX:cx+w/2,minY:cy-h/2,maxY:cy+h/2,width:w,height:h};}
-  function dimensionMarkup(cls,prefix,b,color){const cx=(b.minX+b.maxX)/2,cy=(b.minY+b.maxY)/2,off=Math.max(14,Math.min(b.width,b.height)*.04);return `<rect class="${cls}" x="${fmt(b.minX)}" y="${fmt(b.minY)}" width="${fmt(b.width)}" height="${fmt(b.height)}"/>`+
-    `<text class="dimension-label" data-dimension="${prefix}-width-top" x="${fmt(cx)}" y="${fmt(b.minY-off)}" text-anchor="middle">${fmt(b.width)} мм</text>`+
-    `<text class="dimension-label" data-dimension="${prefix}-width-bottom" x="${fmt(cx)}" y="${fmt(b.maxY+off)}" text-anchor="middle">${fmt(b.width)} мм</text>`+
-    `<text class="dimension-label" data-dimension="${prefix}-height-left" x="${fmt(b.minX-off)}" y="${fmt(cy)}" text-anchor="middle">${fmt(b.height)} мм</text>`+
-    `<text class="dimension-label" data-dimension="${prefix}-height-right" x="${fmt(b.maxX+off)}" y="${fmt(cy)}" text-anchor="middle">${fmt(b.height)} мм</text>`;}
+  function dimensionMarkup(cls,prefix,b,color){const along=prefix==='target'?2/3:1/3,labelX=b.minX+b.width*along,labelY=b.minY+b.height*along,off=Math.max(14,Math.min(b.width,b.height)*.04);return `<rect class="${cls}" x="${fmt(b.minX)}" y="${fmt(b.minY)}" width="${fmt(b.width)}" height="${fmt(b.height)}"/>`+
+    `<text class="dimension-label" data-dimension="${prefix}-width-top" x="${fmt(labelX)}" y="${fmt(b.minY-off)}" text-anchor="middle">${fmt(b.width)} мм</text>`+
+    `<text class="dimension-label" data-dimension="${prefix}-width-bottom" x="${fmt(labelX)}" y="${fmt(b.maxY+off)}" text-anchor="middle">${fmt(b.width)} мм</text>`+
+    `<text class="dimension-label" data-dimension="${prefix}-height-left" x="${fmt(b.minX-off)}" y="${fmt(labelY)}" text-anchor="middle">${fmt(b.height)} мм</text>`+
+    `<text class="dimension-label" data-dimension="${prefix}-height-right" x="${fmt(b.maxX+off)}" y="${fmt(labelY)}" text-anchor="middle">${fmt(b.height)} мм</text>`;}
   function render(snapshot){
     const graph=snapshot?.graph,solution=snapshot?.solution;if(!graph||!solution||!graph.vertices.length)return '<svg viewBox="0 0 100 100" role="img" aria-label="Пустая схема"></svg>';
     const edgeMm=Number(snapshot.strip?.edgeMm??snapshot.strip?.sideMm)||100,orientation=snapshot.orientation||'pointy';
