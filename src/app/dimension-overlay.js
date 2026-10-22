@@ -21,13 +21,13 @@
     return {scene,mm,target};
   }
   function frameMarkup(prefix,s,m,color,opacity='.72'){
-    const midX=(s.minX+s.maxX)/2,midY=(s.minY+s.maxY)/2,widthText=`${fmtMm(m.width)} мм`,heightText=`${fmtMm(m.height)} мм`;
+    const along=prefix==='target'?2/3:1/3,labelX=s.minX+s.width*along,labelY=s.minY+s.height*along,widthText=`${fmtMm(m.width)} мм`,heightText=`${fmtMm(m.height)} мм`;
     const common=`text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="${color}" style="paint-order:stroke;stroke:var(--canvas);stroke-width:5px;stroke-linejoin:round"`;
     return `<g data-frame="${prefix}"><rect x="${s.minX}" y="${s.minY}" width="${s.width}" height="${s.height}" fill="none" stroke="${color}" stroke-width="1" opacity="${opacity}" vector-effect="non-scaling-stroke"/>`+
-      `<text data-dimension="${prefix}-width-top" x="${midX}" y="${s.minY-12}" ${common}>${widthText}</text>`+
-      `<text data-dimension="${prefix}-width-bottom" x="${midX}" y="${s.maxY+12}" ${common}>${widthText}</text>`+
-      `<text data-dimension="${prefix}-height-left" x="${s.minX-12}" y="${midY}" ${common}>${heightText}</text>`+
-      `<text data-dimension="${prefix}-height-right" x="${s.maxX+12}" y="${midY}" ${common}>${heightText}</text></g>`;
+      `<text data-dimension="${prefix}-width-top" x="${labelX}" y="${s.minY-12}" ${common}>${widthText}</text>`+
+      `<text data-dimension="${prefix}-width-bottom" x="${labelX}" y="${s.maxY+12}" ${common}>${widthText}</text>`+
+      `<text data-dimension="${prefix}-height-left" x="${s.minX-12}" y="${labelY}" ${common}>${heightText}</text>`+
+      `<text data-dimension="${prefix}-height-right" x="${s.maxX+12}" y="${labelY}" ${common}>${heightText}</text></g>`;
   }
   function dimensionMarkup(snapshot){
     const geometry=dimensionGeometry(snapshot);if(!geometry)return '';
