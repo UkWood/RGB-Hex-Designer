@@ -71,11 +71,12 @@
     }
 
     function solve(startId,endId) {
-      if (startId===endId) throw new Error('START and END must differ');
       if (!graph.vertices[startId] || !graph.vertices[endId]) throw new Error('invalid endpoint');
       const defects = new Set(originalOdd);
-      for (const id of [startId,endId]) {
-        if (defects.has(id)) defects.delete(id); else defects.add(id);
+      if(startId!==endId){
+        for (const id of [startId,endId]) {
+          if (defects.has(id)) defects.delete(id); else defects.add(id);
+        }
       }
       const defectIds=[...defects].sort((a,b)=>a-b);
       const matching = MinWeightPerfectMatching.solve(defectIds,(a,b)=>dist[a][b]);
@@ -96,7 +97,7 @@
           augAdj[e.v].push({to:e.u,copyId:c,edgeId:e.id});
         }
       }
-      for (const list of augAdj) list.sort((a,b)=>b.to-a.to || b.edgeId-a.edgeId || b.copyId-a.copyId); // pop smallest
+      for (const list of augAdj) list.sort((a,b)=>b.to-a.to || b.edgeId-a.edgeId || b.copyId-a.copyId);
       const usedCopy=new Set();
       const nodeStack=[startId];
       const edgeStack=[null];
@@ -120,9 +121,7 @@
       reverseCopies.reverse();
       const vertexTrail=reverseVertices;
       const copyTrail=reverseCopies.slice(1);
-      if (copyTrail.length !== copyId || vertexTrail[0]!==startId || vertexTrail.at(-1)!==endId) {
-        throw new Error('failed to construct endpoint Euler trail');
-      }
+      if (copyTrail.length !== copyId || vertexTrail[0]!==startId || vertexTrail.at(-1)!==endId) throw new Error('failed to construct endpoint Euler trail');
       const seenEdge=Array(graph.edges.length).fill(0);
       const traversals=[];
       for (let i=0;i<copyTrail.length;i++) {
@@ -134,16 +133,7 @@
       }
       const repeatCount=traversals.filter(t=>t.repeat).length;
       const repeatSharedCount=traversals.filter(t=>t.repeat && t.shared).length;
-      return {
-        vertexTrail,
-        traversals,
-        duplicateCounts,
-        repeatCount,
-        repeatSharedCount,
-        totalSegmentCount:traversals.length,
-        oddVertexIds:[...originalOdd],
-        eulerWithoutRepeats:repeatCount===0
-      };
+      return {vertexTrail,traversals,duplicateCounts,repeatCount,repeatSharedCount,totalSegmentCount:traversals.length,oddVertexIds:[...originalOdd],eulerWithoutRepeats:repeatCount===0};
     }
 
     return { solve, distances:dist, predecessors:prev, oddVertexIds:[...originalOdd], objective };
