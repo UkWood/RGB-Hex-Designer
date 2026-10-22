@@ -14,7 +14,6 @@
   }
   function lexLess(a,b){ for(let i=0;i<Math.max(a.length,b.length);i++){ if(a[i]!==b[i]) return a[i]<b[i]; } return false; }
   function validateManual(boundaryAnalysis,startId,endId){
-    if(startId===endId) return {ok:false,reason:'same_endpoint'};
     const set=new Set(boundaryAnalysis.lowerCandidateIds);
     if(!set.has(startId)||!set.has(endId)) return {ok:false,reason:'not_lower_boundary'};
     return {ok:true};
