@@ -4,7 +4,7 @@ const file=path.join(__dirname,'..','index.html');
 if(!fs.existsSync(file))throw new Error('index.html not found; run npm run build');
 const html=fs.readFileSync(file,'utf8');
 const checks=[
-  [/https?:\/\//i,'external URL'],
+  [/https?:\/\/(?!www\.w3\.org\/2000\/svg\b)/i,'external URL'],
   [/<script\s+[^>]*src\s*=/i,'external script src'],
   [/<link\s+[^>]*rel=["']?stylesheet/i,'external stylesheet'],
   [/\bimport\s*\(/,'dynamic import'],
