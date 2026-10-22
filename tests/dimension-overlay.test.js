@@ -48,6 +48,12 @@ test('dimension_overlay_defines_actual_and_red_target_frames_with_four_horizonta
   assert.doesNotMatch(markup,/rotate\(/);
 });
 
+test('dimension_overlay_does_not_replace_existing_layer_for_unrelated_svg_mutations',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/dimension-overlay.js'),'utf8');
+  assert.doesNotMatch(source,/force\s*\|\|\s*true/,'unconditional replacement creates a MutationObserver ping-pong with edge numbering');
+  assert.match(source,/if\s*\(existing\s*&&\s*!force\)\s*return/,'existing dimension layer must remain untouched unless refresh is explicitly forced');
+});
+
 test('dimension_overlay_removes_first_module_hint_from_workspace',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/dimension-overlay.js'),'utf8');
   assert.match(source,/querySelector\('\.canvas-help'\)/);assert.match(source,/\.remove\(\)/);
