@@ -135,3 +135,24 @@ test('label_placement_avoids_existing_rectangles',()=>{
   const overlaps=occupied.some(r=>!(placed.x+placed.w<=r.x||r.x+r.w<=placed.x||placed.y+placed.h<=r.y||r.y+r.h<=placed.y));
   assert.equal(overlaps,false);
 });
+
+test('responsive_editor_uses_drawer_breakpoint_above_tablet_range',()=>{
+  const css=fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
+  assert.match(css,/@media\s*\(max-width:\s*1080px\)/);
+  assert.match(css,/\.parameters-drawer/);
+  assert.match(css,/\.parameters-toggle/);
+  assert.match(css,/\.mobile-editor-nav/);
+});
+
+test('add_face_keeps_small_visual_circle_but_exposes_large_touch_hit_area',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  assert.match(source,/class="add-face-hit"[^>]*r="16"/);
+  assert.match(source,/class="add-face-touch"[^>]*r="2[4-6]"/);
+  assert.match(source,/class="add-face-touch"[^>]*fill="transparent"/);
+});
+
+test('editor_exposes_visible_temporary_mode_banner_hook',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  assert.match(source,/id="editor-mode-banner"/);
+  assert.match(source,/Режим:/);
+});
