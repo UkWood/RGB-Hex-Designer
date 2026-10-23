@@ -79,6 +79,14 @@ test('appearance_control_supports_system_light_and_dark_preferences',()=>{
   assert.match(source,/dataset\.theme|data-theme/);
 });
 
+test('appearance_defaults_to_dark_and_preserves_stored_preference',()=>{
+  assert.equal(V3UI.resolveInitialTheme({getItem(){return null;}}),'dark');
+  for(const stored of ['system','light','dark']){
+    assert.equal(V3UI.resolveInitialTheme({getItem(){return stored;}}),stored);
+  }
+  assert.equal(V3UI.resolveInitialTheme({getItem(){throw new Error('storage blocked');}}),'dark');
+});
+
 test('app_entry_resynchronizes_parameter_drawer_accessibility_on_resize',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/main.js'),'utf8');
   assert.match(source,/addEventListener\('resize'/);
