@@ -78,3 +78,11 @@ test('appearance_control_supports_system_light_and_dark_preferences',()=>{
   assert.match(source,/localStorage/);
   assert.match(source,/dataset\.theme|data-theme/);
 });
+
+test('app_entry_resynchronizes_parameter_drawer_accessibility_on_resize',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/main.js'),'utf8');
+  assert.match(source,/addEventListener\('resize'/);
+  assert.match(source,/parameters-drawer/);
+  assert.match(source,/aria-hidden/);
+  assert.match(source,/1080/);
+});
