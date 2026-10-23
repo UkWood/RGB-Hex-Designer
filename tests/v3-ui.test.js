@@ -51,3 +51,30 @@ test('add_face_click_schedules_conditional_fit_but_delete_does_not',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
   assert.match(source,/data-add-face/);assert.match(source,/fit-btn/);assert.match(source,/requestAnimationFrame|setTimeout/);assert.doesNotMatch(source,/data-cell-key[^\n]{0,120}fit-btn/);
 });
+
+test('responsive_composition_declares_header_project_actions_grouped_sections_and_outputs',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  for(const token of ['editor-header','project-actions','ux-section--geometry','ux-section--display','base-edge-output','edge-output','output-row']) assert.ok(source.includes(token),`missing ${token}`);
+});
+
+test('responsive_composition_declares_parameter_drawer_controls',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  for(const id of ['parameters-toggle','parameters-drawer','parameters-close']) assert.ok(source.includes(id),`missing ${id}`);
+  assert.match(source,/Escape/);
+});
+
+test('optimization_is_exposed_as_segmented_control_while_legacy_select_is_retained',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(source,/id="objective-segmented"/);
+  assert.match(source,/data-objective="min_repeats"/);
+  assert.match(source,/data-objective="avoid_shared"/);
+  assert.match(source,/objective-select/);
+});
+
+test('appearance_control_supports_system_light_and_dark_preferences',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(source,/id="appearance-select"/);
+  for(const value of ['system','light','dark']) assert.ok(source.includes(`value="${value}"`),`missing appearance ${value}`);
+  assert.match(source,/localStorage/);
+  assert.match(source,/dataset\.theme|data-theme/);
+});
