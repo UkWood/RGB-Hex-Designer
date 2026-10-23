@@ -1527,7 +1527,7 @@ return blossom;
   const defaults=()=>({
     projectName:'',requiredWidthMm:null,requiredHeightMm:null,cells:[],orientation:'pointy',objective:'min_repeats',endpointMode:'auto',manualStart:null,manualEnd:null,
     strip:{segmentsPerEdge:6,baseEdgeMm:100,edgeCorrectionMm:0,edgeMm:100,segmentsPerSide:6,sideMm:100,ledPerM:60,wattsPerM:18,voltage:12,reservePercent:20},
-    view:{showHexNumbers:true,showEdgeNumbers:false,showRouteNumbers:false,showDiagnostics:false,showNumbers:true},
+    view:{showHexNumbers:true,showEdgeNumbers:true,showRouteNumbers:false,showDiagnostics:false,showNumbers:true},
     graph:null,boundary:null,solution:null,electrical:null,numbering:null,startId:null,endId:null,ranking:null,warnings:[],undo:[],redo:[]
   });
   function create(){
@@ -1972,6 +1972,7 @@ return blossom;
   const RENDER_SIDE=60,FIT_PADDING=20,THEME_KEY='rgb-hex-designer-theme';
   function rectFitsViewport(rect,viewport,padding=FIT_PADDING){const p=Math.max(FIT_PADDING,Number(padding)||0);return rect.left>=viewport.left+p&&rect.top>=viewport.top+p&&rect.right<=viewport.right-p&&rect.bottom<=viewport.bottom-p;}
   function visibleSceneRect(svg){const viewport=svg&&svg.getBoundingClientRect?svg.getBoundingClientRect():null;if(!viewport)return null;const nodes=[...svg.querySelectorAll('#scene > *')].filter(n=>!n.hasAttribute('data-pan-bg'));let out=null;for(const n of nodes){if(!n.getBoundingClientRect)continue;const r=n.getBoundingClientRect();if(!Number.isFinite(r.left)||(r.width===0&&r.height===0))continue;out=out?{left:Math.min(out.left,r.left),top:Math.min(out.top,r.top),right:Math.max(out.right,r.right),bottom:Math.max(out.bottom,r.bottom)}:{left:r.left,top:r.top,right:r.right,bottom:r.bottom};}return out&&{...out,width:out.right-out.left,height:out.bottom-out.top,viewport};}
+  function resolveInitialTheme(storage){try{return storage?.getItem(THEME_KEY)||'dark';}catch(_){return 'dark';}}
   function install(host,state){
     if(!host||!state)return {destroy(){}};
     const $=id=>host.querySelector('#'+id),shell=host.querySelector('.app-shell'),toolbar=host.querySelector('.toolbar'),sidebar=host.querySelector('.sidebar'),workspace=host.querySelector('.workspace'),appHead=host.querySelector('.app-head'),svg=$('hex-canvas');
@@ -2001,7 +2002,6 @@ return blossom;
 
     const tracing=sidebar.querySelector('.sidebar-section:not(.ux-section--geometry)');if(tracing)tracing.classList.add('ux-section','ux-section--routing');
     const objective=$('objective-select');if(objective){const avoid=[...objective.options].find(o=>o.value==='avoid_shared');if(avoid)avoid.textContent='Избегать общих рёбер';const field=objective.closest('.field');field?.classList.add('objective-legacy');const segmented=doc.createElement('div');segmented.id='objective-segmented';segmented.className='segmented-control';segmented.setAttribute('role','group');segmented.setAttribute('aria-label','Критерий оптимизации');segmented.innerHTML='<button type="button" data-objective="min_repeats">Минимум повторов</button><button type="button" data-objective="avoid_shared">Избегать общих рёбер</button>';field?.insertAdjacentElement('afterend',segmented);}
-
     const oldHex=$('show-numbers'),oldRoute=$('show-route-numbers'),diag=$('show-diagnostics');if(oldHex?.closest('.check'))oldHex.closest('.check').style.display='none';
     const routeLabel=oldRoute?.closest('.check');if(routeLabel){routeLabel.style.display='flex';const text=[...routeLabel.childNodes].find(n=>n.nodeType===3);if(text)text.textContent=' № шагов маршрута';}
     const display=doc.createElement('section');display.className='sidebar-section ux-section ux-section--display';display.innerHTML='<h2>Отображение</h2><label class="check"><input id="show-hex-numbers" type="checkbox"> № шестигранников</label><label class="check"><input id="show-edge-numbers" type="checkbox"> № рёбер</label>';
@@ -2026,7 +2026,7 @@ return blossom;
     function setDrawer(open){shell.classList.toggle('parameters-open',!!open);const toggle=$('parameters-toggle');if(toggle)toggle.setAttribute('aria-expanded',open?'true':'false');sidebar.setAttribute('aria-hidden',open||Number(Root.innerWidth||0)>1080?'false':'true');}
     $('parameters-toggle')?.addEventListener('click',()=>setDrawer(!shell.classList.contains('parameters-open')));$('parameters-close')?.addEventListener('click',()=>setDrawer(false));backdrop.addEventListener('click',()=>setDrawer(false));const drawerKey=e=>{if(e.key==='Escape')setDrawer(false);};doc.addEventListener('keydown',drawerKey);
 
-    function loadTheme(){try{return Root.localStorage?.getItem(THEME_KEY)||'system';}catch(_){return 'system';}}
+    function loadTheme(){return resolveInitialTheme(Root.localStorage);}
     function applyTheme(value){const theme=['light','dark'].includes(value)?value:'system';if(theme==='system')delete doc.documentElement.dataset.theme;else doc.documentElement.dataset.theme=theme;try{Root.localStorage?.setItem(THEME_KEY,theme);}catch(_){}const select=$('appearance-select');if(select)select.value=theme;}
     applyTheme(loadTheme());$('appearance-select')?.addEventListener('change',e=>applyTheme(e.target.value));
 
@@ -2051,7 +2051,7 @@ return blossom;
     syncFields();scheduleSync();setDrawer(false);
     return {destroy(){destroyed=true;observer.disconnect();doc.removeEventListener('keydown',drawerKey);style.remove();backdrop.remove();mobileNav.remove();modeBanner.remove();},refresh:()=>{syncFields();refreshDimensionLayer();scheduleSync();}};
   }
-  return {install,rectFitsViewport,visibleSceneRect};
+  return {install,rectFitsViewport,visibleSceneRect,resolveInitialTheme};
 });
 
 /* src/app/main.js */
