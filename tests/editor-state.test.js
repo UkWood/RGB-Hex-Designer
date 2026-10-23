@@ -4,6 +4,11 @@ const EditorState=require('../src/app/editor-state');
 
 function add(state,q,r){const x=state.dispatch({type:'ADD_HEX',q,r});assert.equal(x.ok,true,x.message);}
 
+test('new_project_shows_edge_numbers_by_default',()=>{
+  const snap=EditorState.create().snapshot();
+  assert.equal(snap.view.showEdgeNumbers,true);
+});
+
 test('add_and_direct_delete_recompute_graph_and_route',()=>{
   const s=EditorState.create();add(s,0,0);add(s,1,0);let snap=s.snapshot();
   assert.equal(snap.cells.length,2);assert.equal(snap.graph.edges.length,11);assert.ok(snap.solution.traversals.length>=11);
