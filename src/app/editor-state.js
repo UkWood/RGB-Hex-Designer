@@ -9,7 +9,7 @@
   const defaults=()=>({
     projectName:'',requiredWidthMm:null,requiredHeightMm:null,cells:[],orientation:'pointy',objective:'min_repeats',endpointMode:'auto',manualStart:null,manualEnd:null,
     strip:{segmentsPerEdge:6,baseEdgeMm:100,edgeCorrectionMm:0,edgeMm:100,segmentsPerSide:6,sideMm:100,ledPerM:60,wattsPerM:18,voltage:12,reservePercent:20},
-    view:{showHexNumbers:true,showEdgeNumbers:false,showRouteNumbers:false,showDiagnostics:false,showNumbers:true},
+    view:{showHexNumbers:true,showEdgeNumbers:true,showRouteNumbers:false,showDiagnostics:false,showNumbers:true},
     graph:null,boundary:null,solution:null,electrical:null,numbering:null,startId:null,endId:null,ranking:null,warnings:[],undo:[],redo:[]
   });
   function create(){
