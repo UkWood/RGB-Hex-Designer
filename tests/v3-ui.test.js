@@ -65,7 +65,7 @@ test('responsive_composition_declares_parameter_drawer_controls',()=>{
 
 test('optimization_is_exposed_as_segmented_control_while_legacy_select_is_retained',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
-  assert.match(source,/id="objective-segmented"/);
+  assert.ok(source.includes('id="objective-segmented"')||source.includes("segmented.id='objective-segmented'"),'missing segmented objective control id');
   assert.match(source,/data-objective="min_repeats"/);
   assert.match(source,/data-objective="avoid_shared"/);
   assert.match(source,/objective-select/);
