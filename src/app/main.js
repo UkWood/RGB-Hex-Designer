@@ -13,7 +13,7 @@
       if(desktop){shell.classList.remove('parameters-open');drawer.setAttribute('aria-hidden','false');}
       else if(!shell.classList.contains('parameters-open'))drawer.setAttribute('aria-hidden','true');
     };
-    root.addEventListener?.('resize',syncResponsiveDrawer);
+    if(root.addEventListener)root.addEventListener('resize',syncResponsiveDrawer);
     syncResponsiveDrawer();
     root.HexRouterApp={state,ui,dimensions,v3ui};
   }
