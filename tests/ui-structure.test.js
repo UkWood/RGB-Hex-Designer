@@ -145,14 +145,14 @@ test('responsive_editor_uses_drawer_breakpoint_above_tablet_range',()=>{
 });
 
 test('add_face_keeps_small_visual_circle_but_exposes_large_touch_hit_area',()=>{
-  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
-  assert.match(source,/class="add-face-hit"[^>]*r="16"/);
-  assert.match(source,/class="add-face-touch"[^>]*r="2[4-6]"/);
-  assert.match(source,/class="add-face-touch"[^>]*fill="transparent"/);
+  const editorSource=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  const v3Source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(editorSource,/class="add-face-hit"[^>]*r="16"/);
+  assert.match(v3Source,/class="add-face-touch"[^>]*r="25"[^>]*fill="transparent"/);
 });
 
 test('editor_exposes_visible_temporary_mode_banner_hook',()=>{
-  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
-  assert.match(source,/id="editor-mode-banner"/);
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(source,/id='editor-mode-banner'|id="editor-mode-banner"|modeBanner\.id='editor-mode-banner'/);
   assert.match(source,/Режим:/);
 });
