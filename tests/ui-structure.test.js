@@ -156,3 +156,17 @@ test('editor_exposes_visible_temporary_mode_banner_hook',()=>{
   assert.match(source,/id='editor-mode-banner'|id="editor-mode-banner"|modeBanner\.id='editor-mode-banner'/);
   assert.match(source,/Режим:/);
 });
+
+test('gyvertwink_export_is_a_project_action_with_fixed_repeat_separation',()=>{
+  const editorSource=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  const v3Source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(editorSource,/id="export-gt-btn"[^>]*>Экспорт для GyverTwink</);
+  assert.match(editorSource,/GyverTwinkExport/);
+  assert.match(editorSource,/state\.snapshot\(\)/);
+  assert.match(editorSource,/repeatOffsetMm\s*:\s*GYVERTWINK_REPEAT_OFFSET_MM/);
+  assert.match(editorSource,/GYVERTWINK_REPEAT_OFFSET_MM\s*=\s*1/);
+  assert.match(editorSource,/gyvertwink-map\.json/);
+  assert.match(editorSource,/Сначала создайте трассируемую схему\./);
+  assert.match(v3Source,/export-gt-btn/);
+  assert.match(v3Source,/\[save,gt,load,pdf\]/);
+});
