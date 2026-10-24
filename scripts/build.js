@@ -7,6 +7,7 @@ const sources=[
   'src/core/connectivity-validator.js',
   'src/core/hex-grid.js',
   'src/core/geometry-builder.js',
+  'src/core/gyvertwink-export.js',
   'src/core/boundary-analyzer.js',
   'src/vendor/edmonds-blossom.js',
   'src/core/min-weight-perfect-matching.js',
@@ -21,6 +22,7 @@ const sources=[
   'src/app/editor-ui.js',
   'src/app/dimension-overlay.js',
   'src/app/v3-ui.js',
+  'src/app/gyvertwink-ui.js',
   'src/app/main.js'
 ];
 const scripts=sources.map(file=>`\n/* ${file} */\n${fs.readFileSync(path.join(root,file),'utf8')}`).join('\n');
