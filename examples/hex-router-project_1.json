@@ -1,0 +1,44 @@
+{
+  "version": 3,
+  "project": {
+    "name": "Пример проект \"Без названия\""
+  },
+  "hexagons": [
+    {"q": 1, "r": -1},
+    {"q": 2, "r": -1},
+    {"q": 3, "r": -5},
+    {"q": 3, "r": -4},
+    {"q": 3, "r": -2},
+    {"q": 4, "r": -4},
+    {"q": 4, "r": -3},
+    {"q": 4, "r": -2},
+    {"q": 4, "r": -1},
+    {"q": 5, "r": -4},
+    {"q": 5, "r": -1}
+  ],
+  "layout": {
+    "orientation": "pointy",
+    "required_width_mm": 1000,
+    "required_height_mm": 1000
+  },
+  "routing": {
+    "endpoint_mode": "auto",
+    "start": null,
+    "end": null,
+    "objective": "min_repeats"
+  },
+  "strip": {
+    "segments_per_edge": 6,
+    "led_per_m": 60,
+    "edge_correction_mm": 0,
+    "watts_per_m": 18,
+    "voltage": 12,
+    "psu_reserve_percent": 20
+  },
+  "view": {
+    "show_hex_numbers": true,
+    "show_edge_numbers": true,
+    "show_route_numbers": false,
+    "show_diagnostics": false
+  }
+}
