@@ -6,6 +6,7 @@
     const ui=root.EditorUI.mount(host,state);
     const dimensions=root.DimensionOverlay?root.DimensionOverlay.install(host,state):null;
     const v3ui=root.V3UI?root.V3UI.install(host,state):null;
+    const gyvertwinkUi=root.GyverTwinkUI?root.GyverTwinkUI.install(host,state):null;
     const syncResponsiveDrawer=()=>{
       const shell=host.querySelector('.app-shell'),drawer=host.querySelector('#parameters-drawer');
       if(!shell||!drawer)return;
@@ -15,7 +16,7 @@
     };
     if(root.addEventListener)root.addEventListener('resize',syncResponsiveDrawer);
     syncResponsiveDrawer();
-    root.HexRouterApp={state,ui,dimensions,v3ui};
+    root.HexRouterApp={state,ui,dimensions,v3ui,gyvertwinkUi};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })(typeof globalThis!=='undefined'?globalThis:this);
