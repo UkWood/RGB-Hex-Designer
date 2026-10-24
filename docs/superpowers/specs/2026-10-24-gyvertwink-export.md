@@ -26,13 +26,26 @@ The export API supports `repeatOffsetMm`. The pure builder keeps the task-file d
 ## Integration
 
 - Bundle `src/core/gyvertwink-export.js` after `geometry-builder.js`.
-- Add `export-gt-btn` to the base file actions and move it into the responsive header project actions with Save/Open/PDF.
-- Download compact JSON using the existing browser download helper.
+- Install `GyverTwinkUI` after `V3UI`; it inserts `export-gt-btn` immediately after `save-json-btn` in the final responsive project-actions header.
+- Download compact JSON through a local Blob/object-URL flow.
 - Extend standalone verification and README.
 - Do not change routing, numbering, PDF, electrical calculations, or project persistence.
 
+## Customer golden fixture
+
+The supplied 11-hexagon project is stored as `examples/hex-router-project_1.json`. With `repeatOffsetMm: 0` it must match `tests/fixtures/example-gyvertwink-map.json` byte-for-byte and the task reference values:
+
+- 54 unique edges;
+- 63 traversals, 9 repeats;
+- START id 32, END id 34;
+- `edgeMm = 100`;
+- 378 LEDs;
+- pointy bounds 866 × 800 mm;
+- START (519.6, 650), END (692.8, 750);
+- first LED [507.2, 642.9], last LED [705.2, 757.1];
+- first outline segment [86.6, 600, 173.2, 650];
+- flat bounds 800 × 866 mm, START (50, 692.8), END (150, 692.8).
+
 ## Tests
 
-Required behavior is covered with Node tests for empty/invalid state, single-hex and multi-hex projects, pointy/flat orientation, deterministic output, closed START=END routes, offset vs no-offset behavior, LED count/order, finite/nonnegative geometry, outline uniqueness, and standalone/UI integration.
-
-The task file also names a customer fixture `hex-router-project_1.json` with 11 hexagons and a golden output. That JSON file is not present in the current conversation, Library, repository, or retrievable prior project context, so its exact golden-byte regression cannot be created without inventing data. The implementation must remain compatible with adding that fixture later without code changes.
+Required behavior is covered with Node tests for the exact customer golden fixture, empty/invalid state, single-hex and multi-hex projects, pointy/flat orientation, deterministic output, closed START=END routes, offset vs no-offset behavior, LED count/order, finite/nonnegative geometry, outline uniqueness, and standalone/UI integration.
