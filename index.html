@@ -269,33 +269,28 @@ input[type="number"],input[type="text"],select{width:100%;border:1px solid var(-
     if (!Number.isInteger(n) || n < 1 || !(edgeMm > 0)) {
       return { ok: false, error: 'Неверные параметры ленты.' };
     }
-    const repeatOffsetMm = Number.isFinite(options.repeatOffsetMm) ? options.repeatOffsetMm : 0;
+    void options; // Legacy call options are intentionally ignored: repeats carry no LEDs.
 
     // Координаты в мм совпадают с экранной ориентацией Designer: X вправо, Y вниз.
     const world = graph.vertices.map((v) => GeometryBuilder.toWorld(v, edgeMm, orientation));
     const bounds = GeometryBuilder.worldBounds(graph, edgeMm, orientation);
     const pointFromBounds = (p) => ({ x: p.x - bounds.minX, y: p.y - bounds.minY });
 
-    // Каждый проход добавляет свои LED строго в порядке ленты.
-    const passes = new Map();
+    // Светодиоды есть только на первом физическом проходе по ребру.
+    // Повторные traversal — проводные перемычки для непрерывности DATA-маршрута.
     const leds = [];
     for (const traversal of solution.traversals) {
+      if (traversal.repeat) continue;
       const A = pointFromBounds(world[traversal.from]);
       const B = pointFromBounds(world[traversal.to]);
-      const pass = passes.get(traversal.edgeId) || 0;
-      passes.set(traversal.edgeId, pass + 1);
-
       const dx = B.x - A.x;
       const dy = B.y - A.y;
-      const len = Math.hypot(dx, dy);
-      const ox = pass > 0 && repeatOffsetMm > 0 ? (dy / len) * repeatOffsetMm * pass : 0;
-      const oy = pass > 0 && repeatOffsetMm > 0 ? (-dx / len) * repeatOffsetMm * pass : 0;
 
       for (let k = 1; k <= n; k++) {
         const f = k / (n + 1);
         leds.push([
-          round1(A.x + dx * f + ox),
-          round1(A.y + dy * f + oy)
+          round1(A.x + dx * f),
+          round1(A.y + dy * f)
         ]);
       }
     }
@@ -1264,20 +1259,25 @@ return blossom;
     const segmentM=n.edgeMm/1000;
     const uniqueLengthM=n.uniqueEdgeCount*segmentM;
     const repeatLengthM=n.repeatCount*segmentM;
-    const totalLengthM=uniqueLengthM+repeatLengthM;
-    const ledCountApprox=Math.round(totalLengthM*n.ledPerM);
-    const powerW=totalLengthM*n.wattsPerM;
+    const routeLengthM=uniqueLengthM+repeatLengthM;
+    const segmentsPerEdge=n.segmentsPerEdge===undefined
+      ? Math.round((n.baseEdgeMm===undefined?n.edgeMm:n.baseEdgeMm)*n.ledPerM/1000)
+      : n.segmentsPerEdge;
+    const baseEdgeMm=n.baseEdgeMm===undefined?segmentsPerEdge*1000/n.ledPerM:n.baseEdgeMm;
+    const ledCount=n.uniqueEdgeCount*segmentsPerEdge;
+    const ledStripLengthM=ledCount/n.ledPerM;
+    const powerW=ledStripLengthM*n.wattsPerM;
     const currentA=powerW/n.voltage;
     const recommendedPsuW=powerW*(1+n.reservePercent/100);
-    const repeatPercent=totalLengthM>0?repeatLengthM/totalLengthM*100:0;
+    const repeatPercent=routeLengthM>0?repeatLengthM/routeLengthM*100:0;
     const dx=(input.endVertex.gx-input.startVertex.gx)*(Math.sqrt(3)/2)*n.edgeMm/1000;
     const dy=(input.endVertex.gy-input.startVertex.gy)*0.5*n.edgeMm/1000;
     const endpointSeparationM=Math.hypot(dx,dy);
-    const segmentsPerEdge=n.segmentsPerEdge===undefined?n.edgeMm*n.ledPerM/1000:n.segmentsPerEdge;
-    const baseEdgeMm=n.baseEdgeMm===undefined?segmentsPerEdge*1000/n.ledPerM:n.baseEdgeMm;
     const edgeCorrectionMm=n.edgeCorrectionMm;
     return {
-      uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM,
+      uniqueLengthM,repeatLengthM,routeLengthM,totalLengthM:routeLengthM,
+      ledStripLengthM,ledCount,ledCountApprox:ledCount,
+      powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM,
       segmentsPerEdge,baseEdgeMm,edgeCorrectionMm,edgeMm:n.edgeMm,
       segmentsPerSide:segmentsPerEdge,sideMm:n.edgeMm,
       ledPerM:n.ledPerM,wattsPerM:n.wattsPerM,voltage:n.voltage,reservePercent:n.reservePercent
@@ -1574,8 +1574,8 @@ return blossom;
       ['Фактические габариты',`${fmt(bounds.width)} × ${fmt(bounds.height)} мм`],['Требуемые габариты',required],['Ориентация',snapshot.orientation==='flat'?'горизонтальная':'вертикальная'],['Шестигранников',String(graph.modules.length)],
       ['Уникальных рёбер',String(graph.edges.length)],['Сегментов на ребро',fmt(strip.segmentsPerEdge)],['LED/м',fmt(strip.ledPerM)],['Базовая длина ребра',`${fmt(strip.baseEdgeMm)} мм`],
       ['Коррекция длины ребра',`${fmt(strip.edgeCorrectionMm)} мм`],['Итоговая длина ребра',`${fmt(edgeMm)} мм`],['Вт/м',fmt(strip.wattsPerM)],['Напряжение',`${fmt(strip.voltage)} В`],
-      ['Запас БП',`${fmt(strip.reservePercent)}%`],['Повторных проходов',String(snapshot.solution.repeatCount)],['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],
-      ['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW)} Вт`],['Ток',`${fmt(e.currentA)} А`],['БП ≥',`${fmt(e.recommendedPsuW)} Вт`],['Доля повтора',`${fmt(e.repeatPercent)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`]
+      ['Запас БП',`${fmt(strip.reservePercent)}%`],['Повторных проходов',String(snapshot.solution.repeatCount)],['LED-лента',`${fmt(e.ledStripLengthM)} м`],['Провод повторов',`${fmt(e.repeatLengthM)} м`],
+      ['Маршрут',`${fmt(e.routeLengthM)} м`],['LED',String(e.ledCount)],['Мощность',`${fmt(e.powerW)} Вт`],['Ток',`${fmt(e.currentA)} А`],['БП ≥',`${fmt(e.recommendedPsuW)} Вт`],['Доля повтора',`${fmt(e.repeatPercent)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`]
     ];
   }
   function canvasJpegBytes(canvas,root){const data=canvas.toDataURL('image/jpeg',.94),base64=data.slice(data.indexOf(',')+1),bin=(root.atob||atob)(base64),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}
@@ -1883,7 +1883,7 @@ return blossom;
     function renderMetrics(){
       const e=snap.electrical;
       const values=e?[
-        ['Сегм./стор.',String(snap.strip.segmentsPerSide)],['Сторона',`${fmt(snap.strip.sideMm,2)} мм`],['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов трассы',String(snap.graph.edges.length)]
+        ['Сегм./стор.',String(snap.strip.segmentsPerSide)],['Сторона',`${fmt(snap.strip.sideMm,2)} мм`],['LED-лента',`${fmt(e.ledStripLengthM)} м`],['Провод повторов',`${fmt(e.repeatLengthM)} м`],['Маршрут',`${fmt(e.routeLengthM)} м`],['LED',String(e.ledCount)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов трассы',String(snap.graph.edges.length)]
       ]:[['Модули',String(snap.cells.length)],['Маршрут','—']];
       $('metrics').innerHTML=values.map(([a,b])=>`<div class="metric"><span>${escapeHtml(a)}</span><strong>${escapeHtml(b)}</strong></div>`).join('');
     }
@@ -2004,7 +2004,6 @@ return blossom;
   }
   return {mount,computeFitTransform,fitBoundsTransform,animationStartStep,animationTick,placeLabel};
 });
-
 
 /* src/app/dimension-overlay.js */
 (function(root,factory){
@@ -2159,10 +2158,6 @@ return blossom;
 })(typeof globalThis!=='undefined'?globalThis:this,function(GyverTwinkExport,Root){
   'use strict';
 
-  // Небольшой визуальный разнос повторных проходов по дополнительному
-  // требованию к экспорту: порядок LED и физический маршрут не меняются.
-  const GYVERTWINK_REPEAT_OFFSET_MM=1;
-
   function install(host,state){
     if(!host||!state||!GyverTwinkExport)return {destroy(){}};
     const save=host.querySelector('#save-json-btn');
@@ -2203,7 +2198,7 @@ return blossom;
     }
 
     const onExport=()=>{
-      const result=GyverTwinkExport.build(state.snapshot(),{repeatOffsetMm:GYVERTWINK_REPEAT_OFFSET_MM});
+      const result=GyverTwinkExport.build(state.snapshot());
       if(!result.ok){
         notify(result.error||'Сначала создайте трассируемую схему.');
         return;
@@ -2215,7 +2210,7 @@ return blossom;
     return {destroy(){button.removeEventListener('click',onExport);button.remove();}};
   }
 
-  return {install,GYVERTWINK_REPEAT_OFFSET_MM};
+  return {install};
 });
 
 
