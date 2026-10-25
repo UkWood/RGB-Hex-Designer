@@ -22,33 +22,28 @@
     if (!Number.isInteger(n) || n < 1 || !(edgeMm > 0)) {
       return { ok: false, error: 'Неверные параметры ленты.' };
     }
-    const repeatOffsetMm = Number.isFinite(options.repeatOffsetMm) ? options.repeatOffsetMm : 0;
+    void options; // Legacy call options are intentionally ignored: repeats carry no LEDs.
 
     // Координаты в мм совпадают с экранной ориентацией Designer: X вправо, Y вниз.
     const world = graph.vertices.map((v) => GeometryBuilder.toWorld(v, edgeMm, orientation));
     const bounds = GeometryBuilder.worldBounds(graph, edgeMm, orientation);
     const pointFromBounds = (p) => ({ x: p.x - bounds.minX, y: p.y - bounds.minY });
 
-    // Каждый проход добавляет свои LED строго в порядке ленты.
-    const passes = new Map();
+    // Светодиоды есть только на первом физическом проходе по ребру.
+    // Повторные traversal — проводные перемычки для непрерывности DATA-маршрута.
     const leds = [];
     for (const traversal of solution.traversals) {
+      if (traversal.repeat) continue;
       const A = pointFromBounds(world[traversal.from]);
       const B = pointFromBounds(world[traversal.to]);
-      const pass = passes.get(traversal.edgeId) || 0;
-      passes.set(traversal.edgeId, pass + 1);
-
       const dx = B.x - A.x;
       const dy = B.y - A.y;
-      const len = Math.hypot(dx, dy);
-      const ox = pass > 0 && repeatOffsetMm > 0 ? (dy / len) * repeatOffsetMm * pass : 0;
-      const oy = pass > 0 && repeatOffsetMm > 0 ? (-dx / len) * repeatOffsetMm * pass : 0;
 
       for (let k = 1; k <= n; k++) {
         const f = k / (n + 1);
         leds.push([
-          round1(A.x + dx * f + ox),
-          round1(A.y + dy * f + oy)
+          round1(A.x + dx * f),
+          round1(A.y + dy * f)
         ]);
       }
     }
