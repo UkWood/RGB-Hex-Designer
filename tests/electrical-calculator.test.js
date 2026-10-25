@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const Electrical=require('../src/core/electrical-calculator');
 const GeometryBuilder=require('../src/core/geometry-builder');
 
-function input(voltage=12){return {moduleCount:3,uniqueEdgeCount:10,repeatCount:2,sideMm:100,ledPerM:60,wattsPerM:18,voltage,reservePercent:20,startVertex:{gx:0,gy:0},endVertex:{gx:4,gy:0},orientation:'pointy'};}
+function input(voltage=12){return {moduleCount:3,uniqueEdgeCount:10,repeatCount:2,sideMm:100,edgeMm:100,segmentsPerEdge:6,baseEdgeMm:100,edgeCorrectionMm:0,ledPerM:60,wattsPerM:18,voltage,reservePercent:20,startVertex:{gx:0,gy:0},endVertex:{gx:4,gy:0},orientation:'pointy'};}
 
 test('side_length_is_derived_from_cut_segments_and_density',()=>{
   assert.equal(Electrical.sideMmFromSegments(6,60),100);
@@ -13,16 +13,27 @@ test('side_length_is_derived_from_cut_segments_and_density',()=>{
   assert.throws(()=>Electrical.sideMmFromSegments(6,0),/> 0|positive/i);
 });
 
-test('calculates_exact_lengths_leds_power_current_and_reserve',()=>{
+test('repeat traversals are wire only and do not add LEDs or electrical load',()=>{
   const s=Electrical.calculate(input(12));
   assert.equal(s.uniqueLengthM,1);
   assert.equal(s.repeatLengthM,0.2);
-  assert.equal(s.totalLengthM,1.2);
-  assert.equal(s.ledCountApprox,72);
-  assert.ok(Math.abs(s.powerW-21.6)<1e-12);
-  assert.ok(Math.abs(s.currentA-1.8)<1e-12);
-  assert.ok(Math.abs(s.recommendedPsuW-25.92)<1e-12);
+  assert.equal(s.routeLengthM,1.2);
+  assert.equal(s.totalLengthM,1.2,'legacy totalLengthM remains the full DATA route length');
+  assert.equal(s.ledCount,60);
+  assert.equal(s.ledCountApprox,60,'compatibility alias must now be exact');
+  assert.equal(s.ledStripLengthM,1);
+  assert.ok(Math.abs(s.powerW-18)<1e-12);
+  assert.ok(Math.abs(s.currentA-1.5)<1e-12);
+  assert.ok(Math.abs(s.recommendedPsuW-21.6)<1e-12);
   assert.ok(Math.abs(s.repeatPercent-(0.2/1.2*100))<1e-12);
+});
+
+test('repeat count changes wire route length but not LEDs power current or PSU',()=>{
+  const noRepeats=Electrical.calculate({...input(),repeatCount:0});
+  const manyRepeats=Electrical.calculate({...input(),repeatCount:7});
+  assert.ok(manyRepeats.routeLengthM>noRepeats.routeLengthM);
+  assert.ok(manyRepeats.repeatLengthM>noRepeats.repeatLengthM);
+  for(const key of ['ledCount','ledCountApprox','ledStripLengthM','powerW','currentA','recommendedPsuW'])assert.equal(manyRepeats[key],noRepeats[key],key);
 });
 
 test('current_formula_is_correct_at_5_12_24_volts',()=>{
@@ -46,14 +57,14 @@ test('endpoint_separation_respects_field_orientation',()=>{
 });
 
 test('invalid_inputs_are_reported_without_nan_or_infinity',()=>{
-  const bad={...input(),sideMm:'x',ledPerM:0,wattsPerM:Infinity,voltage:9,reservePercent:-1};
+  const bad={...input(),sideMm:'x',edgeMm:'x',ledPerM:0,wattsPerM:Infinity,voltage:9,reservePercent:-1};
   const v=Electrical.validateInputs(bad);
   assert.equal(v.ok,false);
   assert.ok(v.errors.length>=5);
   assert.equal(v.normalized,undefined);
 });
 
-test('corrected_edge_length_adds_signed_correction_and_drives_geometry_and_electrical_totals',()=>{
+test('corrected edge length changes geometry and jumper span but not LED count or nominal strip power',()=>{
   assert.deepEqual(Electrical.edgeLengthsFromSegments(6,60,0),{baseEdgeMm:100,edgeMm:100});
   assert.deepEqual(Electrical.edgeLengthsFromSegments(6,60,5),{baseEdgeMm:100,edgeMm:105});
   assert.deepEqual(Electrical.edgeLengthsFromSegments(6,60,-5),{baseEdgeMm:100,edgeMm:95});
@@ -61,13 +72,17 @@ test('corrected_edge_length_adds_signed_correction_and_drives_geometry_and_elect
   assert.throws(()=>Electrical.edgeLengthsFromSegments(6,60,-101),/> 0|positive/i);
 
   const lengths=Electrical.edgeLengthsFromSegments(6,60,5);
-  const s=Electrical.calculate({...input(),sideMm:lengths.edgeMm,segmentsPerEdge:6,baseEdgeMm:lengths.baseEdgeMm,edgeCorrectionMm:5});
+  const s=Electrical.calculate({...input(),sideMm:lengths.edgeMm,edgeMm:lengths.edgeMm,segmentsPerEdge:6,baseEdgeMm:lengths.baseEdgeMm,edgeCorrectionMm:5});
   assert.equal(s.edgeMm,105);
   assert.equal(s.baseEdgeMm,100);
   assert.equal(s.edgeCorrectionMm,5);
   assert.equal(s.segmentsPerEdge,6);
   assert.equal(s.uniqueLengthM,1.05);
   assert.equal(s.repeatLengthM,0.21);
+  assert.equal(s.routeLengthM,1.26);
+  assert.equal(s.ledCount,60);
+  assert.equal(s.ledStripLengthM,1);
+  assert.equal(s.powerW,18);
 
   const graph=GeometryBuilder.build([{q:0,r:0}]);
   const base=GeometryBuilder.worldBounds(graph,100,'pointy');

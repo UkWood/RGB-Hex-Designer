@@ -50,8 +50,8 @@
       ['Фактические габариты',`${fmt(bounds.width)} × ${fmt(bounds.height)} мм`],['Требуемые габариты',required],['Ориентация',snapshot.orientation==='flat'?'горизонтальная':'вертикальная'],['Шестигранников',String(graph.modules.length)],
       ['Уникальных рёбер',String(graph.edges.length)],['Сегментов на ребро',fmt(strip.segmentsPerEdge)],['LED/м',fmt(strip.ledPerM)],['Базовая длина ребра',`${fmt(strip.baseEdgeMm)} мм`],
       ['Коррекция длины ребра',`${fmt(strip.edgeCorrectionMm)} мм`],['Итоговая длина ребра',`${fmt(edgeMm)} мм`],['Вт/м',fmt(strip.wattsPerM)],['Напряжение',`${fmt(strip.voltage)} В`],
-      ['Запас БП',`${fmt(strip.reservePercent)}%`],['Повторных проходов',String(snapshot.solution.repeatCount)],['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],
-      ['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW)} Вт`],['Ток',`${fmt(e.currentA)} А`],['БП ≥',`${fmt(e.recommendedPsuW)} Вт`],['Доля повтора',`${fmt(e.repeatPercent)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`]
+      ['Запас БП',`${fmt(strip.reservePercent)}%`],['Повторных проходов',String(snapshot.solution.repeatCount)],['LED-лента',`${fmt(e.ledStripLengthM)} м`],['Провод повторов',`${fmt(e.repeatLengthM)} м`],
+      ['Маршрут',`${fmt(e.routeLengthM)} м`],['LED',String(e.ledCount)],['Мощность',`${fmt(e.powerW)} Вт`],['Ток',`${fmt(e.currentA)} А`],['БП ≥',`${fmt(e.recommendedPsuW)} Вт`],['Доля повтора',`${fmt(e.repeatPercent)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`]
     ];
   }
   function canvasJpegBytes(canvas,root){const data=canvas.toDataURL('image/jpeg',.94),base64=data.slice(data.indexOf(',')+1),bin=(root.atob||atob)(base64),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}

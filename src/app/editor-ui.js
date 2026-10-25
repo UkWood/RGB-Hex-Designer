@@ -176,7 +176,7 @@
     function renderMetrics(){
       const e=snap.electrical;
       const values=e?[
-        ['Сегм./стор.',String(snap.strip.segmentsPerSide)],['Сторона',`${fmt(snap.strip.sideMm,2)} мм`],['Уникальная длина',`${fmt(e.uniqueLengthM)} м`],['Повторы',`${fmt(e.repeatLengthM)} м`],['Итого ленты',`${fmt(e.totalLengthM)} м`],['LED ≈',String(e.ledCountApprox)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов трассы',String(snap.graph.edges.length)]
+        ['Сегм./стор.',String(snap.strip.segmentsPerSide)],['Сторона',`${fmt(snap.strip.sideMm,2)} мм`],['LED-лента',`${fmt(e.ledStripLengthM)} м`],['Провод повторов',`${fmt(e.repeatLengthM)} м`],['Маршрут',`${fmt(e.routeLengthM)} м`],['LED',String(e.ledCount)],['Мощность',`${fmt(e.powerW,1)} Вт`],['Ток',`${fmt(e.currentA,2)} А`],['БП ≥',`${fmt(e.recommendedPsuW,1)} Вт`],['Повтор',`${fmt(e.repeatPercent,1)}%`],['START–END',`${fmt(e.endpointSeparationM)} м`],['Сегментов трассы',String(snap.graph.edges.length)]
       ]:[['Модули',String(snap.cells.length)],['Маршрут','—']];
       $('metrics').innerHTML=values.map(([a,b])=>`<div class="metric"><span>${escapeHtml(a)}</span><strong>${escapeHtml(b)}</strong></div>`).join('');
     }

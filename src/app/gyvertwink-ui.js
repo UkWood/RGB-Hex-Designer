@@ -6,10 +6,6 @@
 })(typeof globalThis!=='undefined'?globalThis:this,function(GyverTwinkExport,Root){
   'use strict';
 
-  // Небольшой визуальный разнос повторных проходов по дополнительному
-  // требованию к экспорту: порядок LED и физический маршрут не меняются.
-  const GYVERTWINK_REPEAT_OFFSET_MM=1;
-
   function install(host,state){
     if(!host||!state||!GyverTwinkExport)return {destroy(){}};
     const save=host.querySelector('#save-json-btn');
@@ -50,7 +46,7 @@
     }
 
     const onExport=()=>{
-      const result=GyverTwinkExport.build(state.snapshot(),{repeatOffsetMm:GYVERTWINK_REPEAT_OFFSET_MM});
+      const result=GyverTwinkExport.build(state.snapshot());
       if(!result.ok){
         notify(result.error||'Сначала создайте трассируемую схему.');
         return;
@@ -62,5 +58,5 @@
     return {destroy(){button.removeEventListener('click',onExport);button.remove();}};
   }
 
-  return {install,GYVERTWINK_REPEAT_OFFSET_MM};
+  return {install};
 });
