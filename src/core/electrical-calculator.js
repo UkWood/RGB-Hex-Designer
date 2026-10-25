@@ -55,20 +55,25 @@
     const segmentM=n.edgeMm/1000;
     const uniqueLengthM=n.uniqueEdgeCount*segmentM;
     const repeatLengthM=n.repeatCount*segmentM;
-    const totalLengthM=uniqueLengthM+repeatLengthM;
-    const ledCountApprox=Math.round(totalLengthM*n.ledPerM);
-    const powerW=totalLengthM*n.wattsPerM;
+    const routeLengthM=uniqueLengthM+repeatLengthM;
+    const segmentsPerEdge=n.segmentsPerEdge===undefined
+      ? Math.round((n.baseEdgeMm===undefined?n.edgeMm:n.baseEdgeMm)*n.ledPerM/1000)
+      : n.segmentsPerEdge;
+    const baseEdgeMm=n.baseEdgeMm===undefined?segmentsPerEdge*1000/n.ledPerM:n.baseEdgeMm;
+    const ledCount=n.uniqueEdgeCount*segmentsPerEdge;
+    const ledStripLengthM=ledCount/n.ledPerM;
+    const powerW=ledStripLengthM*n.wattsPerM;
     const currentA=powerW/n.voltage;
     const recommendedPsuW=powerW*(1+n.reservePercent/100);
-    const repeatPercent=totalLengthM>0?repeatLengthM/totalLengthM*100:0;
+    const repeatPercent=routeLengthM>0?repeatLengthM/routeLengthM*100:0;
     const dx=(input.endVertex.gx-input.startVertex.gx)*(Math.sqrt(3)/2)*n.edgeMm/1000;
     const dy=(input.endVertex.gy-input.startVertex.gy)*0.5*n.edgeMm/1000;
     const endpointSeparationM=Math.hypot(dx,dy);
-    const segmentsPerEdge=n.segmentsPerEdge===undefined?n.edgeMm*n.ledPerM/1000:n.segmentsPerEdge;
-    const baseEdgeMm=n.baseEdgeMm===undefined?segmentsPerEdge*1000/n.ledPerM:n.baseEdgeMm;
     const edgeCorrectionMm=n.edgeCorrectionMm;
     return {
-      uniqueLengthM,repeatLengthM,totalLengthM,ledCountApprox,powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM,
+      uniqueLengthM,repeatLengthM,routeLengthM,totalLengthM:routeLengthM,
+      ledStripLengthM,ledCount,ledCountApprox:ledCount,
+      powerW,currentA,recommendedPsuW,repeatPercent,endpointSeparationM,
       segmentsPerEdge,baseEdgeMm,edgeCorrectionMm,edgeMm:n.edgeMm,
       segmentsPerSide:segmentsPerEdge,sideMm:n.edgeMm,
       ledPerM:n.ledPerM,wattsPerM:n.wattsPerM,voltage:n.voltage,reservePercent:n.reservePercent
