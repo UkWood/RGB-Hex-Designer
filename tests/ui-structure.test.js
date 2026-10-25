@@ -117,7 +117,7 @@ test('hexes_are_not_persistently_selected_and_delete_is_a_temporary_mode',()=>{
 test('route_arrowheads_are_half_size_and_add_face_controls_are_green',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
   assert.match(source,/id="ui-arrow" markerWidth="3\.5" markerHeight="3\.5"/);
-  assert.match(source,/class="add-face-hit"[^>]*fill="var\(--start\)"[^>]*stroke="var\(--start\)"/);
+  assert.match(source,/class="add-face-hit"[^>]*r="16"[^>]*fill="var\(--start\)"[^>]*stroke="var\(--start\)"/);
   assert.match(source,/class="add-face-plus"[^>]*fill="white"/);
 });
 
@@ -157,14 +157,15 @@ test('editor_exposes_visible_temporary_mode_banner_hook',()=>{
   assert.match(source,/Режим:/);
 });
 
-test('gyvertwink_export_is_a_project_action_with_fixed_repeat_separation',()=>{
+test('gyvertwink_export_is_a_project_action_without_repeat_led_offset',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/gyvertwink-ui.js'),'utf8');
   const mainSource=fs.readFileSync(path.join(ROOT,'src/app/main.js'),'utf8');
   assert.match(source,/button\.id='export-gt-btn'/);
   assert.match(source,/button\.textContent='Экспорт для GyverTwink'/);
   assert.match(source,/save\.insertAdjacentElement\('afterend',button\)/);
-  assert.match(source,/GyverTwinkExport\.build\(state\.snapshot\(\),\{repeatOffsetMm:GYVERTWINK_REPEAT_OFFSET_MM\}\)/);
-  assert.match(source,/GYVERTWINK_REPEAT_OFFSET_MM=1/);
+  assert.match(source,/GyverTwinkExport\.build\(state\.snapshot\(\)\)/);
+  assert.doesNotMatch(source,/repeatOffsetMm/);
+  assert.doesNotMatch(source,/GYVERTWINK_REPEAT_OFFSET_MM/);
   assert.match(source,/gyvertwink-map\.json/);
   assert.match(source,/Сначала создайте трассируемую схему\./);
   assert.match(mainSource,/GyverTwinkUI\?root\.GyverTwinkUI\.install\(host,state\)/);
