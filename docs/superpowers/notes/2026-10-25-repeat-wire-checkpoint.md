@@ -1,1 +1,0 @@
-Tests-first checkpoint complete. Next step is to open a draft PR and capture the expected failing CI before changing production code.
