@@ -85,6 +85,7 @@ test('phone_project_actions_are_one_row_with_short_visible_labels',()=>{
   assert.match(mainSource,/data-phone-label/);
   assert.match(mainSource,/project-actions/);
   assert.match(styles,/@media\s*\(max-width:\s*760px\)[\s\S]*\.project-actions[\s\S]*grid-template-columns:\s*repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(styles,/\.project-actions button,\.project-actions \.file-label\{[^}]*min-height:\s*44px/);
   assert.match(styles,/content:\s*attr\(data-phone-label\)/);
 });
 
