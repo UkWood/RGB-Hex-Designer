@@ -11,7 +11,7 @@ const EPS=1e-9;
 
 test('editor_ui_declares_all_stable_control_ids',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
-  for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','segments-per-side','side-mm','system-bounds']){
+  for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','show-full-route-btn','segments-per-side','side-mm','system-bounds']){
     assert.ok(source.includes(`id="${id}"`),`missing ${id}`);
   }
 });
@@ -127,6 +127,25 @@ test('animation_resumes_from_pause_and_restarts_only_after_end',()=>{
   assert.equal(EditorUI.animationStartStep(10,10),0);
   assert.deepEqual(EditorUI.animationTick(4,10),{step:5,done:false});
   assert.deepEqual(EditorUI.animationTick(9,10),{step:10,done:true});
+});
+
+test('route_playback_uses_compact_icon_actions_with_accessible_labels',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
+  const css=fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
+  const routeBlock=source.match(/<div class="route-controls">([\s\S]*?)<\/div>/)?.[1]||'';
+  assert.match(routeBlock,/id="show-full-route-btn"/,'show-full-route must live with playback controls');
+  for(const [id,icon,label] of [
+    ['route-animate-btn','⏵','Анимация маршрута'],
+    ['route-pause-btn','⏸','Пауза анимации'],
+    ['show-full-route-btn','⏭','Показать весь маршрут']
+  ]){
+    assert.match(routeBlock,new RegExp(`id="${id}"[^>]*class="[^"]*route-icon-btn[^"]*"`),`${id} must be compact icon control`);
+    assert.ok(routeBlock.includes(`aria-label="${label}"`),`missing aria-label for ${id}`);
+    assert.ok(routeBlock.includes(`title="${label}"`),`missing title for ${id}`);
+    assert.ok(routeBlock.includes(`>${icon}</button>`),`missing icon ${icon} for ${id}`);
+  }
+  assert.match(css,/\.route-icon-btn\s*\{/);
+  assert.match(css,/\.route-icon-btn[^}]*width:\s*44px/);
 });
 
 test('label_placement_avoids_existing_rectangles',()=>{
