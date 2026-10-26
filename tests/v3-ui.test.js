@@ -57,6 +57,18 @@ test('responsive_composition_declares_header_project_actions_grouped_sections_an
   for(const token of ['editor-header','project-actions','ux-section--geometry','ux-section--display','base-edge-output','edge-output','output-row']) assert.ok(source.includes(token),`missing ${token}`);
 });
 
+test('endpoint_actions_are_reparented_into_persistent_editor_toolbar',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
+  assert.match(source,/endpoint-tools/);
+  assert.match(source,/toolbar/);
+  for(const [id,label] of [['auto-endpoints-btn','AUTO'],['pick-start-btn','START'],['pick-end-btn','END']]){
+    assert.ok(source.includes(id),`missing ${id}`);
+    assert.ok(source.includes(`'${label}'`)||source.includes(`"${label}"`),`missing compact label ${label}`);
+  }
+  assert.match(source,/appendChild\(button\)/);
+  assert.match(source,/fit-btn/);
+});
+
 test('responsive_composition_declares_parameter_drawer_controls',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/v3-ui.js'),'utf8');
   for(const id of ['parameters-toggle','parameters-drawer','parameters-close']) assert.ok(source.includes(id),`missing ${id}`);
