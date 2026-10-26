@@ -71,21 +71,21 @@ test('endpoint_actions_are_reparented_into_persistent_editor_toolbar',()=>{
 
 test('phone_primary_tools_keep_fit_auto_start_end_in_one_four_column_row',()=>{
   const mainSource=fs.readFileSync(path.join(ROOT,'src/app/main.js'),'utf8');
-  const css=fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
+  const styles=mainSource+'\n'+fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
   assert.match(mainSource,/phone-primary-tools/);
   for(const id of ['fit-btn','auto-endpoints-btn','pick-start-btn','pick-end-btn']) assert.ok(mainSource.includes(id),`missing ${id} in phone primary tool composition`);
-  assert.match(css,/@media\s*\(max-width:\s*760px\)[\s\S]*\.phone-primary-tools[\s\S]*grid-template-columns:\s*repeat\(4,minmax\(0,1fr\)\)/);
-  assert.match(css,/\.phone-primary-tools[^}]*white-space:\s*nowrap|\.phone-primary-tools[\s\S]*button[^}]*white-space:\s*nowrap/);
+  assert.match(styles,/@media\s*\(max-width:\s*760px\)[\s\S]*\.phone-primary-tools[\s\S]*grid-template-columns:\s*repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(styles,/\.phone-primary-tools[^}]*white-space:\s*nowrap|\.phone-primary-tools[\s\S]*button[^}]*white-space:\s*nowrap/);
 });
 
 test('phone_project_actions_are_one_row_with_short_visible_labels',()=>{
   const mainSource=fs.readFileSync(path.join(ROOT,'src/app/main.js'),'utf8');
-  const css=fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
+  const styles=mainSource+'\n'+fs.readFileSync(path.join(ROOT,'src/styles.css'),'utf8');
   for(const label of ['Сохранить','Открыть','GyverTwink','PDF']) assert.ok(mainSource.includes(`'${label}'`)||mainSource.includes(`"${label}"`),`missing phone label ${label}`);
   assert.match(mainSource,/data-phone-label/);
   assert.match(mainSource,/project-actions/);
-  assert.match(css,/@media\s*\(max-width:\s*760px\)[\s\S]*\.project-actions[\s\S]*grid-template-columns:\s*repeat\(4,minmax\(0,1fr\)\)/);
-  assert.match(css,/content:\s*attr\(data-phone-label\)/);
+  assert.match(styles,/@media\s*\(max-width:\s*760px\)[\s\S]*\.project-actions[\s\S]*grid-template-columns:\s*repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(styles,/content:\s*attr\(data-phone-label\)/);
 });
 
 test('responsive_composition_declares_parameter_drawer_controls',()=>{
