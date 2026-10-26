@@ -11,7 +11,7 @@ const EPS=1e-9;
 
 test('editor_ui_declares_all_stable_control_ids',()=>{
   const source=fs.readFileSync(path.join(ROOT,'src/app/editor-ui.js'),'utf8');
-  for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','segments-per-side','side-mm','system-bounds']){
+  for(const id of ['hex-canvas','undo-btn','redo-btn','delete-btn','clear-btn','fit-btn','orientation-toggle','auto-endpoints-btn','save-json-btn','load-json-input','export-svg-btn','route-prev-btn','route-next-btn','route-slider','route-animate-btn','route-pause-btn','show-full-route-btn','segments-per-side','side-mm','system-bounds']){
     assert.ok(source.includes(`id="${id}"`),`missing ${id}`);
   }
 });
@@ -127,6 +127,23 @@ test('animation_resumes_from_pause_and_restarts_only_after_end',()=>{
   assert.equal(EditorUI.animationStartStep(10,10),0);
   assert.deepEqual(EditorUI.animationTick(4,10),{step:5,done:false});
   assert.deepEqual(EditorUI.animationTick(9,10),{step:10,done:true});
+});
+
+test('route_playback_uses_compact_icon_actions_with_accessible_labels',()=>{
+  const source=fs.readFileSync(path.join(ROOT,'src/app/main.js'),'utf8');
+  for(const [id,icon,label] of [
+    ['route-animate-btn','⏵','Анимация маршрута'],
+    ['route-pause-btn','⏸','Пауза анимации'],
+    ['show-full-route-btn','⏭','Показать весь маршрут']
+  ]){
+    assert.ok(source.includes(id),`missing ${id}`);
+    assert.ok(source.includes(`'${icon}'`)||source.includes(`"${icon}"`),`missing icon ${icon} for ${id}`);
+    assert.ok(source.includes(label),`missing accessible label ${label}`);
+  }
+  assert.match(source,/route-playback-actions/);
+  assert.match(source,/route-icon-btn/);
+  assert.match(source,/routeControls\.appendChild\(playbackActions\)/);
+  assert.match(source,/width:\s*44px/);
 });
 
 test('label_placement_avoids_existing_rectangles',()=>{
