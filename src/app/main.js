@@ -57,7 +57,7 @@
         .toolbar .phone-primary-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;flex:1 1 100%;min-width:0}
         .toolbar .phone-primary-tools button{min-width:0;padding:6px 3px;font-size:.72rem;white-space:nowrap}
         .project-actions{width:100%;margin-left:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-        .project-actions button,.project-actions .file-label{min-width:0;padding:5px 3px;white-space:nowrap;overflow:hidden}
+        .project-actions button,.project-actions .file-label{min-width:0;min-height:44px;padding:5px 3px;white-space:nowrap;overflow:hidden}
         .project-actions [data-phone-label]{font-size:0}
         .project-actions [data-phone-label]::after{content:attr(data-phone-label);font-size:.72rem}
         .route-controls{grid-template-columns:auto auto minmax(0,1fr)}
