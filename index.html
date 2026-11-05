@@ -1535,6 +1535,22 @@ return blossom;
   function safeBaseName(projectName){const raw=String(projectName??'').trim()||'Без названия';return raw.replace(/[<>:"/\\|?*\x00-\x1F]/g,'_').trim()||'Без названия';}
   function fileNameFor(projectName){return `${safeBaseName(projectName)}.pdf`;}
   function repeatedSpecRows(rows){return (rows||[]).filter(r=>Number(r.additionalPasses)>0).map(r=>({number:r.number,additionalPasses:r.additionalPasses}));}
+  // First pass of a physical edge is LED strip; every repeat is a DATA wire jump.
+  // Run numbers and edge ranges follow the actual traversal (and schematic numbering) order.
+  function stripAssemblyRows(traversals){
+    const rows=[];let active=null,edgeNumber=0;
+    for(const traversal of Array.isArray(traversals)?traversals:[]){
+      if(traversal?.repeat){active=null;continue;}
+      edgeNumber++;
+      if(!active){
+        active={number:rows.length+1,edgeCount:0,firstEdgeNumber:edgeNumber,lastEdgeNumber:edgeNumber};
+        rows.push(active);
+      }
+      active.edgeCount++;
+      active.lastEdgeNumber=edgeNumber;
+    }
+    return rows;
+  }
   function asciiBytes(s){return Uint8Array.from(BufferLike.encode(String(s)));}
   const BufferLike={encode(s){if(typeof TextEncoder!=='undefined')return new TextEncoder().encode(s);const out=[];for(let i=0;i<s.length;i++)out.push(s.charCodeAt(i)&255);return out;}};
   function joinBytes(parts){let n=0;for(const p of parts)n+=p.length;const out=new Uint8Array(n);let o=0;for(const p of parts){out.set(p,o);o+=p.length;}return out;}
@@ -1591,6 +1607,40 @@ return blossom;
   }
   function drawTableHeader(ctx,y){ctx.fillStyle='#f3f4f6';ctx.fillRect(MARGIN,y,PAGE_W-2*MARGIN,48);ctx.strokeStyle='#9ca3af';ctx.strokeRect(MARGIN,y,PAGE_W-2*MARGIN,48);drawText(ctx,'№ ребра',MARGIN+18,y+11,'700 23px Arial');drawText(ctx,'Дополнительные проходы',MARGIN+500,y+11,'700 23px Arial');return y+48;}
   function drawTableRows(ctx,rows,y,maxRows){const take=rows.splice(0,maxRows);for(const row of take){ctx.strokeStyle='#c7cdd6';ctx.strokeRect(MARGIN,y,PAGE_W-2*MARGIN,44);drawText(ctx,row.number,MARGIN+18,y+9,'22px Arial');drawText(ctx,row.additionalPasses,MARGIN+500,y+9,'22px Arial');y+=44;}return y;}
+  function renderAssemblyPages(rows,projectName,root){
+    const doc=root?.document;
+    if(!doc)throw new Error('document is required for PDF export');
+    const sheetRows=Array.isArray(rows)?rows:[],rowsPerPage=18;
+    const totalPages=Math.max(1,Math.ceil(sheetRows.length/rowsPerPage));
+    const totalEdges=sheetRows.reduce((sum,row)=>sum+row.edgeCount,0);
+    const pages=[];
+    for(let page=0;page<totalPages;page++){
+      const {canvas,ctx}=makeCanvas(doc);
+      drawText(ctx,projectName,MARGIN,34,'700 40px Arial');
+      drawText(ctx,'Ведомость составных участков RGB-ленты',MARGIN,88,'700 31px Arial');
+      drawWrapped(ctx,'Составной участок — непрерывная цепочка рёбер с RGB-лентой. Повторный проход выполняется соединительным DATA-проводом и отделяет следующий составной участок.',MARGIN,145,PAGE_W-2*MARGIN,29,'21px Arial');
+      drawText(ctx,`Всего составных участков: ${sheetRows.length}; участков ленты: ${totalEdges}`,MARGIN,218,'700 24px Arial');
+      drawText(ctx,`Лист ${page+1} из ${totalPages}`,PAGE_W-MARGIN,218,'20px Arial','#4b5563','right');
+      let y=265;
+      ctx.fillStyle='#f3f4f6';ctx.fillRect(MARGIN,y,PAGE_W-2*MARGIN,48);
+      ctx.strokeStyle='#9ca3af';ctx.strokeRect(MARGIN,y,PAGE_W-2*MARGIN,48);
+      drawText(ctx,'№ составного участка',MARGIN+18,y+11,'700 22px Arial');
+      drawText(ctx,'Количество участков ленты',MARGIN+530,y+11,'700 22px Arial');
+      drawText(ctx,'Рёбра на схеме',MARGIN+1110,y+11,'700 22px Arial');
+      y+=48;
+      for(const row of sheetRows.slice(page*rowsPerPage,(page+1)*rowsPerPage)){
+        ctx.strokeStyle='#c7cdd6';ctx.strokeRect(MARGIN,y,PAGE_W-2*MARGIN,44);
+        drawText(ctx,`№ ${row.number}`,MARGIN+18,y+9,'22px Arial');
+        drawText(ctx,row.edgeCount,MARGIN+530,y+9,'22px Arial');
+        const edgeRange=row.firstEdgeNumber===row.lastEdgeNumber?row.firstEdgeNumber:`${row.firstEdgeNumber}–${row.lastEdgeNumber}`;
+        drawText(ctx,edgeRange,MARGIN+1110,y+9,'22px Arial');
+        y+=44;
+      }
+      if(!sheetRows.length)drawText(ctx,'В маршруте нет участков RGB-ленты.',MARGIN+18,y+15,'22px Arial','#4b5563');
+      pages.push({width:canvas.width,height:canvas.height,jpegBytes:canvasJpegBytes(canvas,root)});
+    }
+    return pages;
+  }
   async function renderPages(snapshot,root){
     if(!snapshot?.solution||!snapshot?.electrical)throw new Error('routeable construction is required for PDF export');const doc=root.document;if(!doc)throw new Error('document is required for PDF export');const title=String(snapshot.projectName??'').trim()||'Без названия',pages=[];
     {
@@ -1605,10 +1655,11 @@ return blossom;
       pages.push({width:canvas.width,height:canvas.height,jpegBytes:canvasJpegBytes(canvas,root)});
     }
     while(spec.length){const {canvas,ctx}=makeCanvas(doc);drawText(ctx,title,MARGIN,34,'700 38px Arial');drawText(ctx,'Спецификация рёбер с дополнительными проходами',MARGIN,88,'700 29px Arial');let y=138;y=drawTableHeader(ctx,y);drawTableRows(ctx,spec,y,Math.floor((PAGE_H-MARGIN-y)/44));pages.push({width:canvas.width,height:canvas.height,jpegBytes:canvasJpegBytes(canvas,root)});}
+    pages.push(...renderAssemblyPages(stripAssemblyRows(snapshot.solution.traversals),title,root));
     return pages;
   }
   async function downloadPdf(snapshot,rootArg){const root=rootArg||(typeof globalThis!=='undefined'?globalThis:this),pages=await renderPages(snapshot,root),bytes=buildImagePdf(pages),BlobCtor=root.Blob||Blob,urlApi=root.URL||URL,blob=new BlobCtor([bytes],{type:'application/pdf'}),url=urlApi.createObjectURL(blob),a=root.document.createElement('a');a.href=url;a.download=fileNameFor(snapshot.projectName);a.style.display='none';root.document.body.appendChild(a);a.click();a.remove();const timer=root.setTimeout||setTimeout;timer(()=>urlApi.revokeObjectURL(url),1000);return {bytes,pageCount:pages.length,fileName:a.download};}
-  return {buildImagePdf,fileNameFor,repeatedSpecRows,svgDataUrl,renderPages,downloadPdf};
+  return {buildImagePdf,fileNameFor,repeatedSpecRows,stripAssemblyRows,renderAssemblyPages,svgDataUrl,renderPages,downloadPdf};
 });
 
 /* src/app/editor-state.js */
